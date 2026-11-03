@@ -1,0 +1,64 @@
+/* Test del ponte con Enable Banking simulato. Uso: node tests/ponte.mjs */
+import { generateKeyPairSync, createVerify } from "node:crypto";
+const worker = (await import(new URL("../ponte/worker.js", import.meta.url))).default;
+let fails = 0; const ok = (c, m) => { console.log((c ? "OK   " : "FAIL ") + m); if (!c) fails++; };
+const ORIGIN = "https://utente.github.io", TOKEN = "t".repeat(40);
+const calls = [];
+const UID = "07cc67f4-45d6-494b-adac-09b5cbc7e2b5", SID = "497f6eca-6276-4993-bfeb-53cbbbba6f08";
+globalThis.fetch = async (url, opt) => {
+  calls.push({ url, opt });
+  const u = new URL(url);
+  const J = (o, s) => new Response(JSON.stringify(o), { status: s || 200, headers: { "Content-Type": "application/json" } });
+  if (u.pathname === "/application") return J({ name: "myFinances", environment: "PRODUCTION", active: true, redirect_urls: ["https://utente.github.io/app/"], countries: ["LT"] });
+  if (u.pathname === "/aspsps") return J({ aspsps: [{ name: "Revolut", country: "LT", maximum_consent_validity: 15552000, beta: false }, { name: "SEB", country: "LT", maximum_consent_validity: 7776000 }] });
+  if (u.pathname === "/auth") return J({ url: "https://auth.enablebanking.com/ais/start?sessionid=x", authorization_id: "x" });
+  if (u.pathname === "/sessions" && opt.method === "POST") return J({ session_id: SID, access: { valid_until: "2027-05-01T00:00:00Z" }, aspsp: { name: "Revolut", country: "LT" }, accounts: [{ uid: UID, currency: "CHF", name: "Marco", account_id: { iban: "LT20 3250 0217 8213 9095" } }] });
+  if (u.pathname === "/sessions/" + SID && opt.method === "GET") return J({ status: "AUTHORIZED", access: { valid_until: "2027-05-01T00:00:00Z" }, accounts: [UID] });
+  if (u.pathname === "/sessions/" + SID && opt.method === "DELETE") return J({ message: "OK" });
+  if (u.pathname.startsWith("/accounts/")) { if (opt.headers["Psu-Ip-Address"] && u.searchParams.get("date_from") === "2026-01-01") return J({ code: 422, error: "PSU_HEADER_NOT_PROVIDED" }, 422); return J({ transactions: [{ transaction_id: "a1", transaction_amount: { currency: "CHF", amount: "12.50" }, credit_debit_indicator: "DBIT", status: "BOOK", booking_date: "2026-11-01", creditor: { name: "Coop" } }], continuation_key: null }); }
+  return J({ error: "?" }, 404);
+};
+for (const fmt of ["pkcs8", "pkcs1"]) {
+  const { publicKey, privateKey } = generateKeyPairSync("rsa", { modulusLength: 2048, publicKeyEncoding: { type: "spki", format: "pem" }, privateKeyEncoding: { type: fmt, format: "pem" } });
+  const env = { EB_APP_ID: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee", EB_PRIVATE_KEY: privateKey, APP_TOKEN: TOKEN, ALLOWED_ORIGIN: ORIGIN, REDIRECT_URL: "https://utente.github.io/app/" };
+  const req = (path, body, o) => new Request("https://ponte.example.workers.dev" + path, Object.assign({ method: "POST", headers: { Origin: ORIGIN, Authorization: "Bearer " + TOKEN, "Content-Type": "application/json", "CF-Connecting-IP": "1.2.3.4" }, body: JSON.stringify(body || {}) }, o || {}));
+  calls.length = 0;
+  let r = await worker.fetch(new Request("https://p/", { method: "GET" }), env); let d = await r.json();
+  ok(d.ok && d.missing.length === 0, fmt + ": stato del ponte senza segreti esposti");
+  r = await worker.fetch(new Request("https://p/check", { method: "OPTIONS", headers: { Origin: ORIGIN } }), env);
+  ok(r.status === 204 && r.headers.get("Access-Control-Allow-Origin") === ORIGIN, fmt + ": CORS preflight");
+  r = await worker.fetch(req("/check", {}, { headers: { Origin: ORIGIN, Authorization: "Bearer sbagliato" } }), env);
+  ok(r.status === 401, fmt + ": token sbagliato rifiutato");
+  r = await worker.fetch(req("/check", {}, { headers: { Origin: "https://altro.sito", Authorization: "Bearer " + TOKEN } }), env);
+  ok(r.status === 403, fmt + ": origine non consentita rifiutata");
+  r = await worker.fetch(req("/check"), env); d = await r.json();
+  ok(r.status === 200 && d.active && d.redirect_ok, fmt + ": verifica applicazione");
+  const auth = calls[calls.length - 1].opt.headers.Authorization.replace("Bearer ", "");
+  const [h, p, s] = auth.split(".");
+  const head = JSON.parse(Buffer.from(h, "base64url")), pay = JSON.parse(Buffer.from(p, "base64url"));
+  const v = createVerify("RSA-SHA256"); v.update(h + "." + p);
+  ok(v.verify(publicKey, Buffer.from(s, "base64url")) && head.kid === env.EB_APP_ID && head.alg === "RS256" && pay.iss === "enablebanking.com" && pay.aud === "api.enablebanking.com" && pay.exp - pay.iat <= 86400, fmt + ": JWT firmato correttamente");
+  r = await worker.fetch(req("/banks", { country: "LT" }), env); d = await r.json();
+  ok(d.banks.length === 1 && d.banks[0].name === "Revolut", fmt + ": cerca Revolut");
+  r = await worker.fetch(req("/connect", { country: "LT", name: "Revolut", state: "abcdefghijklmnopqrstuv", days: 180 }), env); d = await r.json();
+  const ab = JSON.parse(calls[calls.length - 1].opt.body);
+  ok(d.url && ab.redirect_url === env.REDIRECT_URL && ab.psu_type === "personal" && ab.aspsp.name === "Revolut" && new Date(ab.access.valid_until) > new Date(Date.now() + 170 * 864e5), fmt + ": avvio consenso con indirizzo di ritorno fisso");
+  r = await worker.fetch(req("/connect", { country: "LT", name: "Revolut", state: "x" }), env);
+  ok(r.status === 400, fmt + ": state non valido rifiutato");
+  r = await worker.fetch(req("/session", { code: "abc" }), env); d = await r.json();
+  ok(d.session_id === SID && d.accounts[0].uid === UID && d.accounts[0].iban === "\u2022\u2022\u2022\u2022 9095", fmt + ": sessione creata, IBAN mascherato");
+  r = await worker.fetch(req("/transactions", { account_uid: UID, date_from: "2026-10-01" }), env); d = await r.json();
+  ok(d.transactions.length === 1 && calls[calls.length - 1].opt.headers["Psu-Ip-Address"] === "1.2.3.4", fmt + ": movimenti con intestazioni PSU");
+  r = await worker.fetch(req("/transactions", { account_uid: UID, date_from: "2026-01-01" }), env); d = await r.json();
+  ok(r.status === 200 && d.transactions.length === 1 && !calls[calls.length - 1].opt.headers["Psu-Ip-Address"], fmt + ": nuovo tentativo senza intestazioni PSU");
+  r = await worker.fetch(req("/transactions", { account_uid: "../../payments" }), env);
+  ok(r.status === 400, fmt + ": percorso non valido rifiutato");
+  r = await worker.fetch(req("/payments", {}), env);
+  ok(r.status === 404, fmt + ": nessun accesso ai pagamenti");
+  r = await worker.fetch(req("/status", { session_id: SID }), env); d = await r.json();
+  ok(d.status === "AUTHORIZED", fmt + ": stato del consenso");
+  r = await worker.fetch(req("/disconnect", { session_id: SID }), env); d = await r.json();
+  ok(d.ok, fmt + ": scollegamento");
+}
+console.log(fails ? fails + " test falliti" : "Tutti i test del ponte passati");
+process.exitCode = fails ? 1 : 0;

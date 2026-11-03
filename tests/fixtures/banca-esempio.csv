@@ -1,0 +1,7 @@
+Conto;CH00 0000 0000 0000 0000 0
+Periodo;01.09.2026 - 30.09.2026
+
+Data di registrazione;Descrizione1;Descrizione2;Addebito;Accredito;Saldo;Valuta
+01.09.2026;Affitto;Immobiliare Esempio SA;2'150.00;;5'000.00;CHF
+25.09.2026;Stipendio;Datore di lavoro SA;;8'600.00;13'600.00;CHF
+26.09.2026;Shell Lugano;Carburante;85.40;;13'514.60;CHF
