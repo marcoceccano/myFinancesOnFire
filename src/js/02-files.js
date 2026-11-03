@@ -16,7 +16,7 @@ async function unzip(buf) {
   const u8 = new Uint8Array(buf), dv = new DataView(u8.buffer, u8.byteOffset, u8.byteLength);
   let eocd = -1;
   for (let i = u8.length - 22; i >= Math.max(0, u8.length - 70000); i--) if (dv.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
-  if (eocd < 0) throw new Error("Il file non e' un archivio valido");
+  if (eocd < 0) throw new Error(T.tr("Il file non e' un archivio valido"));
   const n = dv.getUint16(eocd + 10, true); let p = dv.getUint32(eocd + 16, true);
   const files = {};
   for (let k = 0; k < n; k++) {

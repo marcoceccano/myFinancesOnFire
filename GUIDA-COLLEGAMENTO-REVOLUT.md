@@ -20,19 +20,19 @@ Nessuno puo' fare pagamenti con questo collegamento: e' solo lettura.
 - Un'email **personale** (non quella di lavoro) per Enable Banking e Cloudflare.
 - La cartella del progetto `myfinances-on-fire` di questo pacchetto.
 
-Gli indirizzi qui sotto usano il tuo repository: `https://marcoceccano.github.io/myFinanceOnFire/`. Se il tuo e' diverso, usa il tuo, uguale carattere per carattere (maiuscole e barra finale comprese).
+Gli indirizzi qui sotto usano il tuo repository: `https://marcoceccano.github.io/myFinancesOnFire/`. Se il tuo e' diverso, usa il tuo, uguale carattere per carattere (maiuscole e barra finale comprese).
 
 ---
 
 ## Passo 1 · Aggiorna l'app su GitHub (PC, 5 minuti)
 
-1. Apri il repository `myFinanceOnFire` su github.com.
+1. Apri il repository `myFinancesOnFire` su github.com.
 2. **Add file > Upload files**.
 3. Apri la cartella `myfinances-on-fire` sul PC, seleziona tutto il contenuto (Ctrl+A) e trascinalo nella pagina. I file con lo stesso nome vengono sostituiti.
 4. **Commit changes** e aspetta 1-2 minuti.
 5. Controlla che si aprano:
-   - `https://marcoceccano.github.io/myFinanceOnFire/privacy.html`
-   - `https://marcoceccano.github.io/myFinanceOnFire/terms.html`
+   - `https://marcoceccano.github.io/myFinancesOnFire/privacy.html`
+   - `https://marcoceccano.github.io/myFinancesOnFire/terms.html`
 
 Sul telefono l'app si aggiorna da sola alla prima apertura con rete; se non vedi le novita', chiudila e riaprila.
 
@@ -50,11 +50,11 @@ Compila **Add a new application** cosi':
 | Environment | **Production** (non Sandbox) |
 | Private key | lascia **Generate in the browser (using SubtleCrypto) and export private key** |
 | Application name | `myFinances on FIRE` |
-| Allowed redirect URLs | `https://marcoceccano.github.io/myFinanceOnFire/` |
+| Allowed redirect URLs | `https://marcoceccano.github.io/myFinancesOnFire/` |
 | Application description | `Budget personale: lettura dei miei movimenti Revolut` |
 | Email for data protection matters | la tua email personale |
-| Privacy URL | `https://marcoceccano.github.io/myFinanceOnFire/privacy.html` |
-| Terms URL | `https://marcoceccano.github.io/myFinanceOnFire/terms.html` |
+| Privacy URL | `https://marcoceccano.github.io/myFinancesOnFire/privacy.html` |
+| Terms URL | `https://marcoceccano.github.io/myFinancesOnFire/terms.html` |
 
 Premi **Register**. Il browser scarica un file tipo `aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee.pem`:
 - il **nome del file** (senza `.pem`) e' l'**ID dell'applicazione**;
@@ -86,7 +86,7 @@ Nel Worker apri **Settings > Variables and Secrets** e aggiungi, una per una (**
 | `EB_APP_ID` | Text | l'ID dell'applicazione (nome del file .pem senza estensione) |
 | `EB_PRIVATE_KEY` | **Secret** | tutto il contenuto del file .pem, comprese le righe `-----BEGIN ...-----` e `-----END ...-----` (aprilo con Blocco note) |
 | `ALLOWED_ORIGIN` | Text | `https://marcoceccano.github.io` (senza barra finale) |
-| `REDIRECT_URL` | Text | `https://marcoceccano.github.io/myFinanceOnFire/` |
+| `REDIRECT_URL` | Text | `https://marcoceccano.github.io/myFinancesOnFire/` |
 
 `APP_TOKEN` lo aggiungi al passo 4 dal telefono.
 

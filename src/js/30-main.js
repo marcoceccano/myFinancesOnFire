@@ -3,7 +3,10 @@
 (function () {
 const A = T.A;
 async function start() {
-  A.S = (await T.load()) || T.newState();
+  const saved = await T.load();
+  if (!saved) T.setLang(T.detectLang());
+  A.S = saved || T.newState();
+  T.setLang(A.S.profile.lang || "it", A.S.profile.currency);
   document.querySelectorAll("#tabs button").forEach(b => b.addEventListener("click", () => { A.ui.week = A.view === "home" ? A.ui.week : null; A.go(b.dataset.tab); }));
   T.$("btnImport").addEventListener("click", () => A.importFlow());
   T.$("btnSync").addEventListener("click", () => A.syncNow(false));
@@ -27,8 +30,8 @@ async function start() {
 window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); A.installPrompt = e; });
 if ("serviceWorker" in navigator && /^https:$|^http:$/.test(location.protocol) && (location.protocol === "https:" || /^(localhost|127\.0\.0\.1)$/.test(location.hostname))) {
   navigator.serviceWorker.register("sw.js").then(reg => {
-    reg.addEventListener("updatefound", () => { const nw = reg.installing; if (!nw) return; nw.addEventListener("statechange", () => { if (nw.state === "installed" && navigator.serviceWorker.controller) T.toast("Nuova versione installata: riapri l'app per usarla"); }); });
+    reg.addEventListener("updatefound", () => { const nw = reg.installing; if (!nw) return; nw.addEventListener("statechange", () => { if (nw.state === "installed" && navigator.serviceWorker.controller) T.toast(T.tr("Nuova versione installata: riapri l'app per usarla")); }); });
   }).catch(() => { });
 }
-start().catch(e => { console.error(e); const v = T.$("view"); if (v) v.textContent = "Errore all'avvio: " + (e.message || e); });
+start().catch(e => { console.error(e); const v = T.$("view"); if (v) v.textContent = T.tr("Errore all'avvio: ") + (e.message || e); });
 })();

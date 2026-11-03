@@ -18,6 +18,8 @@ src/
   styles.css            stile mobile, tema chiaro e scuro, proprieta' logiche
   js/                   moduli concatenati da build.py in questo ordine:
     00-util.js          numeri, date multilingua, CSV, hash, formattazione, correzione testo con doppia codifica
+    03-dict.js          traduzioni inglese e tedesco (chiave = testo italiano)
+    03-i18n.js          lingua attiva, T.tr(), mesi e giorni, formati, rinomina dei nomi creati dall'app
     08-market.js        serie storiche pubbliche dei rendimenti (S&P 500 dal 1928, Nasdaq 100, Nasdaq Composite)
     01-store.js         stato, IndexedDB (poi localStorage), migrazioni, backup
     02-files.js         lettura .xlsx (zip + XML) e testo PDF (anche PDF protetti RC4/AES con password vuota)
@@ -112,6 +114,22 @@ Quando l'utente corregge un movimento con *vale anche per gli altri*, nasce una 
 - **Doppioni tra fonti:** estratto Revolut e collegamento sono la stessa "famiglia". Un movimento con stessa valuta e importo, a 3 giorni o meno da uno dell'altra fonte, viene considerato lo stesso.
 - **Errori:** tradotti in messaggi comprensibili (token, origine, indirizzo di ritorno, app non attiva, firma, consenso scaduto). La Home avvisa 14 giorni prima della scadenza del consenso.
 
+## Lingue (03-dict.js, 03-i18n.js)
+
+- Lingue: italiano (testo di base), inglese, tedesco standard. Al primo avvio l'app usa la lingua del telefono (altrimenti inglese). Si cambia dalla schermata di benvenuto o da Altro > Profilo e reddito.
+- **Come funziona:**
+  - nel codice i testi restano in italiano dentro `T.tr("...")`;
+  - `T.tr` cerca la traduzione nel dizionario della lingua attiva, e se manca mostra l'italiano;
+  - i testi che passano dagli helper dell'interfaccia (`T.h`, campi, grafici, toast) vengono tradotti anche senza `T.tr` esplicito;
+  - una chiave con `~contesto` (per esempio `Altro~menu`) distingue parole uguali con significati diversi.
+- **Formati:** con il franco svizzero i numeri usano lo stile svizzero della lingua (`it-CH`, `de-CH`, `en-CH`); con le altre valute, `it-IT`, `de-DE` o `en-GB`. Le date sono 31.12.2026, in inglese 31/12/2026.
+- **Dati:** cambiando lingua, i nomi creati dall'app vengono tradotti solo se non li hai modificati (categorie, costi fissi, rendite, vacanze). I dati creati prima della 1.3 restano in italiano finche' non cambi lingua.
+- **Aggiungere una lingua:**
+  1. in `03-dict.js` copia il blocco `"en"` con un nuovo codice (per esempio `"fr"`) e traduci i valori;
+  2. in `03-i18n.js` aggiungi la lingua a `T.LANGS`, `T.MONTHS` e `T.WEEKDAYS`;
+  3. esegui `node tests/lingue.js docs/index.html` per trovare frasi rimaste in italiano.
+- Le pagine `privacy.html` e `terms.html` sono trilingui sullo stesso indirizzo (servono a Enable Banking).
+
 ## Simulatore FIRE (07-fire.js)
 
 - Passo annuale, importi in moneta di oggi.
@@ -130,6 +148,7 @@ Quando l'utente corregge un movimento con *vale anche per gli altri*, nasce una 
 ## Test
 
 - `node tests/unit.js`: date, importi, CSV, Revolut CSV, CSV generico, classificazione, regole, riga PDF UBS, statistiche, FIRE, backup.
+- `node tests/lingue.js docs/index.html [backup.json]`: tutte le schermate in tedesco e inglese, frasi rimaste in italiano, cambio lingua dei dati, mesi e date.
 - `node tests/ponte.mjs`: ponte con Enable Banking simulato (firma JWT verificata, chiavi PKCS#8 e PKCS#1, CORS, token, percorsi rifiutati, nessun accesso ai pagamenti).
 - `node tests/collegamento.js docs/index.html [backup.json]`: app + ponte reale + banca simulata. Copre verifica, consenso, ritorno, primo aggiornamento senza doppioni con l'estratto, movimenti in sospeso, limiti dell'aggiornamento automatico, avvisi di scadenza ed errori.
 - `node tests/smoke.js docs/index.html [estratto-revolut.xlsx] [pagamenti-ubs.pdf]`: configurazione guidata, dati di esempio, tutte le schermate, modifica movimento con regola, budget, FIRE, impostazioni, backup e ripristino, import reali facoltativi, CSV generico. Segnala anche gli errori JavaScript.
@@ -148,7 +167,7 @@ Quando l'utente corregge un movimento con *vale anche per gli altri*, nasce una 
 1. Condivisione diretta dall'app della banca a myFinances on FIRE (Web Share Target).
 2. Sincronizzazione tra due telefoni tramite un file su un cloud personale scelto dall'utente.
 3. Collegamento automatico anche per altre banche europee (il ponte e' gia' generico; serve la scelta della banca nell'app).
-4. Lingua inglese (testi gia' concentrati nelle schermate; da spostare in un dizionario).
+4. Altre lingue (francese per la Svizzera romanda): basta un nuovo blocco nel dizionario.
 5. Simulatore: rendite con indicizzazione parziale, imposte sulle sole plusvalenze, ritiro del 2 pilastro a eta' variabile.
 
 ## Pubblicare sul Play Store

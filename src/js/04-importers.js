@@ -115,10 +115,10 @@ T.parseUbsPayments = lines => {
 T.suggestFixed = p => {
   const s = (p.payee + " " + p.note).toLowerCase();
   const kind = /3a|pilastro|säule|pillar|finpension|viac|frankly|vorsorge|prévoyance/.test(s) ? "risparmio" : "costo";
-  const name = /pigione|miete|loyer|affitto|rent/.test(s) ? "Affitto" : /kranken|sanitas|css|helsana|swica|assura|visana|concordia|groupe mutuel|kpt|atupri|sympany|cassa malati/.test(s) ? "Cassa malati" :
-    /leasing|financial services|rata|bmw|mercedes|amag|leasing/.test(s) ? "Leasing auto" : /ail|aziende industriali|energie|ewz|ekz|elettric|strom/.test(s) ? "Energia e acqua" :
-    /sunrise|swisscom|salt|upc|wingo|yallo|internet|telefon/.test(s) ? "Internet e telefono" : /versicherung|assicura|mobiliar|axa|zurich|helvetia|allianz|generali|baloise/.test(s) ? "Assicurazione" :
-    kind === "risparmio" ? "Pilastro 3a" : p.payee;
+  const name = /pigione|miete|loyer|affitto|rent/.test(s) ? T.tr("Affitto") : /kranken|sanitas|css|helsana|swica|assura|visana|concordia|groupe mutuel|kpt|atupri|sympany|cassa malati/.test(s) ? T.tr("Cassa malati") :
+    /leasing|financial services|rata|bmw|mercedes|amag|leasing/.test(s) ? T.tr("Leasing auto") : /ail|aziende industriali|energie|ewz|ekz|elettric|strom/.test(s) ? T.tr("Energia e acqua") :
+    /sunrise|swisscom|salt|upc|wingo|yallo|internet|telefon/.test(s) ? T.tr("Internet e telefono") : /versicherung|assicura|mobiliar|axa|zurich|helvetia|allianz|generali|baloise/.test(s) ? T.tr("Assicurazione") :
+    kind === "risparmio" ? T.tr("Pilastro 3a") : p.payee;
   const freq = /ail|aziende industriali|energie|ewz|ekz/.test(s) ? "trimestrale" : "mensile";
   return { name, payee: p.payee, amount: p.amount, freq, kind, note: p.note || "" };
 };

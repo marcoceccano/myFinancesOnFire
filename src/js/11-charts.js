@@ -2,8 +2,8 @@
 "use strict";
 (function () {
 const W = el => Math.max(260, Math.min(720, (el && el.clientWidth) || 340));
-const svgBox = (w, h, label) => { const s = T.s("svg", { viewBox: `0 0 ${w} ${h}`, class: "chart", role: "img", "aria-label": label, width: "100%", height: h }); T.s("title", {}, s).textContent = label; return s; };
-const txt = (svg, x, y, s, a) => { const t = T.s("text", Object.assign({ x, y }, a || {}), svg); t.textContent = s; return t; };
+const svgBox = (w, h, label) => { label = T.tr(label); const s = T.s("svg", { viewBox: `0 0 ${w} ${h}`, class: "chart", role: "img", "aria-label": label, width: "100%", height: h }); T.s("title", {}, s).textContent = label; return s; };
+const txt = (svg, x, y, s, a) => { const t = T.s("text", Object.assign({ x, y }, a || {}), svg); t.textContent = T.tr(String(s)); return t; };
 const nice = raw => { const p = Math.pow(10, Math.floor(Math.log10(Math.max(raw, 1e-9)))), f = raw / p; return (f < 1.5 ? 1 : f < 3 ? 2 : f < 7 ? 5 : 10) * p; };
 T.nice = nice;
 
@@ -21,7 +21,7 @@ T.ring = (pct, main, sub, color) => {
 T.columns = (host, items, opt) => {
   opt = opt || {};
   const w = W(host), h = opt.h || 200, L = 44, R = 8, Tp = 12, B = 24, iw = w - L - R, ih = h - Tp - B;
-  const s = svgBox(w, h, opt.label || "grafico a colonne");
+  const s = svgBox(w, h, opt.label || T.tr("grafico a colonne"));
   const max = Math.max(opt.ref || 0, ...items.map(it => T.sum((it.parts || [{ v: it.v }]).map(p => Math.max(0, p.v)))), 1);
   const step = nice(max / 4), top = Math.ceil(max / step) * step;
   for (let v = 0; v <= top + 1e-9; v += step) { const y = Tp + ih - v / top * ih; T.s("line", { x1: L, x2: w - R, y1: y, y2: y, stroke: "var(--line)" }, s); txt(s, L - 6, y + 4, T.fmt.k(v), { "text-anchor": "end" }); }
@@ -31,7 +31,7 @@ T.columns = (host, items, opt) => {
     for (const p of it.parts || [{ v: it.v, c: it.c }]) {
       if (p.v <= 0) continue; const hh = p.v / top * ih; y -= hh;
       const r = T.s("rect", { x, y, width: Math.max(2, bw - gap), height: hh, fill: p.c || "var(--brand2)", rx: 2 }, s);
-      const tt = T.s("title", {}, r); tt.textContent = (it.title || it.l) + (p.n ? " · " + p.n : "") + ": " + T.fmt.money(p.v);
+      const tt = T.s("title", {}, r); tt.textContent = (it.title || it.l) + (p.n ? " · " + T.tr(p.n) : "") + ": " + T.fmt.money(p.v);
     }
     if (it.l) txt(s, x + (bw - gap) / 2, h - 7, it.l, { "text-anchor": "middle" });
     if (opt.onClick) { const hit = T.s("rect", { x: L + i * bw, y: Tp, width: bw, height: ih, fill: "transparent", style: "cursor:pointer" }, s); hit.addEventListener("click", () => opt.onClick(it, i)); }
@@ -78,7 +78,7 @@ T.lineChart = (host, xs, ys, opt) => {
 T.fanChart = (host, bands, opt) => {
   opt = opt || {};
   const w = W(host), h = opt.h || 230, L = 48, R = 10, Tp = 12, B = 26, iw = w - L - R, ih = h - Tp - B;
-  const s = svgBox(w, h, "patrimonio nel tempo");
+  const s = svgBox(w, h, T.tr("patrimonio nel tempo"));
   /* scala sulla mediana: le code alte crescono troppo e schiaccerebbero il grafico */
   const focus = bands.filter(b => !opt.retire || b.age <= opt.retire + 15);
   const max = Math.max(...focus.map(b => b.p75), 1) * 1.1, step = nice(max / 4), top = Math.ceil(max / step) * step;
@@ -89,11 +89,11 @@ T.fanChart = (host, bands, opt) => {
   area("p10", "p90", "rgba(46,117,182,.16)"); area("p25", "p75", "rgba(46,117,182,.30)");
   const inTop = bands.filter(b => b.p50 <= top);
   T.s("polyline", { points: inTop.map(b => X(b.age) + "," + Y(b.p50)).join(" "), fill: "none", stroke: "var(--brand2)", "stroke-width": 2.5 }, s);
-  if (inTop.length < bands.length) { const last = inTop[inTop.length - 1] || bands[0]; txt(s, X(last.age) - 4, Tp + 26, "↑ continua a salire", { "text-anchor": "end", style: "fill:var(--brand2);font-size:11px" }); }
+  if (inTop.length < bands.length) { const last = inTop[inTop.length - 1] || bands[0]; txt(s, X(last.age) - 4, Tp + 26, T.tr("↑ continua a salire"), { "text-anchor": "end", style: "fill:var(--brand2);font-size:11px" }); }
   T.s("polyline", { points: bands.map(b => X(b.age) + "," + Y(b.p10)).join(" "), fill: "none", stroke: "var(--bad)", "stroke-width": 1.4, "stroke-dasharray": "4 3" }, s);
   const stepX = Math.max(1, Math.round((a1 - a0) / 7));
   for (let a = a0; a <= a1; a += stepX) txt(s, X(a), h - 8, String(a), { "text-anchor": "middle" });
-  if (opt.retire) { T.s("line", { x1: X(opt.retire), x2: X(opt.retire), y1: Tp, y2: Tp + ih, stroke: "var(--ok)", "stroke-width": 2 }, s); txt(s, X(opt.retire) + 4, Tp + 12, "FIRE a " + opt.retire, { style: "fill:var(--ok);font-weight:650" }); }
+  if (opt.retire) { T.s("line", { x1: X(opt.retire), x2: X(opt.retire), y1: Tp, y2: Tp + ih, stroke: "var(--ok)", "stroke-width": 2 }, s); txt(s, X(opt.retire) + 4, Tp + 12, T.tr("FIRE a ") + opt.retire, { style: "fill:var(--ok);font-weight:650" }); }
   return s;
 };
 })();

@@ -9,7 +9,7 @@ const js = html.split("<script>")[1].split("</script>")[0];
 global.document = stub.document; global.window = global; global.location = { protocol: "file:", hostname: "" };
 global.history = { length: 1, pushState() { }, replaceState() { }, back() { } };
 global.scrollTo = () => { }; global.addEventListener = () => { };
-Object.defineProperty(global, "navigator", { value: { storage: {} }, configurable: true });
+Object.defineProperty(global, "navigator", { value: { storage: {}, languages: ["it-CH", "it"] }, configurable: true });
 global.URL.createObjectURL = () => "blob:x"; global.URL.revokeObjectURL = () => { };
 const store = {}; global.localStorage = { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = String(v); }, removeItem: k => { delete store[k]; } };
 stub.buildShell(html);

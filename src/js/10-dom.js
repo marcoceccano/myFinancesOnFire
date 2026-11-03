@@ -17,18 +17,19 @@ T.h = (sel, attrs, ...kids) => {
     else if (k === "checked") el.checked = !!v;
     else if (k === "text") el.textContent = v;
     else if (k === "data") Object.assign(el.dataset, v);
+    else if (k === "aria-label" || k === "placeholder" || k === "title") el.setAttribute(k, T.tr(String(v)));
     else el.setAttribute(k, v === true ? "" : v);
   }
   T.add(el, kids);
   return el;
 };
-T.add = (el, kids) => { for (const k of kids.flat(3)) { if (k == null || k === false) continue; el.appendChild(typeof k === "object" ? k : document.createTextNode(String(k))); } return el; };
+T.add = (el, kids) => { for (const k of kids.flat(3)) { if (k == null || k === false) continue; el.appendChild(typeof k === "object" ? k : document.createTextNode(T.tr(String(k)))); } return el; };
 T.s = (tag, attrs, parent) => { const el = document.createElementNS(NS, tag); for (const k in attrs || {}) if (attrs[k] != null) el.setAttribute(k, attrs[k]); if (parent) parent.appendChild(el); return el; };
 T.clear = el => { while (el.firstChild) el.removeChild(el.firstChild); return el; };
 T.$ = id => document.getElementById(id);
 
 let toastT = null;
-T.toast = msg => { const t = T.$("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2800); };
+T.toast = msg => { const t = T.$("toast"); t.textContent = T.tr(msg); t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2800); };
 
 /* foglio dal basso (dialogo) */
 let onClose = null;
@@ -42,7 +43,7 @@ T.sheet = (title, body, actions, closeCb) => {
 T.closeSheet = () => { const sh = T.$("sheet"); if (sh.hidden) return; sh.hidden = true; T.clear(T.$("sheetBody")); const f = onClose; onClose = null; if (f) f(); };
 T.confirm = (title, text, okLabel, danger) => new Promise(res => {
   let done = false; const fin = v => { if (done) return; done = true; T.closeSheet(); res(v); };
-  T.sheet(title, T.h("p.muted", text), [T.h("button.btn", { type: "button", onclick: () => fin(false) }, "Annulla"), T.h("button.btn" + (danger ? ".danger" : ".primary"), { type: "button", onclick: () => fin(true) }, okLabel || "Conferma")], () => fin(false));
+  T.sheet(title, T.h("p.muted", text), [T.h("button.btn", { type: "button", onclick: () => fin(false) }, T.tr("Annulla")), T.h("button.btn" + (danger ? ".danger" : ".primary"), { type: "button", onclick: () => fin(true) }, okLabel || T.tr("Conferma"))], () => fin(false));
 });
 
 /* campi di modulo */

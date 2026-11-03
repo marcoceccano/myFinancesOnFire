@@ -1,7 +1,7 @@
 /* myFinances on FIRE · utilita' comuni (nessuna dipendenza esterna) */
 "use strict";
 const T = (typeof globalThis !== "undefined" ? globalThis : window).T = {};
-T.APP = { name: "myFinances on FIRE", id: "myfinances-on-fire", version: "1.2.0", schema: 1 };
+T.APP = { name: "myFinances on FIRE", id: "myfinances-on-fire", version: "1.3.0", schema: 1 };
 
 /* ---------- numeri e date ---------- */
 T.round2 = v => Math.round(v * 100) / 100;
@@ -129,13 +129,13 @@ T.fmt = {
   n2: v => new Intl.NumberFormat(T.fmt.locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v),
   money: v => T.fmt.n0(v) + " " + T.fmt.cur,
   money2: v => T.fmt.n2(v) + " " + T.fmt.cur,
-  k: v => Math.abs(v) >= 1e6 ? T.fmt.n1(v / 1e6) + " Mio" : Math.abs(v) >= 1e4 ? T.fmt.n0(v / 1e3) + "k" : T.fmt.n0(v),
+  k: v => Math.abs(v) >= 1e6 ? T.fmt.n1(v / 1e6) + T.tr(" Mio") : Math.abs(v) >= 1e4 ? T.fmt.n0(v / 1e3) + "k" : T.fmt.n0(v),
   pct: v => T.fmt.n0(v * 100) + "%",
   pct1: v => T.fmt.n1(v * 100) + "%",
-  date: s => { if (!s) return ""; const [y, m, d] = s.split("-"); return d + "." + m + "." + y; },
-  dateShort: s => { if (!s) return ""; const [, m, d] = s.split("-"); return d + "." + m; },
-  month: k => { const [y, m] = k.split("-"); return T.MONTHS_IT[+m - 1] + " " + y; },
-  monthShort: k => T.MONTHS_IT[+k.slice(5, 7) - 1].slice(0, 3)
+  date: s => { if (!s) return ""; const [y, m, d] = s.split("-"); const sep = T.LANG === "en" ? "/" : "."; return d + sep + m + sep + y; },
+  dateShort: s => { if (!s) return ""; const [, m, d] = s.split("-"); return d + (T.LANG === "en" ? "/" : ".") + m; },
+  month: k => { const [y, m] = k.split("-"); return T.monthNames()[+m - 1] + " " + y; },
+  monthShort: k => T.monthNames()[+k.slice(5, 7) - 1].slice(0, 3)
 };
 T.MONTHS_IT = ["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"];
 T.WEEKDAYS_IT = ["Lunedi'","Martedi'","Mercoledi'","Giovedi'","Venerdi'","Sabato","Domenica"].map(s => s.replace("i'", "\u00ec"));

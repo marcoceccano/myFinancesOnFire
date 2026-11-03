@@ -12,7 +12,7 @@
      EB_PRIVATE_KEY  segreto  contenuto completo del file .pem
      APP_TOKEN       segreto  codice lungo generato dall'app (Altro > Collegamento automatico)
      ALLOWED_ORIGIN  testo    https://TUO-UTENTE.github.io
-     REDIRECT_URL    testo    indirizzo esatto dell'app, es. https://TUO-UTENTE.github.io/myFinanceOnFire/
+     REDIRECT_URL    testo    indirizzo esatto dell'app, es. https://TUO-UTENTE.github.io/myFinancesOnFire/
 */
 const API = "https://api.enablebanking.com";
 const VERSION = "1.0.0";

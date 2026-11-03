@@ -12,8 +12,8 @@ T.FIRE_DEFAULTS = {
 };
 T.newState = () => ({
   app: T.APP.id, schema: T.APP.schema,
-  profile: { name: "", currency: "CHF", locale: "de-CH", incomeMonthly: 0, fx: { EUR: 0.94, USD: 0.80, GBP: 1.07 }, onboarded: false, demo: false, created: T.today() },
-  categories: clone(T.DEFAULT_CATEGORIES).map(c => Object.assign(c, { budget: 0 })),
+  profile: { name: "", lang: T.LANG, currency: "CHF", locale: "de-CH", incomeMonthly: 0, fx: { EUR: 0.94, USD: 0.80, GBP: 1.07 }, onboarded: false, demo: false, created: T.today() },
+  categories: clone(T.DEFAULT_CATEGORIES).map(c => Object.assign(c, { name: T.tr(c.name), budget: 0 })),
   rules: [], txs: [], vacations: [], fixed: [],
   budget: { preset: "attuale", vacationYear: 0, investMonthly: 0 },
   fire: clone(T.FIRE_DEFAULTS),
@@ -22,6 +22,7 @@ T.newState = () => ({
 
 /* migrazioni future: ogni versione dello schema aggiunge un passo */
 T.migrate = st => {
+  if (st.profile && !st.profile.lang) st.profile.lang = "it";   /* dati creati prima delle lingue */
   const base = T.newState();
   for (const k of Object.keys(base)) if (st[k] == null) st[k] = base[k];
   st.profile = Object.assign(base.profile, st.profile);
@@ -74,10 +75,10 @@ T.save = (st, now) => {
 /* backup: un solo file JSON, leggibile, che contiene tutto */
 T.makeBackup = st => ({ app: T.APP.id, kind: "backup", schema: T.APP.schema, version: T.APP.version, exported: new Date().toISOString(), state: st });
 T.readBackup = obj => {
-  if (!obj || !(obj.app === T.APP.id || obj.app === "traguardo") || !obj.state) throw new Error("Questo file non e' un backup di " + T.APP.name);
-  if ((obj.schema || 1) > T.APP.schema) throw new Error("Il backup arriva da una versione piu' recente dell'app: aggiorna l'app e riprova");
+  if (!obj || !(obj.app === T.APP.id || obj.app === "traguardo") || !obj.state) throw new Error(T.tr("Questo file non e' un backup di ") + T.APP.name);
+  if ((obj.schema || 1) > T.APP.schema) throw new Error(T.tr("Il backup arriva da una versione piu' recente dell'app: aggiorna l'app e riprova"));
   const st = T.migrate(obj.state);
-  if (!Array.isArray(st.txs) || !Array.isArray(st.categories)) throw new Error("Backup incompleto");
+  if (!Array.isArray(st.txs) || !Array.isArray(st.categories)) throw new Error(T.tr("Backup incompleto"));
   return st;
 };
 })();

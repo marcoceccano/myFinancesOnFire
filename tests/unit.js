@@ -1,7 +1,7 @@
 /* Test dei moduli di calcolo, senza interfaccia. Uso: node tests/unit.js */
 "use strict";
 const fs = require("fs"), path = require("path"), D = path.join(__dirname, "..", "src", "js");
-for (const f of ["00-util", "08-market", "01-store", "02-files", "04-importers", "05-categorize", "06-stats", "07-fire", "12-bank", "09-demo"]) require(path.join(D, f + ".js"));
+for (const f of ["00-util", "03-dict", "03-i18n", "08-market", "01-store", "02-files", "04-importers", "05-categorize", "06-stats", "07-fire", "12-bank", "09-demo"]) require(path.join(D, f + ".js"));
 let fails = 0; const eq = (a, b, m) => { const ok = JSON.stringify(a) === JSON.stringify(b); console.log((ok ? "OK   " : "FAIL ") + m + (ok ? "" : " -> " + JSON.stringify(a) + " invece di " + JSON.stringify(b))); if (!ok) fails++; };
 const fx = p => fs.readFileSync(path.join(__dirname, "fixtures", p), "utf8");
 eq(["1 gen 2026", "31.12.2025", "2026-03-04 10:22:11", "Jan 5, 2026", "15 ott 2026"].map(s => T.parseDate(s)), ["2026-01-01", "2025-12-31", "2026-03-04", "2026-01-05", "2026-10-15"], "date in vari formati");

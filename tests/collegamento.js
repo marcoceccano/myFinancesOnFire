@@ -8,7 +8,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? "OK   " : "FAIL ") + m); 
 (async () => {
   const worker = (await import(path.resolve(__dirname, "../ponte/worker.js"))).default;
   const { privateKey } = generateKeyPairSync("rsa", { modulusLength: 2048, publicKeyEncoding: { type: "spki", format: "pem" }, privateKeyEncoding: { type: "pkcs8", format: "pem" } });
-  const APP = "https://utente.github.io/myFinanceOnFire/", ORIGIN = "https://utente.github.io", TOKEN = "k".repeat(43);
+  const APP = "https://utente.github.io/myFinancesOnFire/", ORIGIN = "https://utente.github.io", TOKEN = "k".repeat(43);
   const env = { EB_APP_ID: "11111111-2222-3333-4444-555555555555", EB_PRIVATE_KEY: privateKey, APP_TOKEN: TOKEN, ALLOWED_ORIGIN: ORIGIN, REDIRECT_URL: APP };
   const SID = "497f6eca-6276-4993-bfeb-53cbbbba6f08", U1 = "07cc67f4-45d6-494b-adac-09b5cbc7e2b5", U2 = "17cc67f4-45d6-494b-adac-09b5cbc7e2b6";
   /* banca simulata: le ultime spese dell'estratto (date spostate di 1 giorno) + 5 nuove + 1 in sospeso */
@@ -29,7 +29,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? "OK   " : "FAIL ") + m); 
   };
   const html = fs.readFileSync(htmlPath, "utf8"); const js = html.split("<script>")[1].split("</script>")[0];
   global.document = stub.document; global.window = global;
-  const loc = { protocol: "https:", hostname: "utente.github.io", origin: ORIGIN, pathname: "/myFinanceOnFire/", search: "", href: APP };
+  const loc = { protocol: "https:", hostname: "utente.github.io", origin: ORIGIN, pathname: "/myFinancesOnFire/", search: "", href: APP };
   Object.defineProperty(global, "location", { value: loc, configurable: true, writable: true });
   global.history = { length: 1, pushState() { }, replaceState() { loc.search = ""; }, back() { } };
   global.scrollTo = () => { }; global.addEventListener = () => { };

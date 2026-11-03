@@ -12,22 +12,22 @@ T.bankDaysLeft = st => st.bank && st.bank.validUntil ? Math.floor((Date.parse(st
 
 T.bankErrorText = (status, d) => {
   const e = (d && d.error) || "", det = String((d && (d.detail || d.message)) || "");
-  if (status === 401 || e === "unauthorized") return "Il codice di accesso non corrisponde a quello impostato nel ponte (APP_TOKEN).";
-  if (e === "origin_not_allowed") return "Il ponte non accetta richieste da questo indirizzo: controlla ALLOWED_ORIGIN.";
-  if (/EXPIRED|REVOKED|CLOSED|INVALID_SESSION|SESSION_NOT|access.?expired|consent/i.test(det)) return "Il consenso Revolut e' scaduto o e' stato revocato: ricollega Revolut.";
-  if (/REDIRECT/i.test(det)) return "L'indirizzo di ritorno non e' registrato su Enable Banking: controlla REDIRECT_URL e gli Allowed redirect URLs.";
-  if (/NOT_ACTIVE|inactive|not active|NOT_ACTIVATED/i.test(det)) return "L'applicazione Enable Banking non e' ancora attiva: collega il tuo conto dal Control Panel.";
-  if (/kid|JWT|signature|token/i.test(det)) return "Enable Banking non riconosce la firma: controlla EB_APP_ID e EB_PRIVATE_KEY nel ponte.";
-  if (e === "bank_not_found") return "Revolut non e' disponibile per il paese scelto: prova un altro paese.";
-  if (status === 429 || /TOO_MANY|rate/i.test(det)) return "Troppe richieste alla banca: riprova tra qualche ora.";
-  return "Errore " + status + (e ? " (" + e + ")" : "") + (det ? ": " + det.slice(0, 180) : "");
+  if (status === 401 || e === "unauthorized") return T.tr("Il codice di accesso non corrisponde a quello impostato nel ponte (APP_TOKEN).");
+  if (e === "origin_not_allowed") return T.tr("Il ponte non accetta richieste da questo indirizzo: controlla ALLOWED_ORIGIN.");
+  if (/EXPIRED|REVOKED|CLOSED|INVALID_SESSION|SESSION_NOT|access.?expired|consent/i.test(det)) return T.tr("Il consenso Revolut e' scaduto o e' stato revocato: ricollega Revolut.");
+  if (/REDIRECT/i.test(det)) return T.tr("L'indirizzo di ritorno non e' registrato su Enable Banking: controlla REDIRECT_URL e gli Allowed redirect URLs.");
+  if (/NOT_ACTIVE|inactive|not active|NOT_ACTIVATED/i.test(det)) return T.tr("L'applicazione Enable Banking non e' ancora attiva: collega il tuo conto dal Control Panel.");
+  if (/kid|JWT|signature|token/i.test(det)) return T.tr("Enable Banking non riconosce la firma: controlla EB_APP_ID e EB_PRIVATE_KEY nel ponte.");
+  if (e === "bank_not_found") return T.tr("Revolut non e' disponibile per il paese scelto: prova un altro paese.");
+  if (status === 429 || /TOO_MANY|rate/i.test(det)) return T.tr("Troppe richieste alla banca: riprova tra qualche ora.");
+  return T.tr("Errore ") + status + (e ? " (" + e + ")" : "") + (det ? ": " + det.slice(0, 180) : "");
 };
 T.bankCall = async (st, path, body) => {
   const B = st.bank;
-  if (!B || !B.url || !B.token) throw new Error("Il ponte non e' configurato: inserisci indirizzo e codice di accesso.");
+  if (!B || !B.url || !B.token) throw new Error(T.tr("Il ponte non e' configurato: inserisci indirizzo e codice di accesso."));
   let r;
   try { r = await fetch(B.url.trim().replace(/\/+$/, "") + path, { method: "POST", headers: { "Authorization": "Bearer " + B.token.trim(), "Content-Type": "application/json" }, body: JSON.stringify(body || {}) }); }
-  catch (e) { throw new Error("Il ponte non risponde: controlla l'indirizzo e la connessione."); }
+  catch (e) { throw new Error(T.tr("Il ponte non risponde: controlla l'indirizzo e la connessione.")); }
   let d = null; try { d = await r.json(); } catch (e) { }
   if (!r.ok) { const err = new Error(T.bankErrorText(r.status, d)); err.status = r.status; err.data = d; throw err; }
   return d;
@@ -60,8 +60,8 @@ T.mapEbTx = (t, acc) => {
 T.bankSync = async (st, opt) => {
   opt = opt || {};
   const B = st.bank;
-  if (!T.bankConnected(st)) throw new Error("Revolut non e' collegato.");
-  if (T.bankExpired(st)) throw new Error("Il consenso Revolut e' scaduto: ricollega Revolut.");
+  if (!T.bankConnected(st)) throw new Error(T.tr("Revolut non e' collegato."));
+  if (T.bankExpired(st)) throw new Error(T.tr("Il consenso Revolut e' scaduto: ricollega Revolut."));
   const today = T.today(), rows = [];
   const fam = st.txs.filter(t => /^revolut/.test(t.src || "") && !t.pending).map(t => t.d).sort();
   const lastKnown = fam.length ? fam[fam.length - 1] : null;

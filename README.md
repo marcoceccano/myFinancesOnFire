@@ -6,7 +6,7 @@ App per il telefono che mette insieme tre cose:
 - **Spese**: mese per mese, per categoria, per esercente, con la possibilita' di correggere le categorie.
 - **FIRE**: simulatore Monte Carlo che usa le vostre spese reali e vi dice a che eta' potete smettere.
 
-I dati restano sul telefono. L'app non ha server, account o statistiche: e' solo un insieme di file che il browser scarica e poi usa anche offline.
+Disponibile in italiano, inglese e tedesco. I dati restano sul telefono. L'app non ha server, account o statistiche: e' solo un insieme di file che il browser scarica e poi usa anche offline.
 
 ## Cosa c'e' in questa cartella
 
@@ -17,7 +17,7 @@ I dati restano sul telefono. L'app non ha server, account o statistiche: e' solo
 | `docs/` | **L'app pronta da pubblicare.** E' quella che va online (il nome `docs` lo richiede GitHub Pages). |
 | `src/` | Il codice sorgente, diviso in moduli leggibili. |
 | `build.py` | Ricostruisce `docs/` da `src/`: `python3 build.py`. Nessuna libreria da installare. |
-| `tests/` | Test automatici: `node tests/unit.js`, `node tests/smoke.js docs/index.html`, `node tests/ponte.mjs`, `node tests/collegamento.js docs/index.html`. |
+| `tests/` | Test automatici: `node tests/unit.js`, `node tests/smoke.js docs/index.html`, `node tests/ponte.mjs`, `node tests/collegamento.js docs/index.html`, `node tests/lingue.js docs/index.html`. |
 | `PROGETTO.md` | Come e' fatta l'app: architettura, dati, regole, scelte. Da dare a chi continua lo sviluppo. |
 | `PRIVACY.md` | Informativa sulla privacy (pubblicata anche in `docs/privacy.html`). |
 | `.gitignore` | Impedisce di caricare per sbaglio backup ed estratti conto nel repository. |

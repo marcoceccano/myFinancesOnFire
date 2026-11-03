@@ -4,7 +4,7 @@ Uso: python3 build.py   (nessuna dipendenza esterna)"""
 import base64, datetime, hashlib, os, re, shutil
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SRC, OUT = os.path.join(ROOT, "src"), os.path.join(ROOT, "docs")
-ORDER = ["00-util", "08-market", "01-store", "02-files", "04-importers", "05-categorize", "06-stats", "07-fire", "12-bank", "09-demo",
+ORDER = ["00-util", "03-dict", "03-i18n", "08-market", "01-store", "02-files", "04-importers", "05-categorize", "06-stats", "07-fire", "12-bank", "09-demo",
          "10-dom", "11-charts", "20-app", "21-spese", "22-budget", "23-fire", "24-altro", "25-collega", "30-main"]
 def read(p): return open(p, encoding="utf-8").read()
 js = "\n".join(read(os.path.join(SRC, "js", n + ".js")) for n in ORDER)

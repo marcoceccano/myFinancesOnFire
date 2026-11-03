@@ -5,14 +5,14 @@ T.makeDemoState = () => {
   const st = T.newState();
   let seed = 7; const rnd = () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
   const pick = a => a[Math.floor(rnd() * a.length)];
-  Object.assign(st.profile, { name: "Demo", currency: "CHF", incomeMonthly: 8600, onboarded: true, demo: true });
+  Object.assign(st.profile, { name: T.tr("Demo"), currency: "CHF", incomeMonthly: 8600, onboarded: true, demo: true });
   st.fixed = [
-    { id: "f1", name: "Affitto", payee: "Immobiliare Esempio SA", amount: 2150, freq: "mensile", kind: "costo" },
-    { id: "f2", name: "Cassa malati", payee: "Assicurazione Esempio", amount: 790, freq: "mensile", kind: "costo" },
-    { id: "f3", name: "Leasing auto", payee: "Leasing Esempio", amount: 420, freq: "mensile", kind: "costo", next: { from: (new Date().getFullYear() + 1) + "-01", amount: 0 } },
-    { id: "f4", name: "Energia e acqua", payee: "Azienda elettrica", amount: 390, freq: "trimestrale", kind: "costo" },
-    { id: "f5", name: "Internet e telefono", payee: "Operatore", amount: 65, freq: "mensile", kind: "costo" },
-    { id: "f6", name: "Pilastro 3a", payee: "Fondazione 3a", amount: 604.8, freq: "mensile", kind: "risparmio" }
+    { id: "f1", name: T.tr("Affitto"), payee: T.tr("Immobiliare Esempio SA"), amount: 2150, freq: "mensile", kind: "costo" },
+    { id: "f2", name: T.tr("Cassa malati"), payee: T.tr("Assicurazione Esempio"), amount: 790, freq: "mensile", kind: "costo" },
+    { id: "f3", name: T.tr("Leasing auto"), payee: T.tr("Leasing Esempio"), amount: 420, freq: "mensile", kind: "costo", next: { from: (new Date().getFullYear() + 1) + "-01", amount: 0 } },
+    { id: "f4", name: T.tr("Energia e acqua"), payee: T.tr("Azienda elettrica"), amount: 390, freq: "trimestrale", kind: "costo" },
+    { id: "f5", name: T.tr("Internet e telefono"), payee: T.tr("Operatore"), amount: 65, freq: "mensile", kind: "costo" },
+    { id: "f6", name: T.tr("Pilastro 3a"), payee: T.tr("Fondazione 3a"), amount: 604.8, freq: "mensile", kind: "risparmio" }
   ];
   const M = {
     alimentari: [["Coop", 25, 120], ["Migros", 20, 110], ["Denner", 10, 60], ["Lidl", 15, 80], ["Panetteria Sole", 4, 15]],
@@ -32,7 +32,7 @@ T.makeDemoState = () => {
   const rows = [];
   const vacFrom = new Date(end); vacFrom.setMonth(vacFrom.getMonth() - 3); vacFrom.setDate(10);
   const vacTo = new Date(vacFrom); vacTo.setDate(vacTo.getDate() + 9);
-  st.vacations = [{ from: T.iso(vacFrom), to: T.iso(vacTo), label: "Vacanza al mare" }];
+  st.vacations = [{ from: T.iso(vacFrom), to: T.iso(vacTo), label: T.tr("Vacanza al mare") }];
   for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
     const ds = T.iso(d), inVac = d >= vacFrom && d <= vacTo;
     if (d.getDate() === 1) { rows.push({ d: ds, desc: "Palestra Fit", amt: -79 }); rows.push({ d: ds, desc: "Netflix", amt: -18.9 }); rows.push({ d: ds, desc: "Spotify", amt: -12.95 }); rows.push({ d: ds, desc: "Ricarica da conto principale", amt: 2500, rcat: "Ricarica" }); }
@@ -46,7 +46,7 @@ T.makeDemoState = () => {
   const pre = T.presetBudget(st, "realistico"); st.categories.forEach(c => c.budget = pre[c.id] || 0);
   st.budget = { preset: "realistico", vacationYear: 4000, investMonthly: 300 };
   Object.assign(st.fire, { birthYear: new Date().getFullYear() - 38, investable: 140000, cash: 25000, equityShare: 0.85,
-    pensions: [{ name: "Pensione statale", age: 65, monthly: 1900 }, { name: "Rendita cassa pensione", age: 65, monthly: 1100 }], lumps: [] });
+    pensions: [{ name: T.tr("Pensione statale"), age: 65, monthly: 1900 }, { name: T.tr("Rendita cassa pensione"), age: 65, monthly: 1100 }], lumps: [] });
   return st;
 };
 })();
