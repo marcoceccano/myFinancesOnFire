@@ -21,14 +21,21 @@ A.renderSpese = main => {
   main.appendChild(h("div.kpis.k4", T.kpi(T.tr("Totale"), A.money(agg.total), sel ? T.fmt.month([...sel][0]) : T.tr("dal ") + T.fmt.date(cov.from)), T.kpi(T.tr("Al mese"), A.money(perM), "media"), T.kpi(T.tr("Al giorno"), A.money(agg.total / days), days + T.tr(" giorni")), T.kpi(T.tr("Movimenti"), T.fmt.n0(agg.n), ui.vac ? T.tr("vacanze incluse") : T.tr("vacanze escluse"))));
   main.appendChild(h("div", { style: { blockSize: "12px" } }));
 
+  /* ultime 8 settimane: tocca una settimana per vederla giorno per giorno */
+  { const lastW = T.weekStart(cov.to), hist = T.weeksHistory(S, 8, lastW), cap = T.picture(S).weeklyCap;
+    const c0 = h("div.card#weeksCard", h("h2", T.tr("Ultime 8 settimane")), h("p.sub", T.tr("Spese di tutti i giorni contro il tetto settimanale (linea tratteggiata). A righe le spese di vacanza, che hanno un budget a parte. Tocca una settimana per vederla giorno per giorno.")));
+    main.appendChild(c0);
+    c0.appendChild(T.columns(c0, hist.map(x => ({ l: T.fmt.dateShort(x.start), start: x.start, title: T.tr("Settimana dal ") + T.fmt.date(x.start), parts: [{ v: x.spent, c: x.spent > x.cap ? "var(--bad)" : "var(--brand2)", n: T.tr("tutti i giorni") }, { v: x.vac, c: "vac", n: T.tr("vacanza") }] })),
+      { ref: cap, refLabel: T.tr("tetto ") + T.fmt.n0(cap), h: 180, onClick: it => A.weekSheet(it.start) })); }
+
   /* mese per mese, impilato per categoria */
   const top = Object.entries(T.aggregate(S, { vac: ui.vac }).cats).sort((a, b) => b[1] - a[1]).slice(0, 6).map(x => x[0]);
   const c1 = h("div.card", h("h2", T.tr("Mese per mese")), h("p.sub", T.tr("Tocca una colonna per vedere il mese. La linea e' il budget mensile delle spese di tutti i giorni.")));
   main.appendChild(c1);
   const all = T.aggregate(S, { vac: ui.vac });
-  const items = months.map(m => { const mc = all.months[m] || {}; const parts = top.map(id => ({ v: mc[id] || 0, c: A.cat(id).color, n: A.cat(id).name })); parts.push({ v: T.sum(Object.entries(mc).filter(([k]) => !top.includes(k)).map(x => x[1])), c: "#95A0B3", n: T.tr("Altre") }); return { l: T.fmt.monthShort(m), title: T.fmt.month(m), m, parts }; });
+  const items = months.map(m => { const mc = all.months[m] || {}; const parts = top.map(id => ({ v: mc[id] || 0, c: A.cat(id).color, n: A.cat(id).name })); parts.push({ v: T.sum(Object.entries(mc).filter(([k]) => !top.includes(k)).map(x => x[1])), c: T.OTHER_COLOR, n: T.tr("Altre") }); return { l: T.fmt.monthShort(m), title: T.fmt.month(m), m, parts }; });
   c1.appendChild(T.columns(c1, items, { ref: T.picture(S).plan.variable, refLabel: "budget", h: 210, onClick: it => { ui.months = new Set([it.m]); A.render(); } }));
-  c1.appendChild(h("div.legend", top.map(id => h("span", h("i.dot", { style: { background: A.cat(id).color } }), A.cat(id).name)), h("span", h("i.dot", { style: { background: "#95A0B3" } }), T.tr("Altre"))));
+  c1.appendChild(h("div.legend", top.map(id => h("span", h("i.dot", { style: { background: A.cat(id).color } }), A.cat(id).name)), h("span", h("i.dot", { style: { background: T.OTHER_COLOR } }), T.tr("Altre"))));
 
   /* per categoria */
   const cats = Object.entries(agg.cats).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]);
@@ -62,16 +69,21 @@ A.renderSpese = main => {
   const PG = 40, pages = Math.max(1, Math.ceil(rows.length / PG)); ui.page = Math.min(ui.page, pages - 1);
   const lst = h("div.list");
   for (const t of rows.slice(ui.page * PG, ui.page * PG + PG)) {
-    const c = A.cat(t.cat), vac = T.isVacation(t, S);
-    lst.appendChild(h("div.li.tap", { onclick: () => A.editTx(t) }, h("i.dot", { style: { background: t.flow === "spesa" ? c.color : "var(--line)" } }),
-      h("div.grow", h("div.t", t.note || t.desc), h("div.d", T.fmt.date(t.d) + " \u00b7 " + (t.flow === "spesa" ? c.name : t.flow === "escluso" ? T.tr(T.EXCLUDE_KINDS[t.kind] || "Escluso") : T.tr("Entrata")) + (vac && t.flow === "spesa" ? T.tr(" \u00b7 vacanza") : "") + (t.pending ? T.tr(" \u00b7 in sospeso") : "") + (t.cur !== S.profile.currency ? " \u00b7 " + T.fmt.n2(Math.abs(t.amtLoc)) + " " + t.cur : ""))),
-      h("div.a" + (t.amt > 0 ? ".ok" : ""), (t.amt > 0 ? "+" : "") + T.fmt.n2(t.amt))));
+    lst.appendChild(A.txRow(t));
   }
   if (!rows.length) lst.appendChild(h("div.empty", T.tr("Nessun movimento")));
   c4.appendChild(h("div.small.muted", { style: { marginBlock: "8px 0" } }, rows.length + T.tr(" movimenti, ") + A.money(-T.sum(rows.map(r => r.amt)))));
   c4.appendChild(lst);
   if (pages > 1) c4.appendChild(h("div.row.between", h("button.btn", { type: "button", disabled: ui.page === 0, onclick: () => { ui.page--; A.render(); } }, T.tr("Precedenti")), h("span.small.muted", T.tr("pagina ") + (ui.page + 1) + T.tr(" di ") + pages), h("button.btn", { type: "button", disabled: ui.page >= pages - 1, onclick: () => { ui.page++; A.render(); } }, T.tr("Successivi"))));
   main.appendChild(c4);
+};
+
+/* riga di un movimento: tocca per modificarlo */
+A.txRow = t => {
+  const S = A.S, c = A.cat(t.cat), vac = T.isVacation(t, S);
+  return h("div.li.tap", { onclick: () => A.editTx(t) }, h("i.dot", { style: { background: t.flow === "spesa" ? c.color : "var(--line)" } }),
+      h("div.grow", h("div.t", t.note || t.desc), h("div.d", T.fmt.date(t.d) + " \u00b7 " + (t.flow === "spesa" ? c.name : t.flow === "escluso" ? T.tr(T.EXCLUDE_KINDS[t.kind] || "Escluso") : T.tr("Entrata")) + (vac && t.flow === "spesa" ? T.tr(" \u00b7 vacanza") : "") + (t.pending ? T.tr(" \u00b7 in sospeso") : "") + (t.cur !== S.profile.currency ? " \u00b7 " + T.fmt.n2(Math.abs(t.amtLoc)) + " " + t.cur : ""))),
+      h("div.a" + (t.amt > 0 ? ".ok" : ""), (t.amt > 0 ? "+" : "") + T.fmt.n2(t.amt)));
 };
 
 /* modifica di un movimento: categoria, tipo, vacanza, nota; opzione T.tr("vale per tutti") */

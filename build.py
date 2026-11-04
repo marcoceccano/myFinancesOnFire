@@ -9,6 +9,11 @@ ORDER = ["00-util", "03-dict", "03-i18n", "08-market", "01-store", "02-files", "
 def read(p): return open(p, encoding="utf-8").read()
 js = "\n".join(read(os.path.join(SRC, "js", n + ".js")) for n in ORDER)
 css = read(os.path.join(SRC, "styles.css"))
+# carattere Rubik (licenza SIL OFL) incluso nella pagina: funziona offline e senza server esterni
+def face(w):
+    b = base64.b64encode(open(os.path.join(SRC, "fonts", "rubik-%d.woff" % w), "rb").read()).decode()
+    return '@font-face{font-family:"MF Rubik";font-style:normal;font-weight:%d;font-display:swap;src:url(data:font/woff;base64,%s) format("woff")}' % (w, b)
+css = css.replace("__FONTS__", face(400) + "\n" + face(700))
 fav = "data:image/png;base64," + base64.b64encode(open(os.path.join(SRC, "static", "icons", "icon-192.png"), "rb").read()).decode()
 html = read(os.path.join(SRC, "index.template.html")).replace("__CSS__", css).replace("__JS__", js.replace("</script", "<\\/script")).replace("__FAVICON__", fav)
 ver = hashlib.sha1(html.encode("utf-8")).hexdigest()[:10]

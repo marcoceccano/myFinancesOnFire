@@ -15,7 +15,8 @@ Questo documento descrive com'e' fatta l'app e perche'. Serve a chi continua lo 
 ```
 src/
   index.template.html   guscio HTML (barra, navigazione, foglio dal basso)
-  styles.css            stile mobile, tema chiaro e scuro, proprieta' logiche
+  styles.css            stile mobile "Bosco", tema chiaro e scuro, proprieta' logiche; __FONTS__ diventa il carattere Rubik incluso
+  fonts/                Rubik 400 e 700 (WOFF, sottoinsieme latino, licenza SIL OFL 1.1), incorporati da build.py
   js/                   moduli concatenati da build.py in questo ordine:
     00-util.js          numeri, date multilingua, CSV, hash, formattazione, correzione testo con doppia codifica
     03-dict.js          traduzioni inglese e tedesco (chiave = testo italiano)
@@ -30,7 +31,7 @@ src/
     12-bank.js          collegamento automatico: chiamate al ponte, conversione dei movimenti, sincronizzazione
     09-demo.js          dati di esempio inventati
     10-dom.js           helper per l'interfaccia (h, foglio, toast, campi)
-    11-charts.js        grafici SVG: anello, colonne, ciambella, linea, ventaglio
+    11-charts.js        grafici SVG: anello, colonne, ciambella, linea e ventaglio (toccabili), semicerchio di riuscita, settimana giorno per giorno
     20-app.js           stato dell'interfaccia, navigazione, Home
     21-spese.js         schermata Spese e modifica movimento
     22-budget.js        schermata Budget
@@ -141,7 +142,10 @@ Quando l'utente corregge un movimento con *vale anche per gli altri*, nasce una 
   - *Guardrail:* se il tasso di prelievo corrente supera quello iniziale di oltre la banda, si taglia del passo, ma mai sotto la spesa minima. Se scende sotto la banda, si aumenta del passo, al massimo +25%.
 - I capitali una tantum entrano all'eta' indicata.
 - Per ogni eta' di ritiro si calcola la probabilita' che il patrimonio duri fino all'eta' finale. Si usano le stesse sequenze di rendimento per tutte le eta', cosi' il confronto e' equo.
-- L'eta' FIRE e' la prima eta' con probabilita' sopra la soglia, interpolata.
+- L'eta' FIRE e' la prima eta' con probabilita' sopra la soglia (predefinita 90%), interpolata.
+- Il calcolo e' diviso in tre parti: `T.firePrepare` (sequenze e tabelle), `T.fireCurve` (probabilita' per ogni eta', in differita) e `T.fireAt` (dettaglio per l'eta' scelta: bande, riuscita, spesa media mediana in pensione, capitale residuo mediano). Cosi' il cursore ricalcola solo l'eta' scelta.
+- L'eta' scelta dal cursore e' `fire.retireAge` (vuota = eta' stimata).
+- Zone di riuscita (`T.FIRE_ZONES`): sotto 50% non regge, 50-75% da rivedere, 75-85% ragionevole, 85-95% solido, da 95% molto probabile.
 - Numero FIRE = spesa annua / tasso di prelievo.
 - Nella schermata Budget l'effetto del budget si misura con due simulazioni rapide: abitudini di oggi contro budget.
 
@@ -151,8 +155,12 @@ Quando l'utente corregge un movimento con *vale anche per gli altri*, nasce una 
 - `node tests/lingue.js docs/index.html [backup.json]`: tutte le schermate in tedesco e inglese, frasi rimaste in italiano, cambio lingua dei dati, mesi e date.
 - `node tests/ponte.mjs`: ponte con Enable Banking simulato (firma JWT verificata, chiavi PKCS#8 e PKCS#1, CORS, token, percorsi rifiutati, nessun accesso ai pagamenti).
 - `node tests/collegamento.js docs/index.html [backup.json]`: app + ponte reale + banca simulata. Copre verifica, consenso, ritorno, primo aggiornamento senza doppioni con l'estratto, movimenti in sospeso, limiti dell'aggiornamento automatico, avvisi di scadenza ed errori.
-- `node tests/smoke.js docs/index.html [estratto-revolut.xlsx] [pagamenti-ubs.pdf]`: configurazione guidata, dati di esempio, tutte le schermate, modifica movimento con regola, budget, FIRE, impostazioni, backup e ripristino, import reali facoltativi, CSV generico. Segnala anche gli errori JavaScript.
+- `node tests/smoke.js docs/index.html [estratto-revolut.xlsx] [pagamenti-ubs.pdf]`: configurazione guidata, dati di esempio, tutte le schermate, settimana giorno per giorno con pannello del giorno e della settimana, scheda FIRE della Home, cursore dell'eta' e grafici FIRE da toccare, modifica movimento con regola, budget, FIRE, impostazioni, backup e ripristino, import reali facoltativi, CSV generico. Segnala anche gli errori JavaScript.
 - I file reali si passano solo da riga di comando e non vanno mai nel repository (vedi `.gitignore`).
+
+## Migrazione 1.4
+
+Una volta sola (`meta.v14`): la soglia di probabilita' passa da 85% a 90% se era rimasta quella predefinita, e i colori delle categorie che erano nella vecchia tavolozza passano alla tavolozza Bosco nella stessa posizione (`T.PALETTE_OLD` -> `T.PALETTE`).
 
 ## Scelte fatte
 

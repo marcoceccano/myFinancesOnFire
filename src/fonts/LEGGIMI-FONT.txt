@@ -1,0 +1,4 @@
+Rubik (Regular e Bold), sottoinsieme latino in formato WOFF.
+Copyright (c) 2015 by Hubert & Fischer.
+Distribuito con la SIL Open Font License, versione 1.1: https://openfontlicense.org
+Il carattere e' incluso nella pagina (index.html) solo per la visualizzazione; non e' venduto da solo.

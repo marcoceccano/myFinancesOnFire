@@ -53,7 +53,40 @@ const check = (cond, msg) => { console.log((cond ? "OK   " : "FAIL ") + msg); if
   await wait(800);
   for (const t of ["home", "spese", "budget", "fire", "altro"]) { await tab(t); await wait(900); check(txt($("view")).length > 100, "schermata " + t + " disegnata (" + txt($("view")).length + " caratteri)"); }
   await tab("home"); await wait(900);
-  check(/Budget settimanale/.test(txt($("view"))) && /Eta' FIRE stimata/.test(txt($("view"))), "home: settimana e FIRE");
+  { const v = txt($("view"));
+    check(/Budget settimanale/.test(v) && /giorno per giorno/i.test(v) && /del numero FIRE/.test(v) && !/Ultime 8 settimane/.test(v), "home: settimana, giorno per giorno e FIRE"); }
+  { const hits = $("dayCard").querySelectorAll("rect.hit");
+    check(hits.length >= 1, "home: giorni toccabili (" + hits.length + ")");
+    hits[hits.length - 1].dispatch("click"); await wait();
+    const sb = txt($("sheetBody"));
+    check(!$("sheet").hidden && /Movimenti/.test(sb) && /tetto di/.test(sb), "home: pannello del giorno (" + sb.slice(0, 60) + ")");
+    const row = $("sheetBody").querySelectorAll("div.li.tap")[0];
+    if (row) { row.dispatch("click"); await wait(); check(txt($("sheetBody")).includes("Modifica movimento"), "home: dal giorno si modifica un movimento"); }
+    T.closeSheet(); }
+  $("fireCard").dispatch("click"); await wait(900);
+  check(T.A.view === "fire" && /Probabilita' di riuscita/.test(txt($("view"))), "home: la scheda FIRE apre il simulatore");
+  { const v = txt($("view")), F = T.A.S.fire;
+    check(/Quando smetto di lavorare/.test(v) && /Prima eta' con almeno il 90%/.test(v) && /Arrivo mediano/.test(v) && /Spesa media in pensione/.test(v) && /Capitale residuo/.test(v), "fire: cursore, indicatore e 4 riquadri");
+    const sl = $("retireAge"), a = +sl.attributes.min + 3;
+    sl.value = String(a); sl.dispatch("input"); sl.dispatch("change"); await wait(300);
+    check(F.retireAge === a && txt($("view")).includes("Ritiro a " + a + " anni") && txt($("retireCard")).includes("Torna all'eta' stimata"), "fire: il cursore cambia l'eta' (" + a + ")");
+    await tap($("retireCard"), "Torna all'eta' stimata"); await wait(300);
+    check(F.retireAge == null && /E' l'eta' stimata/.test(txt($("retireCard"))), "fire: ritorno all'eta' stimata");
+    $("probCard").querySelector("rect.hit").dispatch("click", { clientX: 250 }); await wait(300);
+    check(F.retireAge != null && +$("retireAge").value === F.retireAge, "fire: tocco sul grafico della probabilita' sposta il cursore (" + F.retireAge + ")");
+    const before = txt($("fanCard").querySelector("div.readout"));
+    $("fanCard").querySelector("rect.hit").dispatch("click", { clientX: 340 }); await wait(100);
+    check(txt($("fanCard").querySelector("div.readout")) !== before && /mediana/.test(txt($("fanCard"))), "fire: tocco sul grafico del patrimonio mostra i valori");
+    F.retireAge = null; T.A.save(); }
+  await tab("spese"); await wait(300);
+  { const wk = $("weeksCard").querySelectorAll("rect.hit");
+    check(wk.length === 8, "spese: ultime 8 settimane toccabili");
+    wk[6].dispatch("click"); await wait(100);
+    check(!$("sheet").hidden && /Settimana dal/.test(txt($("sheetBody"))), "spese: pannello della settimana");
+    const dh = $("sheetBody").querySelectorAll("rect.hit"); dh[0].dispatch("click"); await wait(100);
+    check(/Movimenti/.test(txt($("sheetBody"))), "spese: dalla settimana al giorno");
+    await tap($("sheetBody"), "Indietro");
+    check(/Settimana dal/.test(txt($("sheetBody"))), "spese: indietro alla settimana"); T.closeSheet(); }
   /* spese: filtro mese, categoria, modifica movimento */
   await tab("spese");
   const chip = $("view").querySelectorAll("button.chip")[1]; chip.click(); await wait(200);

@@ -35,6 +35,12 @@ const ITALIAN = /\b(spese|movimenti|importa|aggiorna|settimana|giorni|risparmio|
     const li = $("view").querySelectorAll("div.li.tap").find(x => /\d{2}[./]\d{2}[./]\d{4}/.test(txt(x))); if (li) { li.dispatch("click"); await wait(80); seen.push(txt($("sheetBody"))); T.closeSheet(); }
     const csv = "Data;Descrizione;Addebito;Accredito\n01.10.2026;Migros;45,20;\n";
     await T.A.importFile({ name: "c.csv", buf: new TextEncoder().encode(csv).buffer }); await wait(100); seen.push(txt($("sheetBody"))); T.closeSheet();
+    /* 1.4: pannello del giorno, della settimana, simulatore con eta' scelta */
+    T.A.go("home"); await wait(1300);
+    { const dh = $("dayCard") ? $("dayCard").querySelectorAll("rect.hit") : []; if (dh.length) { dh[dh.length - 1].dispatch("click"); await wait(80); seen.push(txt($("sheetBody"))); T.closeSheet(); } }
+    T.A.go("spese"); await wait(300);
+    { const wk = $("weeksCard").querySelectorAll("rect.hit"); wk[7].dispatch("click"); await wait(80); seen.push(txt($("sheetBody"))); T.closeSheet(); }
+    T.A.S.fire.retireAge = 45; T.A.go("fire"); await wait(1300); seen.push(txt($("view"))); T.A.S.fire.retireAge = null;
     T.A.go("home"); await wait(1300);
     seen.push(txt($("title")) + " " + txt($("subtitle")) + " " + $("tabs").children.map(b => (b.querySelector("span") || { textContent: "" }).textContent).join(" "));
     const all = seen.join(" \n ");

@@ -2,26 +2,29 @@
 "use strict";
 (function () {
 T.DEFAULT_CATEGORIES = [
-  { id: "alimentari",   name: "Alimentari",               color: "#5E9E3E", essential: true  },
-  { id: "ristoranti",   name: "Ristoranti e bar",         color: "#E0A800", essential: false },
-  { id: "shopping",     name: "Shopping e abbigliamento", color: "#D64545", essential: false },
-  { id: "casa",         name: "Casa e utenze",            color: "#1F5F8B", essential: true  },
-  { id: "trasporti",    name: "Auto e trasporti",         color: "#5B9BD5", essential: true  },
-  { id: "salute",       name: "Salute e farmacia",        color: "#2E9C9A", essential: true  },
-  { id: "persona",      name: "Cura della persona",       color: "#C46BAE", essential: false },
-  { id: "sport",        name: "Sport e hobby",            color: "#8E6CBF", essential: false },
-  { id: "animali",      name: "Animali",                  color: "#A0782C", essential: true  },
-  { id: "digitale",     name: "Abbonamenti e digitale",   color: "#4F6BD8", essential: false },
-  { id: "svago",        name: "Divertimento e cultura",   color: "#B5651D", essential: false },
-  { id: "regali",       name: "Regali e persone",         color: "#E07B91", essential: false },
-  { id: "assicurazioni",name: "Assicurazioni",            color: "#3B5A7A", essential: true  },
-  { id: "burocrazia",   name: "Tasse e burocrazia",       color: "#6B7A8F", essential: true  },
-  { id: "contante",     name: "Contante",                 color: "#7F8C8D", essential: false },
-  { id: "donazioni",    name: "Donazioni",                color: "#58A55C", essential: false },
-  { id: "viaggi",       name: "Viaggi e vacanze",         color: "#F0A868", essential: false, vacation: true },
-  { id: "altro",        name: "Altro",                    color: "#95A0B3", essential: false }
+  { id: "alimentari",   name: "Alimentari",               color: "#5E8C4A", essential: true  },
+  { id: "ristoranti",   name: "Ristoranti e bar",         color: "#D99A2B", essential: false },
+  { id: "shopping",     name: "Shopping e abbigliamento", color: "#C4623F", essential: false },
+  { id: "casa",         name: "Casa e utenze",            color: "#2F5D46", essential: true  },
+  { id: "trasporti",    name: "Auto e trasporti",         color: "#4F7C8A", essential: true  },
+  { id: "salute",       name: "Salute e farmacia",        color: "#8DB596", essential: true  },
+  { id: "persona",      name: "Cura della persona",       color: "#B5739D", essential: false },
+  { id: "sport",        name: "Sport e hobby",            color: "#7A4E6D", essential: false },
+  { id: "animali",      name: "Animali",                  color: "#9C7A4D", essential: true  },
+  { id: "digitale",     name: "Abbonamenti e digitale",   color: "#5C6B8A", essential: false },
+  { id: "svago",        name: "Divertimento e cultura",   color: "#C9A24A", essential: false },
+  { id: "regali",       name: "Regali e persone",         color: "#D98C8C", essential: false },
+  { id: "assicurazioni",name: "Assicurazioni",            color: "#46564C", essential: true  },
+  { id: "burocrazia",   name: "Tasse e burocrazia",       color: "#8A8F86", essential: true  },
+  { id: "contante",     name: "Contante",                 color: "#A89F8E", essential: false },
+  { id: "donazioni",    name: "Donazioni",                color: "#7FA87A", essential: false },
+  { id: "viaggi",       name: "Viaggi e vacanze",         color: "#E07B54", essential: false, vacation: true },
+  { id: "altro",        name: "Altro",                    color: "#B9B0A0", essential: false }
 ];
-T.PALETTE = ["#5E9E3E","#E0A800","#D64545","#1F5F8B","#5B9BD5","#2E9C9A","#C46BAE","#8E6CBF","#A0782C","#4F6BD8","#B5651D","#E07B91","#3B5A7A","#6B7A8F","#7F8C8D","#58A55C","#F0A868","#95A0B3","#2F7D32","#9C27B0"];
+T.PALETTE = ["#5E8C4A","#D99A2B","#C4623F","#2F5D46","#4F7C8A","#8DB596","#B5739D","#7A4E6D","#9C7A4D","#5C6B8A","#C9A24A","#D98C8C","#46564C","#8A8F86","#A89F8E","#7FA87A","#E07B54","#B9B0A0","#3E7A5E","#A0526B"];
+/* tavolozza delle versioni fino alla 1.3: serve a convertire i colori dei dati esistenti */
+T.OTHER_COLOR = "#B9B0A0";
+T.PALETTE_OLD = ["#5E9E3E","#E0A800","#D64545","#1F5F8B","#5B9BD5","#2E9C9A","#C46BAE","#8E6CBF","#A0782C","#4F6BD8","#B5651D","#E07B91","#3B5A7A","#6B7A8F","#7F8C8D","#58A55C","#F0A868","#95A0B3","#2F7D32","#9C27B0"];
 
 /* Movimenti che non sono spese: trasferimenti, investimenti, cambi valuta */
 T.EXCLUDE_KINDS = { ricarica: "Ricarica o giroconto", cambio: "Cambio valuta", investimento: "Investimento o risparmio", carta: "Pagamento carta di credito", interno: "Trasferimento tra conti", altro: "Escluso per scelta" };

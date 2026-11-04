@@ -85,6 +85,20 @@ T.week = (st, start) => {
   for (const r of T.spendRows(st)) { if (r.d < start || r.d > end) continue; if (r.vac) { vac += r.v; continue; } spent += r.v; perDay[T.daysBetween(start, r.d)] += r.v; list.push(r); }
   return { start, end, spent, vac, cap: pic.weeklyCap, perDay, list };
 };
+/* settimana giorno per giorno: per ogni giorno speso per categoria, vacanze a parte, e i movimenti */
+T.weekDays = (st, start) => {
+  const today = T.today(), out = [];
+  for (let i = 0; i < 7; i++) { const d = T.addDays(start, i); out.push({ d, i, cats: {}, total: 0, vac: 0, rows: [], future: d > today, today: d === today }); }
+  for (const r of T.spendRows(st)) {
+    if (r.d < start || r.d > out[6].d) continue;
+    const day = out[T.daysBetween(start, r.d)];
+    day.rows.push(r);
+    if (r.vac) { day.vac += r.v; continue; }
+    day.cats[r.cat] = (day.cats[r.cat] || 0) + r.v; day.total += r.v;
+  }
+  for (const day of out) if (day.rows.length) day.future = false;
+  return out;
+};
 T.weeksHistory = (st, n, lastStart) => { const out = []; for (let i = n - 1; i >= 0; i--) { const s = T.addDays(lastStart, -7 * i); const w = T.week(st, s); out.push({ start: s, spent: w.spent, vac: w.vac, cap: w.cap }); } return out; };
 
 /* proposte di budget: attuale, realistico, ambizioso */

@@ -25,6 +25,7 @@ class Element_ extends Node_ {
   getAttribute(k) { return this.attributes[k] ?? null; }
   removeAttribute(k) { delete this.attributes[k]; }
   get clientWidth() { return 360; }
+  getBoundingClientRect() { return { left: 0, top: 0, width: 360, height: 200 }; }
   focus() { } click() { if (this.tagName === "INPUT" && this.attributes.type === "file") { global.__filePicked && global.__filePicked(this); return; } if (!this.disabled) this.dispatch("click"); }
   matches(sel) { return sel.split(",").some(s => matchOne(this, s.trim())); }
   querySelectorAll(sel) { const out = []; const walk = n => { for (const c of n.children) { if (c.matches(sel)) out.push(c); walk(c); } }; walk(this); return out; }

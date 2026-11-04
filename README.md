@@ -2,11 +2,18 @@
 
 App per il telefono che mette insieme tre cose:
 
-- **Budget settimanale**: quanto avete speso questa settimana rispetto al tetto, e quanto resta al giorno.
+- **Budget settimanale**: quanto avete speso questa settimana rispetto al tetto, quanto resta al giorno e, giorno per giorno, dove avete speso (tocca un giorno per il dettaglio).
 - **Spese**: mese per mese, per categoria, per esercente, con la possibilita' di correggere le categorie.
-- **FIRE**: simulatore Monte Carlo che usa le vostre spese reali e vi dice a che eta' potete smettere.
+- **FIRE**: simulatore Monte Carlo che usa le vostre spese reali e vi dice a che eta' potete smettere. Con il cursore scegli l'eta' e vedi subito la probabilita' di riuscita.
 
 Disponibile in italiano, inglese e tedesco. I dati restano sul telefono. L'app non ha server, account o statistiche: e' solo un insieme di file che il browser scarica e poi usa anche offline.
+
+## Novita' della 1.4
+
+- **Home:** al posto delle ultime 8 settimane c'e' la settimana giorno per giorno, divisa per categoria, con il tetto giornaliero. Tocca un giorno per vedere categorie e movimenti.
+- **Spese:** le ultime 8 settimane sono qui. Tocca una settimana per vederla giorno per giorno.
+- **FIRE:** cursore dell'eta' in cui smetti, indicatore della probabilita' di riuscita con 5 fasce, 4 riquadri (prima eta' al 90%, arrivo mediano, spesa media in pensione, capitale residuo), grafici da toccare. La soglia predefinita e' il 90%.
+- **Aspetto:** stile Bosco (crema, verde bosco, ocra, terracotta), carattere Rubik incluso nell'app, tema scuro, nuova icona. I colori delle categorie esistenti passano alla nuova tavolozza se non li avevi cambiati.
 
 ## Cosa c'e' in questa cartella
 

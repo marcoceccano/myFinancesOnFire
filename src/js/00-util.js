@@ -1,7 +1,7 @@
 /* myFinances on FIRE · utilita' comuni (nessuna dipendenza esterna) */
 "use strict";
 const T = (typeof globalThis !== "undefined" ? globalThis : window).T = {};
-T.APP = { name: "myFinances on FIRE", id: "myfinances-on-fire", version: "1.3.0", schema: 1 };
+T.APP = { name: "myFinances on FIRE", id: "myfinances-on-fire", version: "1.4.0", schema: 1 };
 
 /* ---------- numeri e date ---------- */
 T.round2 = v => Math.round(v * 100) / 100;
@@ -135,7 +135,11 @@ T.fmt = {
   date: s => { if (!s) return ""; const [y, m, d] = s.split("-"); const sep = T.LANG === "en" ? "/" : "."; return d + sep + m + sep + y; },
   dateShort: s => { if (!s) return ""; const [, m, d] = s.split("-"); return d + (T.LANG === "en" ? "/" : ".") + m; },
   month: k => { const [y, m] = k.split("-"); return T.monthNames()[+m - 1] + " " + y; },
-  monthShort: k => T.monthNames()[+k.slice(5, 7) - 1].slice(0, 3)
+  monthShort: k => T.monthNames()[+k.slice(5, 7) - 1].slice(0, 3),
+  /* "Martedi' 3 novembre", "Tuesday 3 November", "Dienstag, 3. November" */
+  dayLong: s => { const d = T.parseIso(s), wd = T.weekdays()[(d.getDay() + 6) % 7], m = T.monthNames()[d.getMonth()];
+    return T.LANG === "de" ? wd + ", " + d.getDate() + ". " + m : T.LANG === "en" ? wd + " " + d.getDate() + " " + m : wd + " " + d.getDate() + " " + m.toLowerCase(); },
+  wdShort: s => { const wd = T.weekdays()[(T.parseIso(s).getDay() + 6) % 7]; return T.LANG === "de" ? wd.slice(0, 2) : wd.slice(0, 3); }
 };
 T.MONTHS_IT = ["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"];
 T.WEEKDAYS_IT = ["Lunedi'","Martedi'","Mercoledi'","Giovedi'","Venerdi'","Sabato","Domenica"].map(s => s.replace("i'", "\u00ec"));

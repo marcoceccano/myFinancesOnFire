@@ -64,3 +64,6 @@ process.exitCode = fails ? 1 : 0;
   console.log(fails ? fails + " test falliti" : "Tutti i test del collegamento passati");
   process.exitCode = fails ? 1 : 0;
 })();
+/* la tastiera del telefono (solo altezza) non deve ridisegnare la schermata */
+{ const src = fs.readFileSync(path.join(D, "30-main.js"), "utf8");
+  eq(/if \(w === lastW\) return;/.test(src) && /INPUT\|TEXTAREA\|SELECT/.test(src), true, "la tastiera non chiude i campi di testo"); }

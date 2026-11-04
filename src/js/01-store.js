@@ -8,7 +8,7 @@ T.FIRE_DEFAULTS = {
   birthYear: null, investable: 0, cash: 0, equityShare: 0.9, market: "world", safeReturn: 0.01, inflation: 0.015,
   savingMode: "auto", monthlySaving: 0, savingGrowth: 0, spendMode: "auto", spendFire: 0,
   withdrawalRate: 0.035, strategy: "guardrail", band: 0.2, step: 0.1, floor: 0.8, taxRate: 0,
-  pensions: [], lumps: [], endAge: 95, confidence: 0.85, sims: 2000, blockLen: 5
+  pensions: [], lumps: [], endAge: 95, confidence: 0.9, sims: 2000, blockLen: 5, retireAge: null
 };
 T.newState = () => ({
   app: T.APP.id, schema: T.APP.schema,
@@ -17,7 +17,7 @@ T.newState = () => ({
   rules: [], txs: [], vacations: [], fixed: [],
   budget: { preset: "attuale", vacationYear: 0, investMonthly: 0 },
   fire: clone(T.FIRE_DEFAULTS),
-  csvProfiles: [], imports: [], meta: { lastBackup: null, lastSaved: null }, bank: T.bankDefaults()
+  csvProfiles: [], imports: [], meta: { lastBackup: null, lastSaved: null, v14: true }, bank: T.bankDefaults()
 });
 
 /* migrazioni future: ogni versione dello schema aggiunge un passo */
@@ -29,6 +29,12 @@ T.migrate = st => {
   st.fire = Object.assign(clone(T.FIRE_DEFAULTS), st.fire);
   st.budget = Object.assign(base.budget, st.budget);
   st.bank = Object.assign(T.bankDefaults(), st.bank || {});
+  /* 1.4: soglia FIRE predefinita al 90% e colori delle categorie nella nuova tavolozza */
+  if (!st.meta.v14) {
+    if (st.fire.confidence === 0.85) st.fire.confidence = 0.9;
+    for (const c of st.categories || []) { const i = T.PALETTE_OLD.indexOf(String(c.color || "").toUpperCase()); if (i >= 0) c.color = T.PALETTE[i]; }
+    st.meta.v14 = true;
+  }
   st.schema = T.APP.schema;
   return st;
 };
