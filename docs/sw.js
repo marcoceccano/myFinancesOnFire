@@ -1,6 +1,6 @@
 /* myFinances on FIRE · service worker: l'app funziona anche senza rete.
    Non vede ne' salva i tuoi dati: mette in cache solo i file dell'app. */
-const VERSION = "myfinances-on-fire-0f6564fe4d";
+const VERSION = "myfinances-on-fire-3134a05f4a";
 const ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./privacy.html", "./terms.html", "./icons/icon-192.png", "./icons/icon-512.png", "./icons/maskable-512.png", "./icons/apple-touch-icon.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(VERSION).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== VERSION).map(k => caches.delete(k)))).then(() => self.clients.claim())); });

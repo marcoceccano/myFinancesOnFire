@@ -126,8 +126,8 @@ const check = (cond, msg) => { console.log((cond ? "OK   " : "FAIL ") + msg); if
   check(T.A.S.txs.length > 200 && T.A.S.profile.onboarded, "ripristino del backup");
   /* import reali (facoltativi) */
   if (revPath) {
-    await tab("altro"); await tapLi($("view"), "Cancella tutti i dati"); await tap($("sheetBody"), "Cancella"); await wait(300);
-    check(!T.A.S.profile.onboarded && T.A.S.txs.length === 0, "cancellazione dati");
+    await tab("altro"); await tapLi($("view"), "Ricomincia da zero"); await tap($("sheetBody"), "Ricomincia"); await wait(); await tap($("sheetBody"), "cancella tutto"); await wait(300);
+    check(!T.A.S.profile.onboarded && T.A.S.txs.length === 0, "ricomincia da zero: dati cancellati");
     T.A.S.profile.onboarded = true; T.A.render();
     nextFile = { name: path.basename(revPath), buf: fileBuf(revPath) };
     $("btnImport").dispatch("click"); await wait(1500);

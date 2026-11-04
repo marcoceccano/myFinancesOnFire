@@ -5,7 +5,9 @@
    - conserva la chiave privata di Enable Banking, che non puo' stare nell'app pubblica;
    - firma le richieste (JWT RS256) e risponde solo all'app (token segreto + origine consentita);
    - non salva movimenti: li passa all'app e li dimentica;
-   - non puo' fare pagamenti: espone solo consenso, stato e lettura dei movimenti.
+   - non puo' fare pagamenti: espone solo consenso, stato e lettura dei movimenti;
+   - (facoltativo) custodisce la copia condivisa della famiglia, gia' cifrata sul telefono:
+     il ponte e Cloudflare vedono solo dati illeggibili, la chiave e' solo nei telefoni.
 
    Variabili da impostare in Cloudflare (Settings > Variables and Secrets):
      EB_APP_ID       testo    ID dell'applicazione Enable Banking (il nome del file .pem senza estensione)
@@ -13,9 +15,12 @@
      APP_TOKEN       segreto  codice lungo generato dall'app (Altro > Collegamento automatico)
      ALLOWED_ORIGIN  testo    https://TUO-UTENTE.github.io
      REDIRECT_URL    testo    indirizzo esatto dell'app, es. https://TUO-UTENTE.github.io/myFinancesOnFire/
+
+   Per la famiglia (facoltativo), in Settings > Bindings aggiungi un "KV namespace":
+     FAMIGLIA        KV       uno spazio Workers KV creato per l'app (es. myfinances-famiglia)
 */
 const API = "https://api.enablebanking.com";
-const VERSION = "1.0.0";
+const VERSION = "1.1.0";
 let KEY_CACHE = null, JWT_CACHE = null;
 
 export default {
@@ -29,7 +34,7 @@ export default {
     const url = new URL(request.url);
     if (request.method === "GET" && url.pathname === "/") {
       const missing = ["EB_APP_ID", "EB_PRIVATE_KEY", "APP_TOKEN", "ALLOWED_ORIGIN", "REDIRECT_URL"].filter(k => !env[k]);
-      return json({ ok: missing.length === 0, service: "myfinances-ponte", version: VERSION, missing }, 200, cors);
+      return json({ ok: missing.length === 0, service: "myfinances-ponte", version: VERSION, missing, family: hasKv(env) }, 200, cors);
     }
     if (request.method !== "POST") return json({ error: "method_not_allowed" }, 405, cors);
     if (!okOrigin) return json({ error: "origin_not_allowed", origin }, 403, cors);
@@ -43,7 +48,7 @@ export default {
           if (!r.ok) return upstreamError(r, cors);
           const d = await r.json();
           return json({ name: d.name, environment: d.environment, active: d.active, redirect_urls: d.redirect_urls, countries: d.countries,
-            redirect_ok: (d.redirect_urls || []).includes(env.REDIRECT_URL), redirect_url: env.REDIRECT_URL }, 200, cors);
+            redirect_ok: (d.redirect_urls || []).includes(env.REDIRECT_URL), redirect_url: env.REDIRECT_URL, family: hasKv(env), version: VERSION }, 200, cors);
         }
         case "/banks": {
           const country = String(body.country || "LT").toUpperCase();
@@ -109,6 +114,7 @@ export default {
           const r = await eb(env, "DELETE", "/sessions/" + sid);
           return json({ ok: r.ok }, 200, cors);
         }
+        case "/family": return await family(body, env, cors);
         default: return json({ error: "not_found" }, 404, cors);
       }
     } catch (e) {
@@ -116,6 +122,36 @@ export default {
     }
   }
 };
+
+/* copia condivisa della famiglia: un solo valore cifrato per famiglia, con numero di versione.
+   get: legge (se "have" e' gia' la versione attuale risponde senza dati)
+   put: scrive solo se "base" e' la versione attuale (altrimenti 409: rileggi, unisci e riprova)
+   delete: cancella (famiglia sciolta o chiave cambiata) */
+const hasKv = env => !!(env.FAMIGLIA && typeof env.FAMIGLIA.get === "function");
+async function family(body, env, cors) {
+  if (!hasKv(env)) return json({ error: "family_storage_missing" }, 501, cors);
+  const fid = String(body.fid || ""), op = String(body.op || "");
+  if (!/^[\w-]{20,64}$/.test(fid)) return json({ error: "bad_family" }, 400, cors);
+  const key = "fam:" + fid, kv = env.FAMIGLIA;
+  if (op === "get") {
+    const cur = await kv.get(key, "json");
+    if (!cur) return json({ error: "family_not_found" }, 404, cors);
+    if (body.have != null && +body.have === cur.ver) return json({ ver: cur.ver, at: cur.at, same: true }, 200, cors);
+    return json({ ver: cur.ver, at: cur.at, data: cur.data }, 200, cors);
+  }
+  if (op === "put") {
+    const data = String(body.data || "");
+    if (!/^v1\.[gr]\.[\w-]+\.[\w-]+$/.test(data) || data.length > 20000000) return json({ error: "bad_data" }, 400, cors);
+    const cur = await kv.get(key, "json"), curVer = cur ? cur.ver : 0;
+    if (body.create ? !!cur : !cur) return json({ error: body.create ? "conflict" : "family_not_found", ver: curVer }, body.create ? 409 : 404, cors);
+    if (!body.create && +body.base !== curVer) return json({ error: "conflict", ver: curVer }, 409, cors);
+    const next = { ver: curVer + 1, at: new Date().toISOString(), data };
+    await kv.put(key, JSON.stringify(next));
+    return json({ ver: next.ver, at: next.at }, 200, cors);
+  }
+  if (op === "delete") { await kv.delete(key); return json({ ok: true }, 200, cors); }
+  return json({ error: "bad_request" }, 400, cors);
+}
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const DATE = /^\d{4}-\d{2}-\d{2}$/;

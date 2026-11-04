@@ -100,11 +100,13 @@ A.exportBackup = () => {
   A.render();
 };
 A.restoreBackup = async f => {
+  if (A.isMember()) { T.toast(T.tr("Per ripristinare un backup esci prima dalla famiglia")); return; }
   let st;
   try { st = T.readBackup(JSON.parse(new TextDecoder().decode(new Uint8Array(f.buf)))); } catch (e) { T.sheet(T.tr("Backup non valido"), h("p", String(e.message || e)), [h("button.btn.primary", { type: "button", onclick: T.closeSheet }, "Ok")]); return; }
   const cov = (() => { const s = A.S; A.S = st; const c = T.coverage(st); A.S = s; return c; })();
-  const ok = A.S.txs.length ? await T.confirm(T.tr("Ripristinare il backup?"), T.tr("Il backup contiene ") + st.txs.length + T.tr(" movimenti") + (cov ? T.tr(" dal ") + T.fmt.date(cov.from) + T.tr(" al ") + T.fmt.date(cov.to) : "") + T.tr(". I dati attuali su questo telefono verranno sostituiti."), T.tr("Ripristina"), true) : true;
+  const ok = A.S.txs.length ? await T.confirm(T.tr("Ripristinare il backup?"), T.tr("Il backup contiene ") + st.txs.length + T.tr(" movimenti") + (cov ? T.tr(" dal ") + T.fmt.date(cov.from) + T.tr(" al ") + T.fmt.date(cov.to) : "") + T.tr(". I dati attuali su questo telefono verranno sostituiti.") + (A.inFamily() ? T.tr(" Anche gli altri telefoni della famiglia riceveranno questi dati.") : ""), T.tr("Ripristina"), true) : true;
   if (!ok) return;
+  st.family = A.S.family || null; if (st.family) { st.bank = Object.assign(st.bank || T.bankDefaults(), { url: A.S.bank.url, token: A.S.bank.token }); }
   st.profile.onboarded = true; A.S = st; await T.save(st, true); A.fire.key = ""; A.ui.week = null;
   T.toast(T.tr("Backup ripristinato")); A.go("home", null, true);
 };
@@ -116,6 +118,8 @@ A.renderAltro = main => {
   const last = S.imports[0];
   main.appendChild(h("div.card", h("h2", T.tr("Dati")), h("div.list",
     item(T.tr("Collegamento automatico Revolut"), T.bankConnected(S) ? (T.bankExpired(S) ? T.tr("Consenso scaduto") : T.tr("Collegato \u00b7 aggiornato ") + A.relTime(S.bank.lastSync)) : T.tr("Movimenti aggiornati da soli, in sola lettura"), () => A.go("altro", "collega"), T.bankConnected(S) ? h("span.pill" + (T.bankExpired(S) ? ".warn" : ".ok"), T.bankExpired(S) ? T.tr("Scaduto") : T.tr("Attivo")) : null),
+    (() => { const F = S.family; return item(T.tr("Famiglia"), !F ? T.tr("Condividi spese e budget con un altro telefono") : F.gone ? T.tr("Non piu' raggiungibile: serve un QR nuovo") : (F.role === "master" ? T.tr("Attiva") : T.tr("Famiglia di {n}", { n: A.masterName() })) + T.tr(" \u00b7 allineata ") + A.relTime(F.lastSync),
+      () => A.go("altro", "famiglia"), F ? h("span.pill" + (F.gone ? ".warn" : ".ok"), F.gone ? T.tr("Da rifare") : T.tr("Attiva")) : null); })(),
     item(T.tr("Importa movimenti"), T.tr("Revolut (Excel o CSV), PDF pagamenti registrati UBS, CSV di qualsiasi banca"), () => A.importFlow()),
     item(T.tr("Storico import"), last ? T.tr("Ultimo: ") + last.source + T.tr(" il ") + T.fmt.date(last.at.slice(0, 10)) : T.tr("Nessun import"), () => A.go("altro", "storico")),
     item("Backup", S.meta.lastBackup ? T.tr("Ultimo il ") + T.fmt.date(S.meta.lastBackup.slice(0, 10)) : T.tr("Mai fatto"), () => A.go("altro", "backup"), S.meta.lastBackup ? null : h("span.pill.warn", T.tr("Da fare"))))));
@@ -127,9 +131,9 @@ A.renderAltro = main => {
     item(T.tr("Periodi di vacanza"), S.vacations.length + T.tr(" periodi"), () => A.go("altro", "vacanze")))));
   main.appendChild(h("div.card", h("h2", "App"), h("div.list",
     A.installPrompt ? item(T.tr("Installa l'app"), T.tr("Aggiungi l'icona alla schermata Home"), async () => { A.installPrompt.prompt(); A.installPrompt = null; A.render(); }) : null,
-    item(T.tr("Prova con dati di esempio"), T.tr("Sostituisce i dati con dati inventati"), async () => { if (S.txs.length && !(await T.confirm(T.tr("Caricare i dati di esempio?"), T.tr("I tuoi dati su questo telefono verranno sostituiti. Fai prima un backup se ti servono."), T.tr("Carica"), true))) return; A.S = T.makeDemoState(); await T.save(A.S, true); A.fire.key = ""; A.go("home", null, true); }),
+    item(T.tr("Prova con dati di esempio"), T.tr("Sostituisce i dati con dati inventati"), async () => { if (A.inFamily()) { T.toast(T.tr("Prima esci dalla famiglia: i dati di esempio finirebbero anche sugli altri telefoni")); return; } if (S.txs.length && !(await T.confirm(T.tr("Caricare i dati di esempio?"), T.tr("I tuoi dati su questo telefono verranno sostituiti. Fai prima un backup se ti servono."), T.tr("Carica"), true))) return; A.S = T.makeDemoState(); await T.save(A.S, true); A.fire.key = ""; A.go("home", null, true); }),
     item(T.tr("Privacy e informazioni"), T.tr("Versione ") + T.APP.version, () => A.go("altro", "info")),
-    item(T.tr("Cancella tutti i dati"), T.tr("Rimuove tutto da questo telefono"), async () => { if (!(await T.confirm(T.tr("Cancellare tutto?"), T.tr("Movimenti, impostazioni e budget verranno eliminati da questo telefono. Non si puo' annullare."), T.tr("Cancella"), true))) return; await T.storage.clear(); A.S = T.newState(); A.fire.key = ""; A.go("home", null, true); }, h("span.bad", "\u203a")))));
+    item(T.tr("Ricomincia da zero"), T.tr("Cancella i dati di questo telefono e riparte dall'inizio"), () => A.resetFlow(), h("span.bad", "\u203a")))));
 };
 
 A.renderSub = (main, sub) => {
@@ -140,15 +144,21 @@ A.renderSub = (main, sub) => {
   const save = () => { A.fire.key = ""; A.save(); };
   if (sub === "collega") {
     A.renderCollega(card);
+  } else if (sub === "famiglia") {
+    A.renderFamiglia(card);
   } else if (sub === "profilo") {
     card.appendChild(h("h2", T.tr("Profilo e reddito")));
     card.appendChild(T.selectField(T.tr("Lingua"), S.profile.lang || "it", T.LANGS, v => A.setLanguage(v)));
-    card.appendChild(T.textField(T.tr("Nome (facoltativo)"), S.profile.name, v => { S.profile.name = v; save(); }));
-    card.appendChild(T.selectField(T.tr("Valuta di base"), S.profile.currency, CURRENCIES, v => { S.profile.currency = v; save(); }, { hint: T.tr("La valuta in cui vedi tutti i totali.") }));
-    card.appendChild(T.numField(T.tr("Reddito netto al mese"), S.profile.incomeMonthly, v => { S.profile.incomeMonthly = v || 0; save(); }, { hint: T.tr("Quello che entra sul conto in un mese normale, senza bonus.") }));
-    card.appendChild(h("h2", { style: { marginBlockStart: "14px" } }, T.tr("Cambi per i movimenti in altre valute")));
-    card.appendChild(h("p.sub", T.tr("Servono solo per i file che non riportano gia' l'importo convertito. 1 unita' = quanti ") + S.profile.currency + "."));
-    for (const c of ["EUR", "USD", "GBP"].filter(c => c !== S.profile.currency)) card.appendChild(T.numField("1 " + c + " =", (S.profile.fx || {})[c], v => { S.profile.fx = S.profile.fx || {}; S.profile.fx[c] = v; save(); }, { step: 0.001 }));
+    /* nella famiglia nome, valuta, reddito e cambi li gestisce chi l'ha creata */
+    const pf = h("fieldset.plain", { disabled: A.isMember() || null });
+    if (A.isMember()) card.appendChild(h("div.note", { style: { marginBlockEnd: "10px" } }, T.tr("Reddito, valuta e cambi li gestisce {n}: qui li vedi ma non li cambi.", { n: A.masterName() })));
+    card.appendChild(pf);
+    pf.appendChild(T.textField(T.tr("Nome (facoltativo)"), S.profile.name, v => { S.profile.name = v; save(); }));
+    pf.appendChild(T.selectField(T.tr("Valuta di base"), S.profile.currency, CURRENCIES, v => { S.profile.currency = v; save(); }, { hint: T.tr("La valuta in cui vedi tutti i totali.") }));
+    pf.appendChild(T.numField(T.tr("Reddito netto al mese"), S.profile.incomeMonthly, v => { S.profile.incomeMonthly = v || 0; save(); }, { hint: T.tr("Quello che entra sul conto in un mese normale, senza bonus.") }));
+    pf.appendChild(h("h2", { style: { marginBlockStart: "14px" } }, T.tr("Cambi per i movimenti in altre valute")));
+    pf.appendChild(h("p.sub", T.tr("Servono solo per i file che non riportano gia' l'importo convertito. 1 unita' = quanti ") + S.profile.currency + "."));
+    for (const c of ["EUR", "USD", "GBP"].filter(c => c !== S.profile.currency)) pf.appendChild(T.numField("1 " + c + " =", (S.profile.fx || {})[c], v => { S.profile.fx = S.profile.fx || {}; S.profile.fx[c] = v; save(); }, { step: 0.001 }));
   } else if (sub === "fissi") {
     card.appendChild(h("h2", T.tr("Costi fissi")));
     card.appendChild(h("p.sub", T.tr("Pagamenti regolari dal conto principale. \u00abDal\u00bb serve per un cambio gia' previsto (per esempio una nuova rata dall'anno prossimo).")));
@@ -222,7 +232,8 @@ A.renderSub = (main, sub) => {
       T.tr("I file degli estratti conto vengono letti sul telefono e non vengono inviati da nessuna parte."),
       T.tr("L'app non usa pubblicita', statistiche d'uso o servizi di terze parti."),
       T.tr("Il backup e' un file che crei tu e che decidi tu dove salvare."),
-      T.tr("Puoi cancellare tutto in qualsiasi momento da Altro > Cancella tutti i dati.") ].forEach(t => card.appendChild(h("p.small", "\u2022 " + t)));
+      T.tr("Se crei una famiglia, una copia dei dati passa dal tuo ponte (sul tuo account Cloudflare), cifrata sul telefono: la chiave e' solo nei telefoni della famiglia."),
+      T.tr("Puoi cancellare tutto in qualsiasi momento da Altro > Ricomincia da zero.") ].forEach(t => card.appendChild(h("p.small", "\u2022 " + t)));
     card.appendChild(h("h2", { style: { marginBlockStart: "12px" } }, T.tr("Avvertenza")));
     card.appendChild(h("p.small.muted", T.tr("Le simulazioni sono stime basate su rendimenti storici e sui dati che inserisci. Non sono una consulenza finanziaria, fiscale o previdenziale.")));
     card.appendChild(h("p.small.muted", T.tr("Spazio usato: ") + (JSON.stringify(S).length / 1024).toFixed(0) + T.tr(" KB \u00b7 ") + S.txs.length + T.tr(" movimenti")));
@@ -243,7 +254,7 @@ A.wiz = { step: 0 };
 A.renderOnboarding = main => {
   const S = A.S, w = A.wiz, steps = 4;
   const next = () => { w.step++; A.save(); A.render(); }, prev = () => { w.step = Math.max(0, w.step - 1); A.render(); };
-  const finish = async () => { S.profile.onboarded = true; await T.save(S, true); T.storage.persist(); A.fire.key = ""; w.step = 0; A.go("home", null, true); };
+  const finish = async () => { S.profile.onboarded = true; await T.save(S, true); T.storage.persist(); A.fire.key = ""; w.step = 0; A.go("home", null, true); A.autoSync(); };
   if (w.step > 0) main.appendChild(h("div.wiz-steps", Array.from({ length: steps }, (_, i) => h("i" + (i < w.step ? ".on" : "")))));
   const card = h("div.card"); main.appendChild(card);
   const nav = (canSkip, nextLabel) => h("div.row", { style: { marginBlockStart: "16px" } }, h("button.btn", { type: "button", onclick: prev }, T.tr("Indietro")), h("div.grow"), canSkip ? h("button.btn.ghost", { type: "button", onclick: next }, T.tr("Salta")) : null, h("button.btn.primary", { type: "button", onclick: next }, nextLabel || T.tr("Avanti")));

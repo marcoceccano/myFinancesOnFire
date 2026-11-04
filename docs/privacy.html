@@ -13,10 +13,12 @@
 <ul><li>Movimenti, budget, categorie e parametri restano nella memoria locale del dispositivo.</li><li>I file degli estratti conto vengono letti sul dispositivo e non vengono caricati da nessuna parte.</li><li>Il backup e' un file che crei tu e che salvi dove preferisci.</li></ul>
 <h2>Collegamento automatico con la banca (facoltativo)</h2>
 <p>Se lo attivi, i movimenti arrivano tramite open banking in sola lettura: la banca li consegna a Enable Banking (servizio autorizzato), che li passa al tuo ponte personale (un Cloudflare Worker creato da te), che li passa all'app. Il ponte non salva i movimenti. Puoi revocare il consenso in qualsiasi momento. L'autore dell'app non riceve nessun dato.</p>
+<h2>Famiglia (facoltativo)</h2>
+<p>Se crei una famiglia per condividere i dati con un altro telefono, una copia dei dati passa dal tuo ponte e resta nello spazio di archiviazione del tuo account Cloudflare. La copia e' cifrata sul telefono (AES-GCM a 256 bit) prima di partire: la chiave e' solo nei telefoni della famiglia e nel QR che mostri, quindi ne' Cloudflare ne' l'autore dell'app possono leggerla. Sciogliendo la famiglia la copia viene cancellata.</p>
 <h2>Connessione a internet</h2>
 <p>Serve per scaricare l'app e i suoi aggiornamenti e, se attivo, per il collegamento con la banca. Dopo la prima apertura l'app funziona anche offline.</p>
 <h2>Cancellare i dati</h2>
-<p>Nell'app: Altro, poi Cancella tutti i dati. In alternativa cancella i dati del sito dalle impostazioni del browser o disinstalla l'app.</p>
+<p>Nell'app: Altro, poi Ricomincia da zero. In alternativa cancella i dati del sito dalle impostazioni del browser o disinstalla l'app.</p>
 <h2>Avvertenza</h2>
 <p>Le stime FIRE si basano su rendimenti storici e sui dati inseriti. Non sono consulenza finanziaria, fiscale o previdenziale.</p>
 </section>
@@ -29,10 +31,12 @@
 <ul><li>Transactions, budget, categories and settings stay in the device's local storage.</li><li>Statement files are read on the device and are not uploaded anywhere.</li><li>The backup is a file you create and store wherever you like.</li></ul>
 <h2>Automatic bank connection (optional)</h2>
 <p>If you enable it, transactions arrive through open banking, read-only: the bank hands them to Enable Banking (a licensed service), which passes them to your personal bridge (a Cloudflare Worker you create), which passes them to the app. The bridge does not store transactions. You can revoke consent at any time. The author of the app receives no data.</p>
+<h2>Family (optional)</h2>
+<p>If you create a family to share the data with another phone, a copy of the data goes through your bridge and is kept in the storage of your Cloudflare account. The copy is encrypted on the phone (256-bit AES-GCM) before it leaves: the key is only on the family's phones and in the QR code you show, so neither Cloudflare nor the author of the app can read it. Dissolving the family deletes the copy.</p>
 <h2>Internet connection</h2>
 <p>Needed to download the app and its updates and, if enabled, for the bank connection. After the first launch the app also works offline.</p>
 <h2>Deleting your data</h2>
-<p>In the app: More, then Delete all data. Alternatively clear the site data in your browser settings or uninstall the app.</p>
+<p>In the app: More, then Start from scratch. Alternatively clear the site data in your browser settings or uninstall the app.</p>
 <h2>Disclaimer</h2>
 <p>FIRE estimates are based on historical returns and the data you enter. They are not financial, tax or pension advice.</p>
 </section>
@@ -45,10 +49,12 @@
 <ul><li>Umsätze, Budget, Kategorien und Einstellungen bleiben im lokalen Speicher des Geräts.</li><li>Kontoauszüge werden auf dem Gerät gelesen und nirgendwohin hochgeladen.</li><li>Das Backup ist eine Datei, die du erstellst und speicherst, wo du möchtest.</li></ul>
 <h2>Automatische Bankverbindung (optional)</h2>
 <p>Wenn du sie aktivierst, kommen die Umsätze per Open Banking und nur lesend: Die Bank übergibt sie an Enable Banking (ein zugelassener Dienst), das sie an deine persönliche Brücke (einen von dir erstellten Cloudflare Worker) weitergibt, die sie an die App weitergibt. Die Brücke speichert keine Umsätze. Du kannst die Einwilligung jederzeit widerrufen. Der Autor der App erhält keine Daten.</p>
+<h2>Familie (optional)</h2>
+<p>Wenn du eine Familie erstellst, um die Daten mit einem anderen Telefon zu teilen, läuft eine Kopie der Daten über deine Brücke und wird im Speicher deines Cloudflare-Kontos abgelegt. Die Kopie wird auf dem Telefon verschlüsselt (AES-GCM, 256 Bit), bevor sie es verlässt: Der Schlüssel ist nur auf den Telefonen der Familie und im QR-Code, den du zeigst. Weder Cloudflare noch der Autor der App können sie lesen. Wird die Familie aufgelöst, wird die Kopie gelöscht.</p>
 <h2>Internetverbindung</h2>
 <p>Nötig, um die App und ihre Updates zu laden und, falls aktiviert, für die Bankverbindung. Nach dem ersten Start funktioniert die App auch offline.</p>
 <h2>Daten löschen</h2>
-<p>In der App: Mehr, dann Alle Daten löschen. Alternativ die Websitedaten in den Browsereinstellungen löschen oder die App deinstallieren.</p>
+<p>In der App: Mehr, dann Neu beginnen. Alternativ die Websitedaten in den Browsereinstellungen löschen oder die App deinstallieren.</p>
 <h2>Hinweis</h2>
 <p>Die FIRE-Schätzungen beruhen auf historischen Renditen und deinen Eingaben. Sie sind keine Finanz-, Steuer- oder Vorsorgeberatung.</p>
 </section>

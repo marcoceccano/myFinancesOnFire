@@ -165,3 +165,11 @@ details.acc .acc-in{padding:4px 2px 12px}
 .readout{background:var(--soft);border-radius:14px;padding:8px 12px;margin-block-start:8px;font-size:13px}
 .readout-row{display:flex;flex-wrap:wrap;gap:4px 14px;margin-block-start:4px;color:var(--muted)}
 .readout-row span{display:inline-flex;align-items:center;gap:6px}
+/* 1.5: famiglia e ricomincia da zero */
+fieldset.plain{border:0;padding:0;margin:0;min-inline-size:0}
+fieldset.plain:disabled{opacity:.7}
+.card h4{font-size:14px;color:var(--muted);margin:18px 0 6px;font-weight:700}
+.qr-wrap{display:flex;justify-content:center;background:#FFFFFF;border-radius:16px;padding:10px;margin-block:8px}
+.qr-wrap svg{inline-size:min(280px,100%);block-size:auto}
+ol.steps{margin:8px 0 10px;padding-inline-start:20px;font-size:13.5px}
+ol.steps li{margin-block:3px}

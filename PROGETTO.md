@@ -29,6 +29,8 @@ src/
     06-stats.js         medie, quadro mensile, settimane, aggregati, proposte di budget
     07-fire.js          simulatore Monte Carlo
     12-bank.js          collegamento automatico: chiamate al ponte, conversione dei movimenti, sincronizzazione
+    13-family.js        famiglia: copia condivisa cifrata (AES-GCM), unione a tre vie, creazione, ingresso, allineamento
+    14-qr.js            codice QR (ISO/IEC 18004, modo byte, correzione M) disegnato in SVG
     09-demo.js          dati di esempio inventati
     10-dom.js           helper per l'interfaccia (h, foglio, toast, campi)
     11-charts.js        grafici SVG: anello, colonne, ciambella, linea e ventaglio (toccabili), semicerchio di riuscita, settimana giorno per giorno
@@ -38,6 +40,7 @@ src/
     23-fire.js          schermata FIRE
     24-altro.js         impostazioni, import, backup, configurazione guidata
     25-collega.js       schermata del collegamento automatico, consenso, aggiornamento
+    26-famiglia.js      schermata Famiglia, ingresso dal QR, allineamento automatico, Ricomincia da zero
     30-main.js          avvio, service worker, installazione
   static/               manifest, service worker, icone, privacy.html (copiati in docs/)
 ponte/worker.js         ponte Cloudflare Worker verso Enable Banking (vedi sotto)
@@ -153,10 +156,28 @@ Quando l'utente corregge un movimento con *vale anche per gli altri*, nasce una 
 
 - `node tests/unit.js`: date, importi, CSV, Revolut CSV, CSV generico, classificazione, regole, riga PDF UBS, statistiche, FIRE, backup.
 - `node tests/lingue.js docs/index.html [backup.json]`: tutte le schermate in tedesco e inglese, frasi rimaste in italiano, cambio lingua dei dati, mesi e date.
+- `node tests/qr.js docs/index.html`: tabelle della norma QR (capacita', blocchi, allineamento, formato, versione) e lettura completa delle matrici generate con un decodificatore indipendente.
+- `node tests/famiglia.js docs/index.html [backup.json]`: due telefoni con l'app vera (contesti separati), ponte vero con KV simulato. Copre creazione, cifratura, QR, ingresso, modifiche incrociate e conflitti, scritture concorrenti sul ponte (409), regole, ruoli FIRE e profilo, Revolut condiviso, cambio chiave, uscita, Ricomincia da zero.
 - `node tests/ponte.mjs`: ponte con Enable Banking simulato (firma JWT verificata, chiavi PKCS#8 e PKCS#1, CORS, token, percorsi rifiutati, nessun accesso ai pagamenti).
 - `node tests/collegamento.js docs/index.html [backup.json]`: app + ponte reale + banca simulata. Copre verifica, consenso, ritorno, primo aggiornamento senza doppioni con l'estratto, movimenti in sospeso, limiti dell'aggiornamento automatico, avvisi di scadenza ed errori.
 - `node tests/smoke.js docs/index.html [estratto-revolut.xlsx] [pagamenti-ubs.pdf]`: configurazione guidata, dati di esempio, tutte le schermate, settimana giorno per giorno con pannello del giorno e della settimana, scheda FIRE della Home, cursore dell'eta' e grafici FIRE da toccare, modifica movimento con regola, budget, FIRE, impostazioni, backup e ripristino, import reali facoltativi, CSV generico. Segnala anche gli errori JavaScript.
 - I file reali si passano solo da riga di comando e non vanno mai nel repository (vedi `.gitignore`).
+
+## Famiglia (13-family.js, 26-famiglia.js, ponte /family)
+
+- **Chiavi:** chi crea la famiglia genera un identificativo (18 byte) e una chiave AES-256 (32 byte). Il QR contiene `#famiglia=` + base64url di `[1, id, chiave, indirizzo del ponte, APP_TOKEN, nome]`. Il frammento dopo `#` non arriva mai al server di GitHub e l'app lo toglie subito dalla barra degli indirizzi.
+- **Copia condivisa:** movimenti, regole, categorie, vacanze, costi fissi, import, profili CSV, budget, FIRE, profilo (nome, valuta, reddito, cambi), collegamento Revolut (ponte, sessione, conti, ultimo aggiornamento, cursori) e l'elenco dei telefoni. Restano locali lingua, interfaccia, base dell'allineamento e chiavi.
+- **Cifratura:** JSON compresso gzip, AES-GCM con IV casuale e l'identificativo della famiglia come dato associato. Formato `v1.g.<iv>.<dati>`. Il ponte rifiuta tutto cio' che non ha questo formato.
+- **Ponte:** `POST /family` con `op` get/put/delete. Un valore KV per famiglia con numero di versione; put solo sulla versione attuale (altrimenti 409, il telefono rilegge e riunisce). `have` evita di riscaricare se la versione non e' cambiata.
+- **Unione a tre vie** (base = ultimo allineamento, salvata a parte con chiave `famBase`): voce per voce (movimenti per id, categorie per id, regole per esercente, vacanze per date e nome, ...). Se e' cambiato solo un lato vince quel lato; se sono cambiati tutti e due vince il telefono che allinea per ultimo. Le cancellazioni si propagano senza segnaposto grazie alla base.
+- **Ruoli:** FIRE e profilo li prende sempre dal telefono di chi ha creato la famiglia; chi entra tiene in locale solo `fire.retireAge` (il cursore). Le schermate FIRE e Profilo sono in sola lettura per chi entra; il collegamento Revolut si aggiorna ma non si rinnova ne' si scollega.
+- **Revolut:** `lastSync` e i cursori sono condivisi (vince il piu' recente), cosi' un telefono non riscarica se l'altro l'ha appena fatto (limite PSD2 di circa 4 accessi al giorno senza l'utente presente).
+- **Quando si allinea:** all'apertura (prima di Revolut), 5 secondi dopo ogni salvataggio, dopo un aggiornamento Revolut e ogni 3 minuti con l'app aperta. Se un foglio e' aperto o stai scrivendo, aspetta (fino a 30 secondi) per non cambiare i dati sotto le dita.
+- **Sicurezza:** "Cambia la chiave" crea una nuova famiglia con i dati attuali e cancella la vecchia copia. Il backup non contiene la famiglia.
+
+## Ricomincia da zero
+
+Propone il backup, permette di tenere ponte e consenso Revolut (i movimenti degli ultimi 90 giorni si riscaricano), altrimenti revoca il consenso. Scioglie la famiglia (chi l'ha creata) o ne esce (chi c'e' entrato). Cancella l'archivio, la base della famiglia, il database con il vecchio nome `traguardo` e le copie in localStorage, poi riparte dalla configurazione iniziale.
 
 ## Migrazione 1.4
 

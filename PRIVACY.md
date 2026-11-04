@@ -6,7 +6,8 @@ myFinances on FIRE non raccoglie, non trasmette e non vende dati personali. Non 
 - I file degli estratti conto vengono letti sul dispositivo e non vengono caricati da nessuna parte.
 - Il backup e' un file creato dall'utente e salvato dove preferisce.
 - La connessione serve solo per scaricare l'app e i suoi aggiornamenti; dopo la prima apertura funziona anche offline.
-- Per cancellare tutto: Altro, poi Cancella tutti i dati.
+- Famiglia (facoltativa): una copia dei dati passa dal ponte dell'utente e resta nel suo account Cloudflare, cifrata sul telefono (AES-GCM 256). La chiave e' solo nei telefoni della famiglia; sciogliendo la famiglia la copia viene cancellata.
+- Per cancellare tutto: Altro, poi Ricomincia da zero.
 
 Le stime FIRE si basano su rendimenti storici e sui dati inseriti. Non sono consulenza finanziaria, fiscale o previdenziale.
 

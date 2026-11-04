@@ -20,6 +20,7 @@ A.syncNow = async silent => {
   try {
     const r = await T.bankSync(A.S);
     A.fire.key = ""; await T.save(A.S, true);
+    if (A.inFamily && A.inFamily()) A.famSoon(300);
     if (!silent || r.added) T.toast(r.added ? r.added + (r.added === 1 ? T.tr(" nuovo movimento") : T.tr(" nuovi movimenti")) + T.tr(" da Revolut") : T.tr("Revolut aggiornato: niente di nuovo"));
     if (r.noFx) T.toast(T.tr("Manca il cambio per alcune valute: aggiungilo in Profilo e reddito"));
   } catch (e) {
@@ -79,6 +80,8 @@ A.renderCollega = card => {
   const S = A.S, B = S.bank, on = T.bankConnected(S), exp = T.bankExpired(S), left = T.bankDaysLeft(S);
   card.appendChild(h("h2", T.tr("Collegamento automatico Revolut")));
   card.appendChild(h("p.sub", T.tr("I movimenti arrivano da soli, in sola lettura, tramite Enable Banking e il tuo ponte personale. L'import dei file resta sempre disponibile.")));
+  const member = A.isMember && A.isMember();
+  if (member) card.appendChild(h("div.note", { style: { marginBlockEnd: "10px" } }, T.tr("Il collegamento Revolut e' di {n} e arriva con la famiglia: qui puoi aggiornare i movimenti. Il consenso lo rinnova {n} dal suo telefono.", { n: A.masterName() })));
   /* stato */
   if (on) {
     card.appendChild(h("div.note" + (exp || (left != null && left < 14) ? ".warn" : ""),
@@ -88,8 +91,9 @@ A.renderCollega = card => {
     card.appendChild(h("div.list", B.accounts.map(a => h("div.li", h("div.grow", h("div.t", (a.currency || "") + " " + (a.name || T.tr("Conto"))), h("div.d", a.iban || ""))))));
     card.appendChild(h("label.row", { style: { marginBlock: "10px" } }, h("input", { type: "checkbox", checked: B.auto, onchange: e => { B.auto = e.target.checked; A.save(); } }), T.tr("Aggiorna da solo all'apertura (al massimo ogni 4 ore)")));
     card.appendChild(h("div.row.wrap", h("button.btn.primary", { type: "button", disabled: !!A._syncing || exp, onclick: () => A.syncNow(false) }, A._syncing ? T.tr("Aggiornamento...") : T.tr("Aggiorna ora")),
-      h("button.btn", { type: "button", onclick: () => A.startConnect() }, exp ? T.tr("Ricollega Revolut") : T.tr("Rinnova il consenso")), h("button.btn.danger", { type: "button", onclick: () => A.disconnect() }, T.tr("Scollega"))));
-  } else card.appendChild(h("div.note", T.tr("Non collegato. Segui i 3 passi qui sotto (la guida completa e' nel file GUIDA-COLLEGAMENTO-REVOLUT.md del progetto).")));
+      member ? null : h("button.btn", { type: "button", onclick: () => A.startConnect() }, exp ? T.tr("Ricollega Revolut") : T.tr("Rinnova il consenso")), member ? null : h("button.btn.danger", { type: "button", onclick: () => A.disconnect() }, T.tr("Scollega"))));
+  } else card.appendChild(h("div.note", member ? T.tr("Revolut non e' collegato in questo momento: lo collega {n} dal suo telefono.", { n: A.masterName() }) : T.tr("Non collegato. Segui i 3 passi qui sotto (la guida completa e' nel file GUIDA-COLLEGAMENTO-REVOLUT.md del progetto).")));
+  if (member) return;
 
   /* passo 1: indirizzo dell'app */
   const url = A.appUrl();
@@ -115,6 +119,7 @@ A.renderCollega = card => {
         const line = (okv, txt) => h("div", (okv ? "\u2705 " : "\u274c ") + txt);
         res.appendChild(h("div.note", line(true, T.tr("Ponte raggiungibile e codice corretto")), line(true, T.tr("Applicazione Enable Banking: ") + (d.name || "") + " (" + (d.environment || "") + ")"),
           line(d.environment === "PRODUCTION", T.tr("Ambiente di produzione") + (d.environment === "PRODUCTION" ? "" : T.tr(": registra l'app in PRODUCTION, non in SANDBOX"))),
+          line(!!d.family, d.family ? T.tr("Spazio per la famiglia pronto") : T.tr("Spazio per la famiglia assente (serve solo se vuoi condividere con un altro telefono)")),
           line(!!d.active, d.active ? T.tr("Applicazione attiva") : T.tr("Applicazione non ancora attiva: nel Control Panel usa \u00abActivate by linking accounts\u00bb")),
           line(!!d.redirect_ok && d.redirect_url === url, d.redirect_ok && d.redirect_url === url ? T.tr("Indirizzo di ritorno corretto") : T.tr("Indirizzo di ritorno: nel ponte c'e' \u00ab") + (d.redirect_url || "") + T.tr("\u00bb, l'app e' su \u00ab") + url + T.tr("\u00bb e su Enable Banking deve esserci lo stesso indirizzo"))));
       } catch (e) { T.clear(res); res.appendChild(h("div.note.warn", e.message)); }

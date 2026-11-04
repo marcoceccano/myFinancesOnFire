@@ -29,12 +29,14 @@ const ITALIAN = /\b(spese|movimenti|importa|aggiorna|settimana|giorni|risparmio|
     T.A.setLanguage(L); await wait(50);
     const seen = [];
     for (const v of ["home", "spese", "budget", "fire", "altro"]) { T.A.go(v); await wait(1300); seen.push(txt($("view"))); }
-    for (const sub of ["collega", "profilo", "fissi", "categorie", "regole", "vacanze", "storico", "backup", "info"]) { T.A.go("altro", sub); await wait(80); seen.push(txt($("view"))); }
+    for (const sub of ["collega", "famiglia", "profilo", "fissi", "categorie", "regole", "vacanze", "storico", "backup", "info"]) { T.A.go("altro", sub); await wait(80); seen.push(txt($("view"))); }
     /* fogli */
     T.A.go("spese"); await wait(600);
     const li = $("view").querySelectorAll("div.li.tap").find(x => /\d{2}[./]\d{2}[./]\d{4}/.test(txt(x))); if (li) { li.dispatch("click"); await wait(80); seen.push(txt($("sheetBody"))); T.closeSheet(); }
     const csv = "Data;Descrizione;Addebito;Accredito\n01.10.2026;Migros;45,20;\n";
     await T.A.importFile({ name: "c.csv", buf: new TextEncoder().encode(csv).buffer }); await wait(100); seen.push(txt($("sheetBody"))); T.closeSheet();
+    /* 1.5: foglio di Ricomincia da zero */
+    T.A.go("altro"); await wait(80); T.A.resetFlow(); await wait(50); seen.push(txt($("sheetBody"))); T.closeSheet();
     /* 1.4: pannello del giorno, della settimana, simulatore con eta' scelta */
     T.A.go("home"); await wait(1300);
     { const dh = $("dayCard") ? $("dayCard").querySelectorAll("rect.hit") : []; if (dh.length) { dh[dh.length - 1].dispatch("click"); await wait(80); seen.push(txt($("sheetBody"))); T.closeSheet(); } }

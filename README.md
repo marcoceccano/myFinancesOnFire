@@ -8,6 +8,12 @@ App per il telefono che mette insieme tre cose:
 
 Disponibile in italiano, inglese e tedesco. I dati restano sul telefono. L'app non ha server, account o statistiche: e' solo un insieme di file che il browser scarica e poi usa anche offline.
 
+## Novita' della 1.5
+
+- **Famiglia:** condividi spese, categorie, budget e collegamento Revolut con un altro telefono. L'altro telefono inquadra un QR e vede subito gli stessi dati; le modifiche si allineano da sole. FIRE e reddito li gestisce chi crea la famiglia. I dati passano dal tuo ponte gia' cifrati. Guida: `GUIDA-FAMIGLIA.md`.
+- **Ricomincia da zero** (Altro): propone prima il backup, chiede se tenere il ponte e il collegamento Revolut, cancella tutto (anche i dati salvati con il vecchio nome) e riparte dalla configurazione iniziale.
+- **Ponte 1.1.0:** custodisce la copia cifrata della famiglia (serve uno spazio Workers KV chiamato `FAMIGLIA`).
+
 ## Novita' della 1.4
 
 - **Home:** al posto delle ultime 8 settimane c'e' la settimana giorno per giorno, divisa per categoria, con il tetto giornaliero. Tocca un giorno per vedere categorie e movimenti.
@@ -21,10 +27,11 @@ Disponibile in italiano, inglese e tedesco. I dati restano sul telefono. L'app n
 |---|---|
 | `ponte/worker.js` | Il ponte per il collegamento automatico con Revolut (Cloudflare Worker). Vedi `GUIDA-COLLEGAMENTO-REVOLUT.md`. |
 | `GUIDA-COLLEGAMENTO-REVOLUT.md` | Guida passo passo per far arrivare i movimenti Revolut da soli. |
+| `GUIDA-FAMIGLIA.md` | Guida per condividere l'app con un altro telefono (spazio KV nel ponte, QR, sicurezza). |
 | `docs/` | **L'app pronta da pubblicare.** E' quella che va online (il nome `docs` lo richiede GitHub Pages). |
 | `src/` | Il codice sorgente, diviso in moduli leggibili. |
 | `build.py` | Ricostruisce `docs/` da `src/`: `python3 build.py`. Nessuna libreria da installare. |
-| `tests/` | Test automatici: `node tests/unit.js`, `node tests/smoke.js docs/index.html`, `node tests/ponte.mjs`, `node tests/collegamento.js docs/index.html`, `node tests/lingue.js docs/index.html`. |
+| `tests/` | Test automatici: `node tests/unit.js`, `node tests/smoke.js docs/index.html`, `node tests/ponte.mjs`, `node tests/collegamento.js docs/index.html`, `node tests/lingue.js docs/index.html`, `node tests/qr.js docs/index.html`, `node tests/famiglia.js docs/index.html`. |
 | `PROGETTO.md` | Come e' fatta l'app: architettura, dati, regole, scelte. Da dare a chi continua lo sviluppo. |
 | `PRIVACY.md` | Informativa sulla privacy (pubblicata anche in `docs/privacy.html`). |
 | `.gitignore` | Impedisce di caricare per sbaglio backup ed estratti conto nel repository. |

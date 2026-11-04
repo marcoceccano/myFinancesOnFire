@@ -156,6 +156,13 @@ A.renderFire = main => {
     T.numField(T.tr("Il patrimonio deve durare fino a (eta')"), F.endAge, v => set("endAge", v || 95), { step: 1 }),
     pct(T.tr("Probabilita' di successo richiesta"), "confidence", "", 1),
     T.numField(T.tr("Numero di scenari"), F.sims, v => set("sims", T.clamp(v || 2000, 200, 5000)), { step: 100, hint: T.tr("Di piu' = piu' preciso ma piu' lento.") })));
+  /* nella famiglia i numeri del FIRE li gestisce chi l'ha creata: gli altri li vedono */
+  if (A.isMember()) {
+    const fsx = h("fieldset.plain", { disabled: true });
+    while (box.children.length > 1) fsx.appendChild(box.children[1]);
+    box.appendChild(h("div.note", { style: { marginBlockEnd: "8px" } }, T.tr("I numeri del FIRE li gestisce {n}: qui li vedi ma non li cambi. Il cursore dell'eta' resta libero per le tue prove.", { n: A.masterName() })));
+    box.appendChild(fsx);
+  }
   main.appendChild(box);
 };
 })();

@@ -17,7 +17,7 @@ T.newState = () => ({
   rules: [], txs: [], vacations: [], fixed: [],
   budget: { preset: "attuale", vacationYear: 0, investMonthly: 0 },
   fire: clone(T.FIRE_DEFAULTS),
-  csvProfiles: [], imports: [], meta: { lastBackup: null, lastSaved: null, v14: true }, bank: T.bankDefaults()
+  csvProfiles: [], imports: [], meta: { lastBackup: null, lastSaved: null, v14: true }, bank: T.bankDefaults(), family: null
 });
 
 /* migrazioni future: ogni versione dello schema aggiunge un passo */
@@ -67,6 +67,26 @@ T.storage = {
     try { const db = await idb(); await new Promise(res => { const tx = db.transaction(STORE, "readwrite"); tx.objectStore(STORE).delete(KEY); tx.oncomplete = res; tx.onerror = res; }); } catch (e) { }
     try { localStorage.removeItem(DB + ":" + KEY); } catch (e) { } delete mem[KEY];
   },
+  /* altri valori nello stesso archivio (per esempio la base dell'ultimo allineamento di famiglia) */
+  async getKey(k) {
+    try { const db = await idb(); return await new Promise((res, rej) => { const q = db.transaction(STORE).objectStore(STORE).get(k); q.onsuccess = () => res(q.result == null ? null : q.result); q.onerror = () => rej(q.error); }); }
+    catch (e) { try { const v = localStorage.getItem(DB + ":" + k); return v == null ? null : v; } catch (e2) { return mem[k] == null ? null : mem[k]; } }
+  },
+  async setKey(k, v) {
+    try { const db = await idb(); await new Promise((res, rej) => { const tx = db.transaction(STORE, "readwrite"); tx.objectStore(STORE).put(v, k); tx.oncomplete = res; tx.onerror = () => rej(tx.error); }); }
+    catch (e) { try { localStorage.setItem(DB + ":" + k, v); } catch (e2) { mem[k] = v; } }
+  },
+  async delKey(k) {
+    try { const db = await idb(); await new Promise(res => { const tx = db.transaction(STORE, "readwrite"); tx.objectStore(STORE).delete(k); tx.oncomplete = res; tx.onerror = res; }); } catch (e) { }
+    try { localStorage.removeItem(DB + ":" + k); } catch (e) { } delete mem[k];
+  },
+  /* cancellazione completa: archivio attuale, base della famiglia e dati salvati con il vecchio nome */
+  async wipe() {
+    await this.clear(); await this.delKey("famBase");
+    try { if (typeof indexedDB !== "undefined") await new Promise(res => { const r = indexedDB.deleteDatabase(LEGACY_DB); r.onsuccess = r.onerror = r.onblocked = () => res(); }); } catch (e) { }
+    try { localStorage.removeItem(LEGACY_DB + ":" + KEY); } catch (e) { }
+    for (const k of Object.keys(mem)) delete mem[k];
+  },
   async persist() { try { if (navigator.storage && navigator.storage.persist) return await navigator.storage.persist(); } catch (e) { } return false; }
 };
 T.load = async () => { const s = await T.storage.get(); return s ? T.migrate(s) : null; };
@@ -74,12 +94,14 @@ let saveTimer = null;
 T.save = (st, now) => {
   st.meta.lastSaved = new Date().toISOString();
   clearTimeout(saveTimer);
+  if (T.onSaved) { try { T.onSaved(st); } catch (e) { } }
   if (now) return T.storage.set(st);
   return new Promise(res => { saveTimer = setTimeout(() => T.storage.set(st).then(res), 250); });
 };
 
 /* backup: un solo file JSON, leggibile, che contiene tutto */
-T.makeBackup = st => ({ app: T.APP.id, kind: "backup", schema: T.APP.schema, version: T.APP.version, exported: new Date().toISOString(), state: st });
+/* il backup non contiene le chiavi della famiglia: chi ha il file non entra nella famiglia */
+T.makeBackup = st => ({ app: T.APP.id, kind: "backup", schema: T.APP.schema, version: T.APP.version, exported: new Date().toISOString(), state: Object.assign({}, st, { family: null }) });
 T.readBackup = obj => {
   if (!obj || !(obj.app === T.APP.id || obj.app === "traguardo") || !obj.state) throw new Error(T.tr("Questo file non e' un backup di ") + T.APP.name);
   if ((obj.schema || 1) > T.APP.schema) throw new Error(T.tr("Il backup arriva da una versione piu' recente dell'app: aggiorna l'app e riprova"));

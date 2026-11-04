@@ -179,6 +179,14 @@ details.acc .acc-in{padding:4px 2px 12px}
 .readout{background:var(--soft);border-radius:14px;padding:8px 12px;margin-block-start:8px;font-size:13px}
 .readout-row{display:flex;flex-wrap:wrap;gap:4px 14px;margin-block-start:4px;color:var(--muted)}
 .readout-row span{display:inline-flex;align-items:center;gap:6px}
+/* 1.5: famiglia e ricomincia da zero */
+fieldset.plain{border:0;padding:0;margin:0;min-inline-size:0}
+fieldset.plain:disabled{opacity:.7}
+.card h4{font-size:14px;color:var(--muted);margin:18px 0 6px;font-weight:700}
+.qr-wrap{display:flex;justify-content:center;background:#FFFFFF;border-radius:16px;padding:10px;margin-block:8px}
+.qr-wrap svg{inline-size:min(280px,100%);block-size:auto}
+ol.steps{margin:8px 0 10px;padding-inline-start:20px;font-size:13.5px}
+ol.steps li{margin-block:3px}
 
 </style>
 </head>
@@ -199,7 +207,7 @@ details.acc .acc-in{padding:4px 2px 12px}
 /* myFinances on FIRE · utilita' comuni (nessuna dipendenza esterna) */
 "use strict";
 const T = (typeof globalThis !== "undefined" ? globalThis : window).T = {};
-T.APP = { name: "myFinances on FIRE", id: "myfinances-on-fire", version: "1.4.0", schema: 1 };
+T.APP = { name: "myFinances on FIRE", id: "myfinances-on-fire", version: "1.5.0", schema: 1 };
 
 /* ---------- numeri e date ---------- */
 T.round2 = v => Math.round(v * 100) / 100;
@@ -1033,7 +1041,114 @@ T.DICT = {
 "Il piano regge quasi sempre. Il 100% non e' l'obiettivo: puntarci vuol dire lavorare anni in piu' per proteggerti da scenari estremi.": "The plan almost always holds. 100% is not the goal: aiming for it means working extra years to protect yourself from extreme scenarios.",
 "Vacanza, budget a parte": "Holiday, separate budget",
 "In vacanza questa settimana: {v}, nel budget vacanze": "On holiday this week: {v}, in the holiday budget",
-"Tetto: {v} al giorno": "Limit: {v} per day"
+"Tetto: {v} al giorno": "Limit: {v} per day",
+"I dati della famiglia non sono leggibili.": "The family data cannot be read.",
+"La chiave non apre i dati della famiglia: serve un QR nuovo.": "The key does not open the family data: a new QR code is needed.",
+"Il ponte non ha ancora lo spazio per la famiglia: in Cloudflare aggiungi al Worker un KV namespace chiamato FAMIGLIA (vedi la guida).": "The bridge does not have the family storage yet: in Cloudflare, add a KV namespace called FAMIGLIA to the Worker (see the guide).",
+"Prima configura il ponte in Collegamento automatico.": "First set up the bridge in Automatic Revolut connection.",
+"Questa famiglia non esiste piu': chiedi un QR nuovo.": "This family no longer exists: ask for a new QR code.",
+"La famiglia non esiste piu' o la chiave e' cambiata: chiedi un QR nuovo.": "The family no longer exists or the key has changed: ask for a new QR code.",
+"Gli altri telefoni stanno modificando proprio ora: riprova tra poco.": "The other phones are making changes right now: try again shortly.",
+"La famiglia non e' piu' raggiungibile": "The family can no longer be reached",
+"Chiedi un QR nuovo oppure esci dalla famiglia": "Ask for a new QR code or leave the family",
+"I numeri del FIRE li gestisce {n}: qui li vedi ma non li cambi. Il cursore dell'eta' resta libero per le tue prove.": "{n} manages the FIRE numbers: you can see them here but not change them. The age slider stays free for your own tests.",
+"Per ripristinare un backup esci prima dalla famiglia": "To restore a backup, leave the family first",
+" Anche gli altri telefoni della famiglia riceveranno questi dati.": " The other phones in the family will also receive this data.",
+"Famiglia": "Family",
+"Condividi spese e budget con un altro telefono": "Share spending and budget with another phone",
+"Non piu' raggiungibile: serve un QR nuovo": "No longer reachable: a new QR code is needed",
+"Attiva": "Active",
+"Famiglia di {n}": "{n}'s family",
+" · allineata ": " · synced ",
+"Da rifare": "Redo",
+"Prima esci dalla famiglia: i dati di esempio finirebbero anche sugli altri telefoni": "Leave the family first: the sample data would also end up on the other phones",
+"Ricomincia da zero": "Start from scratch",
+"Cancella i dati di questo telefono e riparte dall'inizio": "Deletes the data on this phone and starts over",
+"Reddito, valuta e cambi li gestisce {n}: qui li vedi ma non li cambi.": "{n} manages income, currency and exchange rates: you can see them here but not change them.",
+"Se crei una famiglia, una copia dei dati passa dal tuo ponte (sul tuo account Cloudflare), cifrata sul telefono: la chiave e' solo nei telefoni della famiglia.": "If you create a family, a copy of the data goes through your bridge (on your Cloudflare account), encrypted on the phone: the key is only on the family's phones.",
+"Puoi cancellare tutto in qualsiasi momento da Altro > Ricomincia da zero.": "You can delete everything at any time from More > Start from scratch.",
+"Il collegamento Revolut e' di {n} e arriva con la famiglia: qui puoi aggiornare i movimenti. Il consenso lo rinnova {n} dal suo telefono.": "The Revolut connection belongs to {n} and comes with the family: here you can refresh the transactions. {n} renews the consent from their phone.",
+"Revolut non e' collegato in questo momento: lo collega {n} dal suo telefono.": "Revolut is not connected right now: {n} connects it from their phone.",
+"Spazio per la famiglia pronto": "Family storage ready",
+"Spazio per la famiglia assente (serve solo se vuoi condividere con un altro telefono)": "No family storage (only needed if you want to share with another phone)",
+"chi ha creato la famiglia": "whoever created the family",
+"Aggiornato con le modifiche di {n}": "Updated with {n}'s changes",
+"Questo telefono e' gia' in questa famiglia": "This phone is already in this family",
+"{n} ti invita a condividere spese, categorie e budget.": "{n} invites you to share spending, categories and budget.",
+"Qualcuno": "Someone",
+"Vedrai gli stessi dati e potrai modificarli; i movimenti Revolut arrivano anche qui. Il FIRE e il reddito li gestisce {n}.": "You will see the same data and can change it; Revolut transactions arrive here too. {n} manages FIRE and income.",
+"chi ti invita": "the person inviting you",
+"Il tuo nome": "Your name",
+"per esempio Debora": "for example Debora",
+"I dati gia' presenti su questo telefono vengono sostituiti da quelli della famiglia.": "The data already on this phone will be replaced by the family's data.",
+"Questo telefono e' gia' in un'altra famiglia: entrando qui, esci da quella.": "This phone is already in another family: joining this one means leaving that one.",
+"Scarico i dati della famiglia...": "Downloading the family data...",
+"Telefono": "Phone",
+"Ora sei nella famiglia di {n}": "You are now in {n}'s family",
+"Entra nella famiglia": "Join the family",
+"Il QR della famiglia non e' valido": "The family QR code is not valid",
+" (questo telefono)": " (this phone)",
+"gestisce il FIRE": "manages FIRE",
+"spese e budget": "spending and budget",
+"visto ": "seen ",
+"Famiglia attiva": "Family active",
+"Sei nella famiglia di {n}": "You are in {n}'s family",
+"E' stata sciolta o la chiave e' cambiata. Chiedi un QR nuovo oppure esci dalla famiglia.": "It was dissolved or the key changed. Ask for a new QR code or leave the family.",
+"Ultimo allineamento: ": "Last sync: ",
+"Hai ricevuto un QR?": "Did you get a QR code?",
+"Inquadralo con la fotocamera del telefono e tocca il collegamento: si apre l'app e ti chiede di entrare. In alternativa incolla qui il collegamento.": "Scan it with the phone camera and tap the link: the app opens and asks you to join. Or paste the link here.",
+"Collegamento della famiglia": "Family link",
+"Il collegamento non e' valido": "The link is not valid",
+"Entra": "Join",
+"Condividi spese, categorie, budget e collegamento Revolut con un altro telefono, per esempio quello di tua moglie o di tuo marito. I dati passano dal tuo ponte gia' cifrati: senza la chiave del QR nessuno li puo' leggere, nemmeno Cloudflare.": "Share spending, categories, budget and the Revolut connection with another phone, for example your partner's. The data goes through your bridge already encrypted: without the key in the QR code nobody can read it, not even Cloudflare.",
+"Spese, categorie, regole, budget, costi fissi e vacanze: li modificate tutti e due.": "Spending, categories, rules, budget, fixed costs and holidays: you can both change them.",
+"FIRE e reddito: li gestisci tu, gli altri li vedono.": "FIRE and income: you manage them, the others can see them.",
+"Revolut: i movimenti li scarica un telefono alla volta e arrivano anche sull'altro.": "Revolut: one phone at a time downloads the transactions and they reach the other one too.",
+"Per creare la famiglia serve il ponte: configuralo prima in Collegamento automatico.": "Creating a family needs the bridge: set it up first in Automatic Revolut connection.",
+"per esempio Marco": "for example Marco",
+"Creo la famiglia...": "Creating the family...",
+"Famiglia creata": "Family created",
+"Crea la famiglia": "Create the family",
+"Spese, categorie e budget sono condivisi. FIRE e reddito li gestisci tu.": "Spending, categories and budget are shared. You manage FIRE and income.",
+"Spese, categorie e budget sono condivisi. FIRE e reddito li gestisce {n}: qui li vedi.": "Spending, categories and budget are shared. {n} manages FIRE and income: you can see them here.",
+"Telefoni": "Phones",
+"Allinea ora": "Sync now",
+"Mostra il QR per aggiungere un telefono": "Show the QR code to add a phone",
+"QR per entrare nella famiglia": "QR code to join the family",
+"Sull'altro telefono apri la fotocamera e inquadra il QR.": "On the other phone, open the camera and scan the QR code.",
+"Tocca il collegamento che compare: si apre l'app con i tuoi dati e chiede il nome.": "Tap the link that appears: the app opens with your data and asks for a name.",
+"Dal menu del browser scegli Installa app (o Aggiungi a schermata Home).": "From the browser menu choose Install app (or Add to Home screen).",
+"Mostralo solo di persona: chi ha questo QR vede tutte le vostre finanze. Non fare screenshot e non inviarlo in chat.": "Only show it in person: whoever has this QR code sees all your finances. Do not take screenshots or send it in a chat.",
+"Nascondi il QR": "Hide the QR code",
+"Aggiungi un telefono": "Add a phone",
+"Sicurezza": "Security",
+"Cambiare la chiave?": "Change the key?",
+"Gli altri telefoni smettono di ricevere gli aggiornamenti finche' non inquadrano il nuovo QR. Usalo se hai perso un telefono o se il QR e' finito in mani sbagliate.": "The other phones stop receiving updates until they scan the new QR code. Use it if you lost a phone or the QR code ended up in the wrong hands.",
+"Cambia la chiave": "Change the key",
+"Chiave cambiata: fai inquadrare il nuovo QR": "Key changed: have the new QR code scanned",
+"Sciogliere la famiglia?": "Dissolve the family?",
+"La copia condivisa viene cancellata dal ponte. Ogni telefono tiene i dati che ha, ma non si allineano piu'.": "The shared copy is deleted from the bridge. Each phone keeps the data it has, but they no longer sync.",
+"Sciogli": "Dissolve",
+"Famiglia sciolta": "Family dissolved",
+"Sciogli la famiglia": "Dissolve the family",
+"Uscire dalla famiglia?": "Leave the family?",
+"Su questo telefono resta una copia dei dati, senza il collegamento Revolut di {n}.": "A copy of the data stays on this phone, without {n}'s Revolut connection.",
+"Esci": "Leave",
+"Non fai piu' parte della famiglia": "You are no longer part of the family",
+"Esci dalla famiglia": "Leave the family",
+"Cancella da questo telefono movimenti, categorie, regole, budget, costi fissi e impostazioni del FIRE, e riparte dalla configurazione iniziale.": "Deletes transactions, categories, rules, budget, fixed costs and FIRE settings from this phone and starts again from the initial setup.",
+"Scarica prima un backup": "Download a backup first",
+"Tieni il ponte e il collegamento Revolut": "Keep the bridge and the Revolut connection",
+"Non devi reinserire nulla: i movimenti Revolut degli ultimi 90 giorni si riscaricano da soli.": "Nothing to re-enter: Revolut transactions from the last 90 days download again by themselves.",
+"Non devi reinserire indirizzo e codice del ponte.": "No need to re-enter the bridge address and code.",
+"La famiglia viene sciolta: gli altri telefoni tengono la loro copia ma non ricevono piu' aggiornamenti.": "The family is dissolved: the other phones keep their copy but no longer receive updates.",
+"Esci dalla famiglia di {n}: i dati condivisi restano sugli altri telefoni.": "You leave {n}'s family: the shared data stays on the other phones.",
+"Sei sicuro?": "Are you sure?",
+"Tutti i dati di questo telefono vengono cancellati. Non si puo' annullare.": "All data on this phone will be deleted. This cannot be undone.",
+"Si', cancella tutto": "Yes, delete everything",
+"Ricomincia": "Start over",
+"Fatto: l'app riparte da zero": "Done: the app starts from scratch",
+"Il ponte e' di una versione precedente: in Cloudflare incolla il nuovo ponte/worker.js (versione 1.1.0) e premi Deploy (vedi la guida).": "The bridge is an older version: in Cloudflare paste the new ponte/worker.js (version 1.1.0) and press Deploy (see the guide)."
 },
 "de": {
 "Annulla": "Abbrechen",
@@ -1723,7 +1838,114 @@ T.DICT = {
 "Il piano regge quasi sempre. Il 100% non e' l'obiettivo: puntarci vuol dire lavorare anni in piu' per proteggerti da scenari estremi.": "Der Plan hält fast immer. 100% ist nicht das Ziel: Wer darauf zielt, arbeitet Jahre länger, um sich vor extremen Szenarien zu schützen.",
 "Vacanza, budget a parte": "Urlaub, eigenes Budget",
 "In vacanza questa settimana: {v}, nel budget vacanze": "Diese Woche im Urlaub: {v}, im Urlaubsbudget",
-"Tetto: {v} al giorno": "Limit: {v} pro Tag"
+"Tetto: {v} al giorno": "Limit: {v} pro Tag",
+"I dati della famiglia non sono leggibili.": "Die Familiendaten sind nicht lesbar.",
+"La chiave non apre i dati della famiglia: serve un QR nuovo.": "Der Schlüssel öffnet die Familiendaten nicht: Es braucht einen neuen QR-Code.",
+"Il ponte non ha ancora lo spazio per la famiglia: in Cloudflare aggiungi al Worker un KV namespace chiamato FAMIGLIA (vedi la guida).": "Die Brücke hat noch keinen Familienspeicher: Füge in Cloudflare dem Worker einen KV-Namespace namens FAMIGLIA hinzu (siehe Anleitung).",
+"Prima configura il ponte in Collegamento automatico.": "Richte zuerst die Brücke unter Automatische Revolut-Verbindung ein.",
+"Questa famiglia non esiste piu': chiedi un QR nuovo.": "Diese Familie gibt es nicht mehr: Frag nach einem neuen QR-Code.",
+"La famiglia non esiste piu' o la chiave e' cambiata: chiedi un QR nuovo.": "Die Familie gibt es nicht mehr oder der Schlüssel wurde geändert: Frag nach einem neuen QR-Code.",
+"Gli altri telefoni stanno modificando proprio ora: riprova tra poco.": "Die anderen Telefone ändern gerade etwas: Versuch es gleich noch einmal.",
+"La famiglia non e' piu' raggiungibile": "Die Familie ist nicht mehr erreichbar",
+"Chiedi un QR nuovo oppure esci dalla famiglia": "Frag nach einem neuen QR-Code oder verlass die Familie",
+"I numeri del FIRE li gestisce {n}: qui li vedi ma non li cambi. Il cursore dell'eta' resta libero per le tue prove.": "{n} verwaltet die FIRE-Zahlen: Du siehst sie hier, kannst sie aber nicht ändern. Den Altersregler kannst du frei ausprobieren.",
+"Per ripristinare un backup esci prima dalla famiglia": "Um ein Backup wiederherzustellen, verlass zuerst die Familie",
+" Anche gli altri telefoni della famiglia riceveranno questi dati.": " Auch die anderen Telefone der Familie erhalten diese Daten.",
+"Famiglia": "Familie",
+"Condividi spese e budget con un altro telefono": "Ausgaben und Budget mit einem anderen Telefon teilen",
+"Non piu' raggiungibile: serve un QR nuovo": "Nicht mehr erreichbar: Es braucht einen neuen QR-Code",
+"Attiva": "Aktiv",
+"Famiglia di {n}": "Familie von {n}",
+" · allineata ": " · abgeglichen ",
+"Da rifare": "Neu einrichten",
+"Prima esci dalla famiglia: i dati di esempio finirebbero anche sugli altri telefoni": "Verlass zuerst die Familie: Die Beispieldaten kämen sonst auch auf die anderen Telefone",
+"Ricomincia da zero": "Neu beginnen",
+"Cancella i dati di questo telefono e riparte dall'inizio": "Löscht die Daten auf diesem Telefon und beginnt von vorn",
+"Reddito, valuta e cambi li gestisce {n}: qui li vedi ma non li cambi.": "{n} verwaltet Einkommen, Währung und Wechselkurse: Du siehst sie hier, kannst sie aber nicht ändern.",
+"Se crei una famiglia, una copia dei dati passa dal tuo ponte (sul tuo account Cloudflare), cifrata sul telefono: la chiave e' solo nei telefoni della famiglia.": "Wenn du eine Familie erstellst, läuft eine Kopie der Daten über deine Brücke (in deinem Cloudflare-Konto), auf dem Telefon verschlüsselt: Der Schlüssel ist nur auf den Telefonen der Familie.",
+"Puoi cancellare tutto in qualsiasi momento da Altro > Ricomincia da zero.": "Du kannst jederzeit alles löschen unter Mehr > Neu beginnen.",
+"Il collegamento Revolut e' di {n} e arriva con la famiglia: qui puoi aggiornare i movimenti. Il consenso lo rinnova {n} dal suo telefono.": "Die Revolut-Verbindung gehört {n} und kommt mit der Familie: Hier kannst du die Umsätze aktualisieren. Die Einwilligung erneuert {n} auf dem eigenen Telefon.",
+"Revolut non e' collegato in questo momento: lo collega {n} dal suo telefono.": "Revolut ist gerade nicht verbunden: {n} verbindet es auf dem eigenen Telefon.",
+"Spazio per la famiglia pronto": "Familienspeicher bereit",
+"Spazio per la famiglia assente (serve solo se vuoi condividere con un altro telefono)": "Kein Familienspeicher (nur nötig, wenn du mit einem anderen Telefon teilen willst)",
+"chi ha creato la famiglia": "wer die Familie erstellt hat",
+"Aggiornato con le modifiche di {n}": "Mit den Änderungen von {n} aktualisiert",
+"Questo telefono e' gia' in questa famiglia": "Dieses Telefon ist schon in dieser Familie",
+"{n} ti invita a condividere spese, categorie e budget.": "{n} lädt dich ein, Ausgaben, Kategorien und Budget zu teilen.",
+"Qualcuno": "Jemand",
+"Vedrai gli stessi dati e potrai modificarli; i movimenti Revolut arrivano anche qui. Il FIRE e il reddito li gestisce {n}.": "Du siehst dieselben Daten und kannst sie ändern; die Revolut-Umsätze kommen auch hier an. FIRE und Einkommen verwaltet {n}.",
+"chi ti invita": "wer dich einlädt",
+"Il tuo nome": "Dein Name",
+"per esempio Debora": "zum Beispiel Debora",
+"I dati gia' presenti su questo telefono vengono sostituiti da quelli della famiglia.": "Die Daten auf diesem Telefon werden durch die der Familie ersetzt.",
+"Questo telefono e' gia' in un'altra famiglia: entrando qui, esci da quella.": "Dieses Telefon ist schon in einer anderen Familie: Wenn du hier beitrittst, verlässt du die andere.",
+"Scarico i dati della famiglia...": "Familiendaten werden geladen...",
+"Telefono": "Telefon",
+"Ora sei nella famiglia di {n}": "Du bist jetzt in der Familie von {n}",
+"Entra nella famiglia": "Der Familie beitreten",
+"Il QR della famiglia non e' valido": "Der Familien-QR-Code ist ungültig",
+" (questo telefono)": " (dieses Telefon)",
+"gestisce il FIRE": "verwaltet FIRE",
+"spese e budget": "Ausgaben und Budget",
+"visto ": "gesehen ",
+"Famiglia attiva": "Familie aktiv",
+"Sei nella famiglia di {n}": "Du bist in der Familie von {n}",
+"E' stata sciolta o la chiave e' cambiata. Chiedi un QR nuovo oppure esci dalla famiglia.": "Sie wurde aufgelöst oder der Schlüssel wurde geändert. Frag nach einem neuen QR-Code oder verlass die Familie.",
+"Ultimo allineamento: ": "Letzter Abgleich: ",
+"Hai ricevuto un QR?": "Hast du einen QR-Code bekommen?",
+"Inquadralo con la fotocamera del telefono e tocca il collegamento: si apre l'app e ti chiede di entrare. In alternativa incolla qui il collegamento.": "Scanne ihn mit der Kamera des Telefons und tippe auf den Link: Die App öffnet sich und fragt, ob du beitreten willst. Oder füge den Link hier ein.",
+"Collegamento della famiglia": "Familien-Link",
+"Il collegamento non e' valido": "Der Link ist ungültig",
+"Entra": "Beitreten",
+"Condividi spese, categorie, budget e collegamento Revolut con un altro telefono, per esempio quello di tua moglie o di tuo marito. I dati passano dal tuo ponte gia' cifrati: senza la chiave del QR nessuno li puo' leggere, nemmeno Cloudflare.": "Teile Ausgaben, Kategorien, Budget und die Revolut-Verbindung mit einem anderen Telefon, zum Beispiel dem deines Partners oder deiner Partnerin. Die Daten laufen bereits verschlüsselt über deine Brücke: Ohne den Schlüssel im QR-Code kann sie niemand lesen, auch Cloudflare nicht.",
+"Spese, categorie, regole, budget, costi fissi e vacanze: li modificate tutti e due.": "Ausgaben, Kategorien, Regeln, Budget, Fixkosten und Urlaube: Ihr könnt sie beide ändern.",
+"FIRE e reddito: li gestisci tu, gli altri li vedono.": "FIRE und Einkommen: Du verwaltest sie, die anderen sehen sie.",
+"Revolut: i movimenti li scarica un telefono alla volta e arrivano anche sull'altro.": "Revolut: Jeweils ein Telefon lädt die Umsätze herunter, und sie kommen auch auf dem anderen an.",
+"Per creare la famiglia serve il ponte: configuralo prima in Collegamento automatico.": "Für die Familie braucht es die Brücke: Richte sie zuerst unter Automatische Revolut-Verbindung ein.",
+"per esempio Marco": "zum Beispiel Marco",
+"Creo la famiglia...": "Familie wird erstellt...",
+"Famiglia creata": "Familie erstellt",
+"Crea la famiglia": "Familie erstellen",
+"Spese, categorie e budget sono condivisi. FIRE e reddito li gestisci tu.": "Ausgaben, Kategorien und Budget sind geteilt. FIRE und Einkommen verwaltest du.",
+"Spese, categorie e budget sono condivisi. FIRE e reddito li gestisce {n}: qui li vedi.": "Ausgaben, Kategorien und Budget sind geteilt. FIRE und Einkommen verwaltet {n}: Hier siehst du sie.",
+"Telefoni": "Telefone",
+"Allinea ora": "Jetzt abgleichen",
+"Mostra il QR per aggiungere un telefono": "QR-Code zeigen, um ein Telefon hinzuzufügen",
+"QR per entrare nella famiglia": "QR-Code zum Beitritt zur Familie",
+"Sull'altro telefono apri la fotocamera e inquadra il QR.": "Öffne auf dem anderen Telefon die Kamera und scanne den QR-Code.",
+"Tocca il collegamento che compare: si apre l'app con i tuoi dati e chiede il nome.": "Tippe auf den Link, der erscheint: Die App öffnet sich mit deinen Daten und fragt nach dem Namen.",
+"Dal menu del browser scegli Installa app (o Aggiungi a schermata Home).": "Wähle im Browsermenü App installieren (oder Zum Startbildschirm hinzufügen).",
+"Mostralo solo di persona: chi ha questo QR vede tutte le vostre finanze. Non fare screenshot e non inviarlo in chat.": "Zeig ihn nur persönlich: Wer diesen QR-Code hat, sieht alle eure Finanzen. Keine Screenshots machen und nicht im Chat verschicken.",
+"Nascondi il QR": "QR-Code ausblenden",
+"Aggiungi un telefono": "Telefon hinzufügen",
+"Sicurezza": "Sicherheit",
+"Cambiare la chiave?": "Schlüssel ändern?",
+"Gli altri telefoni smettono di ricevere gli aggiornamenti finche' non inquadrano il nuovo QR. Usalo se hai perso un telefono o se il QR e' finito in mani sbagliate.": "Die anderen Telefone erhalten keine Aktualisierungen mehr, bis sie den neuen QR-Code scannen. Nutze das, wenn ein Telefon verloren ging oder der QR-Code in falsche Hände geraten ist.",
+"Cambia la chiave": "Schlüssel ändern",
+"Chiave cambiata: fai inquadrare il nuovo QR": "Schlüssel geändert: Lass den neuen QR-Code scannen",
+"Sciogliere la famiglia?": "Familie auflösen?",
+"La copia condivisa viene cancellata dal ponte. Ogni telefono tiene i dati che ha, ma non si allineano piu'.": "Die geteilte Kopie wird von der Brücke gelöscht. Jedes Telefon behält seine Daten, aber sie werden nicht mehr abgeglichen.",
+"Sciogli": "Auflösen",
+"Famiglia sciolta": "Familie aufgelöst",
+"Sciogli la famiglia": "Familie auflösen",
+"Uscire dalla famiglia?": "Familie verlassen?",
+"Su questo telefono resta una copia dei dati, senza il collegamento Revolut di {n}.": "Auf diesem Telefon bleibt eine Kopie der Daten, ohne die Revolut-Verbindung von {n}.",
+"Esci": "Verlassen",
+"Non fai piu' parte della famiglia": "Du gehörst nicht mehr zur Familie",
+"Esci dalla famiglia": "Familie verlassen",
+"Cancella da questo telefono movimenti, categorie, regole, budget, costi fissi e impostazioni del FIRE, e riparte dalla configurazione iniziale.": "Löscht Umsätze, Kategorien, Regeln, Budget, Fixkosten und FIRE-Einstellungen von diesem Telefon und beginnt wieder mit der Ersteinrichtung.",
+"Scarica prima un backup": "Zuerst ein Backup herunterladen",
+"Tieni il ponte e il collegamento Revolut": "Brücke und Revolut-Verbindung behalten",
+"Non devi reinserire nulla: i movimenti Revolut degli ultimi 90 giorni si riscaricano da soli.": "Du musst nichts neu eingeben: Die Revolut-Umsätze der letzten 90 Tage werden automatisch neu geladen.",
+"Non devi reinserire indirizzo e codice del ponte.": "Du musst Adresse und Code der Brücke nicht neu eingeben.",
+"La famiglia viene sciolta: gli altri telefoni tengono la loro copia ma non ricevono piu' aggiornamenti.": "Die Familie wird aufgelöst: Die anderen Telefone behalten ihre Kopie, erhalten aber keine Aktualisierungen mehr.",
+"Esci dalla famiglia di {n}: i dati condivisi restano sugli altri telefoni.": "Du verlässt die Familie von {n}: Die geteilten Daten bleiben auf den anderen Telefonen.",
+"Sei sicuro?": "Bist du sicher?",
+"Tutti i dati di questo telefono vengono cancellati. Non si puo' annullare.": "Alle Daten auf diesem Telefon werden gelöscht. Das lässt sich nicht rückgängig machen.",
+"Si', cancella tutto": "Ja, alles löschen",
+"Ricomincia": "Neu beginnen",
+"Fatto: l'app riparte da zero": "Erledigt: Die App beginnt von vorn",
+"Il ponte e' di una versione precedente: in Cloudflare incolla il nuovo ponte/worker.js (versione 1.1.0) e premi Deploy (vedi la guida).": "Die Brücke hat eine ältere Version: Füge in Cloudflare das neue ponte/worker.js (Version 1.1.0) ein und drücke Deploy (siehe Anleitung)."
 }
 };
 
@@ -1841,7 +2063,7 @@ T.newState = () => ({
   rules: [], txs: [], vacations: [], fixed: [],
   budget: { preset: "attuale", vacationYear: 0, investMonthly: 0 },
   fire: clone(T.FIRE_DEFAULTS),
-  csvProfiles: [], imports: [], meta: { lastBackup: null, lastSaved: null, v14: true }, bank: T.bankDefaults()
+  csvProfiles: [], imports: [], meta: { lastBackup: null, lastSaved: null, v14: true }, bank: T.bankDefaults(), family: null
 });
 
 /* migrazioni future: ogni versione dello schema aggiunge un passo */
@@ -1891,6 +2113,26 @@ T.storage = {
     try { const db = await idb(); await new Promise(res => { const tx = db.transaction(STORE, "readwrite"); tx.objectStore(STORE).delete(KEY); tx.oncomplete = res; tx.onerror = res; }); } catch (e) { }
     try { localStorage.removeItem(DB + ":" + KEY); } catch (e) { } delete mem[KEY];
   },
+  /* altri valori nello stesso archivio (per esempio la base dell'ultimo allineamento di famiglia) */
+  async getKey(k) {
+    try { const db = await idb(); return await new Promise((res, rej) => { const q = db.transaction(STORE).objectStore(STORE).get(k); q.onsuccess = () => res(q.result == null ? null : q.result); q.onerror = () => rej(q.error); }); }
+    catch (e) { try { const v = localStorage.getItem(DB + ":" + k); return v == null ? null : v; } catch (e2) { return mem[k] == null ? null : mem[k]; } }
+  },
+  async setKey(k, v) {
+    try { const db = await idb(); await new Promise((res, rej) => { const tx = db.transaction(STORE, "readwrite"); tx.objectStore(STORE).put(v, k); tx.oncomplete = res; tx.onerror = () => rej(tx.error); }); }
+    catch (e) { try { localStorage.setItem(DB + ":" + k, v); } catch (e2) { mem[k] = v; } }
+  },
+  async delKey(k) {
+    try { const db = await idb(); await new Promise(res => { const tx = db.transaction(STORE, "readwrite"); tx.objectStore(STORE).delete(k); tx.oncomplete = res; tx.onerror = res; }); } catch (e) { }
+    try { localStorage.removeItem(DB + ":" + k); } catch (e) { } delete mem[k];
+  },
+  /* cancellazione completa: archivio attuale, base della famiglia e dati salvati con il vecchio nome */
+  async wipe() {
+    await this.clear(); await this.delKey("famBase");
+    try { if (typeof indexedDB !== "undefined") await new Promise(res => { const r = indexedDB.deleteDatabase(LEGACY_DB); r.onsuccess = r.onerror = r.onblocked = () => res(); }); } catch (e) { }
+    try { localStorage.removeItem(LEGACY_DB + ":" + KEY); } catch (e) { }
+    for (const k of Object.keys(mem)) delete mem[k];
+  },
   async persist() { try { if (navigator.storage && navigator.storage.persist) return await navigator.storage.persist(); } catch (e) { } return false; }
 };
 T.load = async () => { const s = await T.storage.get(); return s ? T.migrate(s) : null; };
@@ -1898,12 +2140,14 @@ let saveTimer = null;
 T.save = (st, now) => {
   st.meta.lastSaved = new Date().toISOString();
   clearTimeout(saveTimer);
+  if (T.onSaved) { try { T.onSaved(st); } catch (e) { } }
   if (now) return T.storage.set(st);
   return new Promise(res => { saveTimer = setTimeout(() => T.storage.set(st).then(res), 250); });
 };
 
 /* backup: un solo file JSON, leggibile, che contiene tutto */
-T.makeBackup = st => ({ app: T.APP.id, kind: "backup", schema: T.APP.schema, version: T.APP.version, exported: new Date().toISOString(), state: st });
+/* il backup non contiene le chiavi della famiglia: chi ha il file non entra nella famiglia */
+T.makeBackup = st => ({ app: T.APP.id, kind: "backup", schema: T.APP.schema, version: T.APP.version, exported: new Date().toISOString(), state: Object.assign({}, st, { family: null }) });
 T.readBackup = obj => {
   if (!obj || !(obj.app === T.APP.id || obj.app === "traguardo") || !obj.state) throw new Error(T.tr("Questo file non e' un backup di ") + T.APP.name);
   if ((obj.schema || 1) > T.APP.schema) throw new Error(T.tr("Il backup arriva da una versione piu' recente dell'app: aggiorna l'app e riprova"));
@@ -2849,6 +3093,375 @@ T.bankSync = async (st, opt) => {
 };
 })();
 
+/* myFinances on FIRE · famiglia: una copia condivisa, cifrata sul telefono, custodita dal ponte.
+   - La chiave (AES-GCM 256) nasce sul telefono di chi crea la famiglia e passa solo nel QR: il ponte e Cloudflare vedono dati illeggibili.
+   - Ogni telefono tiene la "base" dell'ultimo allineamento e unisce a tre vie (base, locale, remoto) voce per voce:
+     vince chi ha cambiato; se cambiano tutti e due la stessa voce, vince l'ultima modifica arrivata.
+   - Il FIRE e il reddito li gestisce chi ha creato la famiglia (ruolo "master"); gli altri li vedono. */
+"use strict";
+(function () {
+const te = new TextEncoder(), td = new TextDecoder();
+const b64u = {
+  enc: bytes => { let s = ""; for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000)); return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); },
+  dec: str => { str = String(str); const s = atob(str.replace(/-/g, "+").replace(/_/g, "/") + "===".slice((str.length + 3) % 4)); const out = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) out[i] = s.charCodeAt(i); return out; }
+};
+T.b64u = b64u;
+
+/* JSON canonico (chiavi ordinate): due oggetti uguali danno lo stesso testo */
+T.canon = v => {
+  if (v === null || v === undefined) return "null";
+  if (typeof v !== "object") return JSON.stringify(v);
+  if (Array.isArray(v)) return "[" + v.map(T.canon).join(",") + "]";
+  return "{" + Object.keys(v).filter(k => v[k] !== undefined).sort().map(k => JSON.stringify(k) + ":" + T.canon(v[k])).join(",") + "}";
+};
+
+/* che cosa si condivide: elenchi con la loro chiave, e voci singole */
+const LISTS = { txs: t => t.id, rules: r => r.m + "|" + (r.exact ? 1 : 0), categories: c => c.id, vacations: v => [v.from, v.to, v.label].join("|"),
+  fixed: f => f.id, imports: i => (i.at || "") + "|" + (i.file || ""), csvProfiles: p => p.sig };
+const PROFILE = ["name", "currency", "incomeMonthly", "fx"];
+const BANK = ["url", "token", "country", "aspsp", "session", "validUntil", "accounts", "lastSync", "lastResult", "cursors"];
+const pick = (o, ks) => { const r = {}; for (const k of ks) if (o && o[k] !== undefined) r[k] = o[k]; return r; };
+const copy = o => JSON.parse(JSON.stringify(o));
+T.famShared = st => {
+  const out = { v: 1 };
+  for (const k in LISTS) out[k] = st[k] || [];
+  out.budget = st.budget; out.fire = st.fire; out.profile = pick(st.profile, PROFILE); out.bank = pick(st.bank, BANK);
+  out.devices = (st.family && st.family.devices) || {};
+  return copy(out);
+};
+const core = sh => { if (!sh) return null; const c = Object.assign({}, sh); delete c.by; delete c.at; return c; };
+T.famSame = (a, b) => T.canon(core(a)) === T.canon(core(b));
+
+/* unione a tre vie */
+function mergeList(base, loc, rem, keyFn) {
+  const idx = arr => { const m = new Map(); for (const x of arr || []) { const k = keyFn(x); if (!m.has(k)) m.set(k, { o: x, s: T.canon(x) }); } return m; };
+  const B = idx(base), L = idx(loc), R = idx(rem), keys = [], seen = new Set();
+  for (const k of L.keys()) { keys.push(k); seen.add(k); }
+  for (const k of R.keys()) if (!seen.has(k)) { keys.push(k); seen.add(k); }
+  const out = [];
+  for (const k of keys) {
+    const b = B.get(k), l = L.get(k), r = R.get(k), bs = b && b.s, ls = l && l.s, rs = r && r.s;
+    const win = ls === rs ? l : ls === bs ? r : rs === bs ? l : (l || r);
+    if (win) out.push(win.o);
+  }
+  return out;
+}
+const merge1 = (b, l, r) => { const bs = T.canon(b), ls = T.canon(l), rs = T.canon(r); return ls === rs ? l : ls === bs ? r : l; };
+const mergeMap = (b, l, r) => {
+  const toL = o => Object.entries(o || {}).map(([k, v]) => ({ k, v }));
+  const out = {}; for (const x of mergeList(toL(b), toL(l), toL(r), x => x.k)) out[x.k] = x.v; return out;
+};
+function mergeBank(l, r, role) {
+  const owner = role === "master" ? l : r, res = Object.assign({}, owner || {});
+  const ls = (l && l.lastSync) || "", rs = (r && r.lastSync) || "", newer = ls >= rs ? l : r;
+  res.lastSync = (newer && newer.lastSync) || null; res.lastResult = (newer && newer.lastResult) || null;
+  const cur = {}; for (const src of [r && r.cursors, l && l.cursors]) for (const k in src || {}) if (!cur[k] || src[k] > cur[k]) cur[k] = src[k];
+  res.cursors = cur;
+  return res;
+}
+T.famMerge = (base, loc, rem, role) => {
+  const out = { v: 1 };
+  for (const k in LISTS) out[k] = mergeList(base && base[k], loc[k], rem[k], LISTS[k]);
+  out.txs.sort((a, b) => a.d < b.d ? -1 : a.d > b.d ? 1 : 0);
+  out.budget = merge1(base && base.budget, loc.budget, rem.budget);
+  out.devices = mergeMap(base && base.devices, loc.devices, rem.devices);
+  const own = role === "master" ? loc : rem;
+  out.fire = own.fire; out.profile = own.profile;
+  out.bank = mergeBank(loc.bank, rem.bank, role);
+  return copy(out);
+};
+/* applica la copia condivisa allo stato del telefono (lingua, interfaccia e chiavi restano locali).
+   Sostituisce solo cio' che e' cambiato, cosi' le schermate aperte restano legate agli stessi oggetti. */
+T.famApply = (st, sh, role, keepLocalRetire) => {
+  const same = (a, b) => T.canon(a) === T.canon(b);
+  for (const k in LISTS) if (!same(st[k] || [], sh[k] || [])) st[k] = copy(sh[k] || []);
+  if (!same(st.budget, sh.budget)) st.budget = Object.assign(st.budget || {}, copy(sh.budget || {}));
+  const nf = Object.assign(copy(T.FIRE_DEFAULTS), copy(sh.fire || {}));
+  if (role === "member" && keepLocalRetire) nf.retireAge = st.fire && st.fire.retireAge != null ? st.fire.retireAge : null;
+  if (!same(st.fire, nf)) st.fire = nf;
+  Object.assign(st.profile, copy(sh.profile || {}));
+  st.bank = Object.assign(st.bank || T.bankDefaults(), copy(sh.bank || {}));
+  if (st.family) st.family.devices = copy(sh.devices || {});
+};
+
+/* cifratura: JSON compresso (gzip) e cifrato AES-GCM, con l'identificativo della famiglia come dato associato */
+const gz = async (bytes, on) => new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(on ? new CompressionStream("gzip") : new DecompressionStream("gzip"))).arrayBuffer());
+const aes = k => crypto.subtle.importKey("raw", b64u.dec(k), "AES-GCM", false, ["encrypt", "decrypt"]);
+T.famEncrypt = async (F, obj) => {
+  let bytes = te.encode(JSON.stringify(obj)), g = "r";
+  if (typeof CompressionStream === "function") { bytes = await gz(bytes, true); g = "g"; }
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ct = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv, additionalData: te.encode(F.id) }, await aes(F.key), bytes));
+  return "v1." + g + "." + b64u.enc(iv) + "." + b64u.enc(ct);
+};
+T.famDecrypt = async (F, data) => {
+  const p = String(data || "").split(".");
+  if (p.length !== 4 || p[0] !== "v1") throw new Error(T.tr("I dati della famiglia non sono leggibili."));
+  let bytes;
+  try { bytes = new Uint8Array(await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64u.dec(p[2]), additionalData: te.encode(F.id) }, await aes(F.key), b64u.dec(p[3]))); }
+  catch (e) { throw new Error(T.tr("La chiave non apre i dati della famiglia: serve un QR nuovo.")); }
+  if (p[1] === "g") bytes = await gz(bytes, false);
+  return JSON.parse(td.decode(bytes));
+};
+
+/* collegamento da mettere nel QR: [versione, famiglia, chiave, ponte, codice del ponte, nome di chi invita] */
+T.famLink = (st, appUrl) => {
+  const F = st.family;
+  return appUrl + "#famiglia=" + b64u.enc(te.encode(JSON.stringify([1, F.id, F.key, st.bank.url, st.bank.token, F.master || F.name || ""])));
+};
+T.famParse = str => {
+  const m = String(str || "").trim().match(/#famiglia=([\w-]+)/) || String(str || "").trim().match(/^([\w-]{60,})$/);
+  if (!m) return null;
+  try {
+    const a = JSON.parse(td.decode(b64u.dec(m[1])));
+    if (!Array.isArray(a) || a[0] !== 1 || !/^[\w-]{20,64}$/.test(a[1]) || b64u.dec(a[2]).length !== 32 || !/^https:\/\//.test(a[3]) || !a[4]) return null;
+    return { fid: a[1], key: a[2], url: a[3], token: a[4], name: a[5] || "" };
+  } catch (e) { return null; }
+};
+
+const famCall = (st, body) => T.bankCall({ bank: { url: st.bank.url, token: st.bank.token } }, "/family", body);
+const famError = e => {
+  const code = e && e.data && e.data.error;
+  if (code === "not_found" && e.status === 404) return new Error(T.tr("Il ponte e' di una versione precedente: in Cloudflare incolla il nuovo ponte/worker.js (versione 1.1.0) e premi Deploy (vedi la guida)."));
+  if (code === "family_storage_missing") return new Error(T.tr("Il ponte non ha ancora lo spazio per la famiglia: in Cloudflare aggiungi al Worker un KV namespace chiamato FAMIGLIA (vedi la guida)."));
+  return e;
+};
+T.famBase = { get: () => T.storage.getKey("famBase"), set: v => T.storage.setKey("famBase", v), del: () => T.storage.delKey("famBase") };
+const now = () => new Date().toISOString();
+const touch = F => {
+  const d = (F.devices = F.devices || {}), me = d[F.device];
+  if (!me || me.name !== (F.name || "") || me.role !== F.role || !me.seen || Date.now() - Date.parse(me.seen) > 6 * 3600e3) d[F.device] = { name: F.name || "", role: F.role, seen: now() };
+};
+
+/* crea la famiglia con i dati di questo telefono */
+T.famCreate = async (st, name) => {
+  if (!st.bank.url || !st.bank.token) throw new Error(T.tr("Prima configura il ponte in Collegamento automatico."));
+  const F = { id: T.randomToken(18), key: T.randomToken(32), role: "master", name: name || "", master: name || "", device: T.randomToken(9), ver: 0, devices: {}, created: now() };
+  const prev = st.family; st.family = F; touch(F);
+  const sh = T.famShared(st); sh.by = F.name; sh.at = now();
+  try { const r = await famCall(st, { op: "put", fid: F.id, create: true, data: await T.famEncrypt(F, sh) }); F.ver = r.ver; }
+  catch (e) { st.family = prev; throw famError(e); }
+  await T.famBase.set(JSON.stringify(sh)); F.lastSync = now();
+  return F;
+};
+/* entra nella famiglia: scarica e apre la copia condivisa, crea lo stato del telefono */
+T.famJoin = async (p, name, lang) => {
+  const F = { id: p.fid, key: p.key, role: "member", name: name || "", master: p.name || "", device: T.randomToken(9), ver: 0, devices: {}, joined: now() };
+  let got;
+  try { got = await T.bankCall({ bank: { url: p.url, token: p.token } }, "/family", { op: "get", fid: F.id }); }
+  catch (e) { if (e.status === 404) throw new Error(T.tr("Questa famiglia non esiste piu': chiedi un QR nuovo.")); throw famError(e); }
+  const sh = await T.famDecrypt(F, got.data);
+  const st = T.newState();
+  st.family = F; T.famApply(st, sh, "member", false);
+  st.bank.url = p.url; st.bank.token = p.token;
+  st.profile.lang = lang || st.profile.lang; st.profile.onboarded = true; st.meta.v14 = true;
+  F.ver = got.ver; F.devices = copy(sh.devices || {});
+  await T.famBase.set(JSON.stringify(sh)); F.lastSync = now();
+  return st;
+};
+/* allineamento: scarica, unisce, applica, e carica se c'e' qualcosa di nuovo */
+T.famSync = async st => {
+  const F = st.family; if (!F || !F.id) return { skipped: true };
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const baseStr = await T.famBase.get(), base = baseStr ? JSON.parse(baseStr) : null;
+    let got;
+    try { got = await famCall(st, { op: "get", fid: F.id, have: base ? F.ver : undefined }); }
+    catch (e) { if (e.status === 404 && e.data && e.data.error === "family_not_found") { F.gone = true; throw new Error(T.tr("La famiglia non esiste piu' o la chiave e' cambiata: chiedi un QR nuovo.")); } throw famError(e); }
+    F.gone = false;
+    const remote = got.same ? null : await T.famDecrypt(F, got.data);
+    const rem = remote || base;
+    /* da qui senza attese: legge lo stato locale, unisce e applica nello stesso momento */
+    touch(F);
+    const local = T.famShared(st);
+    let merged = T.famMerge(base, local, rem, F.role);
+    const pulled = !!remote && !!base && !T.famSame(remote, base);
+    if (T.canon(merged) !== T.canon(local)) {
+      const rulesChanged = T.canon(merged.rules) !== T.canon(local.rules);
+      T.famApply(st, merged, F.role, true);
+      if (rulesChanged && T.reclassifyAll) { T.reclassifyAll(st); merged = T.famMerge(base, T.famShared(st), rem, F.role); }
+    }
+    if (!T.famSame(merged, rem)) {
+      merged.by = F.name || ""; merged.at = now();
+      const data = await T.famEncrypt(F, merged);
+      try { const r = await famCall(st, { op: "put", fid: F.id, base: got.ver, data }); F.ver = r.ver; }
+      catch (e) { if (e.status === 409) continue; if (e.status === 404) { F.gone = true; throw new Error(T.tr("La famiglia non esiste piu' o la chiave e' cambiata: chiedi un QR nuovo.")); } throw famError(e); }
+      await T.famBase.set(JSON.stringify(merged)); F.lastSync = now();
+      return { pulled, pushed: true, by: pulled ? remote.by : null };
+    }
+    F.ver = got.ver;
+    if (remote || !baseStr) await T.famBase.set(JSON.stringify(rem || merged));
+    F.lastSync = now();
+    return { pulled, pushed: false, by: pulled ? remote.by : null };
+  }
+  throw new Error(T.tr("Gli altri telefoni stanno modificando proprio ora: riprova tra poco."));
+};
+/* nuova chiave: la vecchia copia viene cancellata, gli altri telefoni devono inquadrare il nuovo QR */
+T.famRekey = async st => {
+  const old = st.family; if (!old || old.role !== "master") throw new Error("solo chi ha creato la famiglia");
+  const F = Object.assign({}, old, { id: T.randomToken(18), key: T.randomToken(32), ver: 0, devices: {}, created: now() });
+  st.family = F; touch(F);
+  const sh = T.famShared(st); sh.by = F.name; sh.at = now();
+  try { const r = await famCall(st, { op: "put", fid: F.id, create: true, data: await T.famEncrypt(F, sh) }); F.ver = r.ver; }
+  catch (e) { st.family = old; throw famError(e); }
+  try { await famCall(st, { op: "delete", fid: old.id }); } catch (e) { }
+  await T.famBase.set(JSON.stringify(sh)); F.lastSync = now();
+  return F;
+};
+/* uscita: chi ha creato la famiglia la scioglie (cancella la copia dal ponte); gli altri escono e perdono il collegamento Revolut */
+T.famLeave = async st => {
+  const F = st.family; if (!F) return;
+  if (F.role === "master") { try { await famCall(st, { op: "delete", fid: F.id }); } catch (e) { } }
+  else Object.assign(st.bank, { url: "", token: "", session: null, validUntil: null, accounts: [], cursors: {}, lastError: null });
+  st.family = null;
+  await T.famBase.del();
+};
+})();
+
+/* myFinances on FIRE · codice QR (modalita' byte, correzione M), senza librerie.
+   Segue la norma ISO/IEC 18004: versioni 1-40, 8 maschere con scelta per penalita'. */
+"use strict";
+(function () {
+/* correzione M: codici di controllo per blocco e numero di blocchi, per versione */
+const ECC_M = [-1, 10, 16, 26, 18, 24, 16, 18, 22, 22, 26, 30, 22, 22, 24, 24, 28, 28, 26, 26, 26, 26, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28];
+const BLK_M = [-1, 1, 1, 1, 2, 2, 4, 4, 4, 5, 5, 5, 8, 9, 9, 10, 10, 11, 13, 14, 16, 17, 17, 18, 20, 21, 23, 25, 26, 28, 29, 31, 33, 35, 37, 38, 40, 43, 45, 47, 49];
+const FORMAT_M = 0; /* bit del livello M nell'informazione di formato */
+
+const rawModules = v => {
+  let r = (16 * v + 128) * v + 64;
+  if (v >= 2) { const n = Math.floor(v / 7) + 2; r -= (25 * n - 10) * n - 55; if (v >= 7) r -= 36; }
+  return r;
+};
+const dataCodewords = v => Math.floor(rawModules(v) / 8) - ECC_M[v] * BLK_M[v];
+const alignPos = v => {
+  if (v === 1) return [];
+  const n = Math.floor(v / 7) + 2, size = v * 4 + 17, step = Math.floor((v * 8 + n * 3 + 5) / (n * 4 - 4)) * 2, out = [6];
+  for (let p = size - 7; out.length < n; p -= step) out.splice(1, 0, p);
+  return out;
+};
+/* aritmetica nel campo GF(256) con polinomio 0x11D */
+const gmul = (x, y) => { let z = 0; for (let i = 7; i >= 0; i--) { z = (z << 1) ^ ((z >>> 7) * 0x11D); z ^= ((y >>> i) & 1) * x; } return z & 0xFF; };
+const rsDivisor = deg => {
+  const r = new Array(deg).fill(0); r[deg - 1] = 1; let root = 1;
+  for (let i = 0; i < deg; i++) { for (let j = 0; j < deg; j++) { r[j] = gmul(r[j], root); if (j + 1 < deg) r[j] ^= r[j + 1]; } root = gmul(root, 2); }
+  return r;
+};
+const rsRemainder = (data, div) => {
+  const r = new Array(div.length).fill(0);
+  for (const b of data) { const f = b ^ r.shift(); r.push(0); for (let i = 0; i < div.length; i++) r[i] ^= gmul(div[i], f); }
+  return r;
+};
+T.qrInternals = { ECC_M, BLK_M, rawModules, dataCodewords, alignPos, gmul, rsDivisor, rsRemainder };
+
+const MASKS = [
+  (x, y) => (x + y) % 2 === 0, (x, y) => y % 2 === 0, (x, y) => x % 3 === 0, (x, y) => (x + y) % 3 === 0,
+  (x, y) => (Math.floor(x / 3) + Math.floor(y / 2)) % 2 === 0, (x, y) => x * y % 2 + x * y % 3 === 0,
+  (x, y) => (x * y % 2 + x * y % 3) % 2 === 0, (x, y) => ((x + y) % 2 + x * y % 3) % 2 === 0
+];
+T.qrMasks = MASKS;
+T.qrFormatBits = mask => {
+  const data = (FORMAT_M << 3) | mask; let rem = data;
+  for (let i = 0; i < 10; i++) rem = (rem << 1) ^ ((rem >>> 9) * 0x537);
+  return ((data << 10) | rem) ^ 0x5412;
+};
+
+/* testo -> matrice di moduli (true = scuro). opt.mask forza una maschera (solo per i test) */
+T.qr = (text, opt) => {
+  opt = opt || {};
+  const bytes = Array.from(new TextEncoder().encode(String(text)));
+  let ver = 0;
+  for (let v = 1; v <= 40; v++) { const cc = v < 10 ? 8 : 16; if (4 + cc + bytes.length * 8 <= dataCodewords(v) * 8) { ver = v; break; } }
+  if (!ver) throw new Error("testo troppo lungo per un QR");
+  const size = ver * 4 + 17, cap = dataCodewords(ver);
+  /* bit dei dati: modo byte, lunghezza, byte, terminatore, riempimento */
+  const bits = [];
+  const put = (val, len) => { for (let i = len - 1; i >= 0; i--) bits.push((val >>> i) & 1); };
+  put(4, 4); put(bytes.length, ver < 10 ? 8 : 16); for (const b of bytes) put(b, 8);
+  put(0, Math.min(4, cap * 8 - bits.length));
+  put(0, (8 - bits.length % 8) % 8);
+  for (let pad = 0xEC; bits.length < cap * 8; pad ^= 0xEC ^ 0x11) put(pad, 8);
+  const data = []; for (let i = 0; i < bits.length; i += 8) { let b = 0; for (let j = 0; j < 8; j++) b = (b << 1) | bits[i + j]; data.push(b); }
+  /* blocchi con correzione d'errore, poi intercalati */
+  const nb = BLK_M[ver], ecl = ECC_M[ver], raw = Math.floor(rawModules(ver) / 8);
+  const nShort = nb - raw % nb, shortLen = Math.floor(raw / nb), div = rsDivisor(ecl), blocks = [];
+  for (let i = 0, k = 0; i < nb; i++) {
+    const dat = data.slice(k, k + shortLen - ecl + (i < nShort ? 0 : 1)); k += dat.length;
+    const ecc = rsRemainder(dat, div);
+    if (i < nShort) dat.push(0);
+    blocks.push(dat.concat(ecc));
+  }
+  const words = [];
+  for (let i = 0; i < blocks[0].length; i++) for (let j = 0; j < blocks.length; j++) if (i !== shortLen - ecl || j >= nShort) words.push(blocks[j][i]);
+  /* moduli fissi: temporizzazione, riferimenti, allineamento, formato, versione */
+  const M = Array.from({ length: size }, () => new Array(size).fill(false));
+  const F = Array.from({ length: size }, () => new Array(size).fill(false));
+  const fn = (x, y, d) => { M[y][x] = !!d; F[y][x] = true; };
+  for (let i = 0; i < size; i++) { fn(6, i, i % 2 === 0); fn(i, 6, i % 2 === 0); }
+  const finder = (cx, cy) => { for (let dy = -4; dy <= 4; dy++) for (let dx = -4; dx <= 4; dx++) { const x = cx + dx, y = cy + dy, d = Math.max(Math.abs(dx), Math.abs(dy)); if (x >= 0 && x < size && y >= 0 && y < size) fn(x, y, d !== 2 && d !== 4); } };
+  finder(3, 3); finder(size - 4, 3); finder(3, size - 4);
+  const ap = alignPos(ver), na = ap.length;
+  for (let i = 0; i < na; i++) for (let j = 0; j < na; j++) {
+    if ((i === 0 && j === 0) || (i === 0 && j === na - 1) || (i === na - 1 && j === 0)) continue;
+    for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) fn(ap[i] + dx, ap[j] + dy, Math.max(Math.abs(dx), Math.abs(dy)) !== 1);
+  }
+  const drawFormat = mask => {
+    const b = T.qrFormatBits(mask), bit = i => ((b >>> i) & 1) === 1;
+    for (let i = 0; i <= 5; i++) fn(8, i, bit(i));
+    fn(8, 7, bit(6)); fn(8, 8, bit(7)); fn(7, 8, bit(8));
+    for (let i = 9; i < 15; i++) fn(14 - i, 8, bit(i));
+    for (let i = 0; i < 8; i++) fn(size - 1 - i, 8, bit(i));
+    for (let i = 8; i < 15; i++) fn(8, size - 15 + i, bit(i));
+    fn(8, size - 8, true);
+  };
+  drawFormat(0);
+  if (ver >= 7) {
+    let rem = ver; for (let i = 0; i < 12; i++) rem = (rem << 1) ^ ((rem >>> 11) * 0x1F25);
+    const vb = (ver << 12) | rem;
+    for (let i = 0; i < 18; i++) { const d = ((vb >>> i) & 1) === 1, a = size - 11 + i % 3, c = Math.floor(i / 3); fn(a, c, d); fn(c, a, d); }
+  }
+  /* dati a zig-zag dal basso a destra */
+  let i = 0;
+  for (let right = size - 1; right >= 1; right -= 2) {
+    if (right === 6) right = 5;
+    for (let vert = 0; vert < size; vert++) for (let j = 0; j < 2; j++) {
+      const x = right - j, up = ((right + 1) & 2) === 0, y = up ? size - 1 - vert : vert;
+      if (!F[y][x] && i < words.length * 8) { M[y][x] = ((words[i >>> 3] >>> (7 - (i & 7))) & 1) === 1; i++; }
+    }
+  }
+  const apply = m => { for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) if (!F[y][x] && MASKS[m](x, y)) M[y][x] = !M[y][x]; };
+  /* penalita' (regole 1-4 della norma) per scegliere la maschera */
+  const penalty = () => {
+    let p = 0, dark = 0;
+    const line = get => { let run = 1, s = 0; for (let k = 1; k < size; k++) { if (get(k) === get(k - 1)) { run++; if (run === 5) s += 3; else if (run > 5) s++; } else run = 1; } return s; };
+    const pat = get => { let s = 0; const A = [1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0], B = [0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1];
+      for (let k = 0; k + 11 <= size; k++) { let a = true, b = true; for (let t = 0; t < 11; t++) { const v = get(k + t) ? 1 : 0; if (v !== A[t]) a = false; if (v !== B[t]) b = false; } if (a) s += 40; if (b) s += 40; } return s; };
+    for (let y = 0; y < size; y++) { p += line(k => M[y][k]) + pat(k => M[y][k]); }
+    for (let x = 0; x < size; x++) { p += line(k => M[k][x]) + pat(k => M[k][x]); }
+    for (let y = 0; y < size - 1; y++) for (let x = 0; x < size - 1; x++) { const c = M[y][x]; if (c === M[y][x + 1] && c === M[y + 1][x] && c === M[y + 1][x + 1]) p += 3; }
+    for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) if (M[y][x]) dark++;
+    p += Math.floor(Math.abs(dark * 20 - size * size * 10) / (size * size)) * 10;
+    return p;
+  };
+  let best = opt.mask != null ? opt.mask : -1;
+  if (best < 0) {
+    let min = Infinity;
+    for (let m = 0; m < 8; m++) { apply(m); drawFormat(m); const pn = penalty(); if (pn < min) { min = pn; best = m; } apply(m); }
+  }
+  apply(best); drawFormat(best);
+  return { size, version: ver, mask: best, modules: M };
+};
+
+/* QR come immagine SVG (sfondo bianco anche nel tema scuro, margine di 4 moduli) */
+T.qrSvg = (text, px, label) => {
+  const q = T.qr(text), n = q.size + 8;
+  const svg = T.s("svg", { viewBox: `0 0 ${n} ${n}`, width: px || 260, height: px || 260, role: "img", "aria-label": T.tr(label || "Codice QR"), "shape-rendering": "crispEdges", class: "qr" });
+  T.s("rect", { x: 0, y: 0, width: n, height: n, fill: "#FFFFFF" }, svg);
+  let d = "";
+  for (let y = 0; y < q.size; y++) for (let x = 0; x < q.size; x++) if (q.modules[y][x]) d += `M${x + 4} ${y + 4}h1v1h-1z`;
+  T.s("path", { d, fill: "#000000" }, svg);
+  return svg;
+};
+})();
+
 /* myFinances on FIRE · dati di esempio inventati (per provare l'app senza dati reali) */
 "use strict";
 (function () {
@@ -3400,6 +4013,7 @@ A.renderHome = main => {
   else if (T.bankConnected(S) && left != null && left < 14) tips.push(h("div.li.tap", { onclick: () => A.startConnect() }, h("div.grow", h("div.t", T.tr("Rinnova il collegamento Revolut")), h("div.d", T.tr("Scade tra ") + left + T.tr(" giorni, il ") + T.fmt.date(B.validUntil.slice(0, 10)) + T.tr(". Bastano due tocchi nell'app Revolut."))), h("span.pill.warn", T.tr("Presto"))));
   else if (T.bankConnected(S) && B.lastError) tips.push(h("div.li.tap", { onclick: () => A.go("altro", "collega") }, h("div.grow", h("div.t", T.tr("Aggiornamento Revolut non riuscito")), h("div.d", B.lastError))));
   else if (!T.bankConnected(S) && B.url) tips.push(h("div.li.tap", { onclick: () => A.go("altro", "collega") }, h("div.grow", h("div.t", T.tr("Completa il collegamento Revolut")), h("div.d", T.tr("Manca il consenso nell'app Revolut")))));
+  if (S.family && S.family.gone) tips.push(h("div.li.tap", { onclick: () => A.go("altro", "famiglia") }, h("div.grow", h("div.t", T.tr("La famiglia non e' piu' raggiungibile")), h("div.d", T.tr("Chiedi un QR nuovo oppure esci dalla famiglia")))));
   if (S.txs.length && (!S.meta.lastBackup || T.daysBetween(S.meta.lastBackup.slice(0, 10), T.today()) > 30)) tips.push(h("div.li.tap", { onclick: () => A.exportBackup() }, h("div.grow", h("div.t", T.tr("Fai un backup")), h("div.d", S.meta.lastBackup ? T.tr("Ultimo il ") + T.fmt.date(S.meta.lastBackup.slice(0, 10)) : T.tr("Non ne hai ancora fatto uno. I dati sono solo su questo telefono."))), h("span.pill.warn", T.tr("Consigliato"))));
   if (!pic.income) tips.push(h("div.li.tap", { onclick: () => A.go("altro", "profilo") }, h("div.grow", h("div.t", T.tr("Inserisci il reddito netto mensile")), h("div.d", T.tr("Serve per il tasso di risparmio e per il FIRE")))));
   if (!S.fixed.length) tips.push(h("div.li.tap", { onclick: () => A.go("altro", "fissi") }, h("div.grow", h("div.t", T.tr("Aggiungi i costi fissi")), h("div.d", T.tr("Affitto, cassa malati, leasing, bollette")))));
@@ -3766,6 +4380,13 @@ A.renderFire = main => {
     T.numField(T.tr("Il patrimonio deve durare fino a (eta')"), F.endAge, v => set("endAge", v || 95), { step: 1 }),
     pct(T.tr("Probabilita' di successo richiesta"), "confidence", "", 1),
     T.numField(T.tr("Numero di scenari"), F.sims, v => set("sims", T.clamp(v || 2000, 200, 5000)), { step: 100, hint: T.tr("Di piu' = piu' preciso ma piu' lento.") })));
+  /* nella famiglia i numeri del FIRE li gestisce chi l'ha creata: gli altri li vedono */
+  if (A.isMember()) {
+    const fsx = h("fieldset.plain", { disabled: true });
+    while (box.children.length > 1) fsx.appendChild(box.children[1]);
+    box.appendChild(h("div.note", { style: { marginBlockEnd: "8px" } }, T.tr("I numeri del FIRE li gestisce {n}: qui li vedi ma non li cambi. Il cursore dell'eta' resta libero per le tue prove.", { n: A.masterName() })));
+    box.appendChild(fsx);
+  }
   main.appendChild(box);
 };
 })();
@@ -3872,11 +4493,13 @@ A.exportBackup = () => {
   A.render();
 };
 A.restoreBackup = async f => {
+  if (A.isMember()) { T.toast(T.tr("Per ripristinare un backup esci prima dalla famiglia")); return; }
   let st;
   try { st = T.readBackup(JSON.parse(new TextDecoder().decode(new Uint8Array(f.buf)))); } catch (e) { T.sheet(T.tr("Backup non valido"), h("p", String(e.message || e)), [h("button.btn.primary", { type: "button", onclick: T.closeSheet }, "Ok")]); return; }
   const cov = (() => { const s = A.S; A.S = st; const c = T.coverage(st); A.S = s; return c; })();
-  const ok = A.S.txs.length ? await T.confirm(T.tr("Ripristinare il backup?"), T.tr("Il backup contiene ") + st.txs.length + T.tr(" movimenti") + (cov ? T.tr(" dal ") + T.fmt.date(cov.from) + T.tr(" al ") + T.fmt.date(cov.to) : "") + T.tr(". I dati attuali su questo telefono verranno sostituiti."), T.tr("Ripristina"), true) : true;
+  const ok = A.S.txs.length ? await T.confirm(T.tr("Ripristinare il backup?"), T.tr("Il backup contiene ") + st.txs.length + T.tr(" movimenti") + (cov ? T.tr(" dal ") + T.fmt.date(cov.from) + T.tr(" al ") + T.fmt.date(cov.to) : "") + T.tr(". I dati attuali su questo telefono verranno sostituiti.") + (A.inFamily() ? T.tr(" Anche gli altri telefoni della famiglia riceveranno questi dati.") : ""), T.tr("Ripristina"), true) : true;
   if (!ok) return;
+  st.family = A.S.family || null; if (st.family) { st.bank = Object.assign(st.bank || T.bankDefaults(), { url: A.S.bank.url, token: A.S.bank.token }); }
   st.profile.onboarded = true; A.S = st; await T.save(st, true); A.fire.key = ""; A.ui.week = null;
   T.toast(T.tr("Backup ripristinato")); A.go("home", null, true);
 };
@@ -3888,6 +4511,8 @@ A.renderAltro = main => {
   const last = S.imports[0];
   main.appendChild(h("div.card", h("h2", T.tr("Dati")), h("div.list",
     item(T.tr("Collegamento automatico Revolut"), T.bankConnected(S) ? (T.bankExpired(S) ? T.tr("Consenso scaduto") : T.tr("Collegato \u00b7 aggiornato ") + A.relTime(S.bank.lastSync)) : T.tr("Movimenti aggiornati da soli, in sola lettura"), () => A.go("altro", "collega"), T.bankConnected(S) ? h("span.pill" + (T.bankExpired(S) ? ".warn" : ".ok"), T.bankExpired(S) ? T.tr("Scaduto") : T.tr("Attivo")) : null),
+    (() => { const F = S.family; return item(T.tr("Famiglia"), !F ? T.tr("Condividi spese e budget con un altro telefono") : F.gone ? T.tr("Non piu' raggiungibile: serve un QR nuovo") : (F.role === "master" ? T.tr("Attiva") : T.tr("Famiglia di {n}", { n: A.masterName() })) + T.tr(" \u00b7 allineata ") + A.relTime(F.lastSync),
+      () => A.go("altro", "famiglia"), F ? h("span.pill" + (F.gone ? ".warn" : ".ok"), F.gone ? T.tr("Da rifare") : T.tr("Attiva")) : null); })(),
     item(T.tr("Importa movimenti"), T.tr("Revolut (Excel o CSV), PDF pagamenti registrati UBS, CSV di qualsiasi banca"), () => A.importFlow()),
     item(T.tr("Storico import"), last ? T.tr("Ultimo: ") + last.source + T.tr(" il ") + T.fmt.date(last.at.slice(0, 10)) : T.tr("Nessun import"), () => A.go("altro", "storico")),
     item("Backup", S.meta.lastBackup ? T.tr("Ultimo il ") + T.fmt.date(S.meta.lastBackup.slice(0, 10)) : T.tr("Mai fatto"), () => A.go("altro", "backup"), S.meta.lastBackup ? null : h("span.pill.warn", T.tr("Da fare"))))));
@@ -3899,9 +4524,9 @@ A.renderAltro = main => {
     item(T.tr("Periodi di vacanza"), S.vacations.length + T.tr(" periodi"), () => A.go("altro", "vacanze")))));
   main.appendChild(h("div.card", h("h2", "App"), h("div.list",
     A.installPrompt ? item(T.tr("Installa l'app"), T.tr("Aggiungi l'icona alla schermata Home"), async () => { A.installPrompt.prompt(); A.installPrompt = null; A.render(); }) : null,
-    item(T.tr("Prova con dati di esempio"), T.tr("Sostituisce i dati con dati inventati"), async () => { if (S.txs.length && !(await T.confirm(T.tr("Caricare i dati di esempio?"), T.tr("I tuoi dati su questo telefono verranno sostituiti. Fai prima un backup se ti servono."), T.tr("Carica"), true))) return; A.S = T.makeDemoState(); await T.save(A.S, true); A.fire.key = ""; A.go("home", null, true); }),
+    item(T.tr("Prova con dati di esempio"), T.tr("Sostituisce i dati con dati inventati"), async () => { if (A.inFamily()) { T.toast(T.tr("Prima esci dalla famiglia: i dati di esempio finirebbero anche sugli altri telefoni")); return; } if (S.txs.length && !(await T.confirm(T.tr("Caricare i dati di esempio?"), T.tr("I tuoi dati su questo telefono verranno sostituiti. Fai prima un backup se ti servono."), T.tr("Carica"), true))) return; A.S = T.makeDemoState(); await T.save(A.S, true); A.fire.key = ""; A.go("home", null, true); }),
     item(T.tr("Privacy e informazioni"), T.tr("Versione ") + T.APP.version, () => A.go("altro", "info")),
-    item(T.tr("Cancella tutti i dati"), T.tr("Rimuove tutto da questo telefono"), async () => { if (!(await T.confirm(T.tr("Cancellare tutto?"), T.tr("Movimenti, impostazioni e budget verranno eliminati da questo telefono. Non si puo' annullare."), T.tr("Cancella"), true))) return; await T.storage.clear(); A.S = T.newState(); A.fire.key = ""; A.go("home", null, true); }, h("span.bad", "\u203a")))));
+    item(T.tr("Ricomincia da zero"), T.tr("Cancella i dati di questo telefono e riparte dall'inizio"), () => A.resetFlow(), h("span.bad", "\u203a")))));
 };
 
 A.renderSub = (main, sub) => {
@@ -3912,15 +4537,21 @@ A.renderSub = (main, sub) => {
   const save = () => { A.fire.key = ""; A.save(); };
   if (sub === "collega") {
     A.renderCollega(card);
+  } else if (sub === "famiglia") {
+    A.renderFamiglia(card);
   } else if (sub === "profilo") {
     card.appendChild(h("h2", T.tr("Profilo e reddito")));
     card.appendChild(T.selectField(T.tr("Lingua"), S.profile.lang || "it", T.LANGS, v => A.setLanguage(v)));
-    card.appendChild(T.textField(T.tr("Nome (facoltativo)"), S.profile.name, v => { S.profile.name = v; save(); }));
-    card.appendChild(T.selectField(T.tr("Valuta di base"), S.profile.currency, CURRENCIES, v => { S.profile.currency = v; save(); }, { hint: T.tr("La valuta in cui vedi tutti i totali.") }));
-    card.appendChild(T.numField(T.tr("Reddito netto al mese"), S.profile.incomeMonthly, v => { S.profile.incomeMonthly = v || 0; save(); }, { hint: T.tr("Quello che entra sul conto in un mese normale, senza bonus.") }));
-    card.appendChild(h("h2", { style: { marginBlockStart: "14px" } }, T.tr("Cambi per i movimenti in altre valute")));
-    card.appendChild(h("p.sub", T.tr("Servono solo per i file che non riportano gia' l'importo convertito. 1 unita' = quanti ") + S.profile.currency + "."));
-    for (const c of ["EUR", "USD", "GBP"].filter(c => c !== S.profile.currency)) card.appendChild(T.numField("1 " + c + " =", (S.profile.fx || {})[c], v => { S.profile.fx = S.profile.fx || {}; S.profile.fx[c] = v; save(); }, { step: 0.001 }));
+    /* nella famiglia nome, valuta, reddito e cambi li gestisce chi l'ha creata */
+    const pf = h("fieldset.plain", { disabled: A.isMember() || null });
+    if (A.isMember()) card.appendChild(h("div.note", { style: { marginBlockEnd: "10px" } }, T.tr("Reddito, valuta e cambi li gestisce {n}: qui li vedi ma non li cambi.", { n: A.masterName() })));
+    card.appendChild(pf);
+    pf.appendChild(T.textField(T.tr("Nome (facoltativo)"), S.profile.name, v => { S.profile.name = v; save(); }));
+    pf.appendChild(T.selectField(T.tr("Valuta di base"), S.profile.currency, CURRENCIES, v => { S.profile.currency = v; save(); }, { hint: T.tr("La valuta in cui vedi tutti i totali.") }));
+    pf.appendChild(T.numField(T.tr("Reddito netto al mese"), S.profile.incomeMonthly, v => { S.profile.incomeMonthly = v || 0; save(); }, { hint: T.tr("Quello che entra sul conto in un mese normale, senza bonus.") }));
+    pf.appendChild(h("h2", { style: { marginBlockStart: "14px" } }, T.tr("Cambi per i movimenti in altre valute")));
+    pf.appendChild(h("p.sub", T.tr("Servono solo per i file che non riportano gia' l'importo convertito. 1 unita' = quanti ") + S.profile.currency + "."));
+    for (const c of ["EUR", "USD", "GBP"].filter(c => c !== S.profile.currency)) pf.appendChild(T.numField("1 " + c + " =", (S.profile.fx || {})[c], v => { S.profile.fx = S.profile.fx || {}; S.profile.fx[c] = v; save(); }, { step: 0.001 }));
   } else if (sub === "fissi") {
     card.appendChild(h("h2", T.tr("Costi fissi")));
     card.appendChild(h("p.sub", T.tr("Pagamenti regolari dal conto principale. \u00abDal\u00bb serve per un cambio gia' previsto (per esempio una nuova rata dall'anno prossimo).")));
@@ -3994,7 +4625,8 @@ A.renderSub = (main, sub) => {
       T.tr("I file degli estratti conto vengono letti sul telefono e non vengono inviati da nessuna parte."),
       T.tr("L'app non usa pubblicita', statistiche d'uso o servizi di terze parti."),
       T.tr("Il backup e' un file che crei tu e che decidi tu dove salvare."),
-      T.tr("Puoi cancellare tutto in qualsiasi momento da Altro > Cancella tutti i dati.") ].forEach(t => card.appendChild(h("p.small", "\u2022 " + t)));
+      T.tr("Se crei una famiglia, una copia dei dati passa dal tuo ponte (sul tuo account Cloudflare), cifrata sul telefono: la chiave e' solo nei telefoni della famiglia."),
+      T.tr("Puoi cancellare tutto in qualsiasi momento da Altro > Ricomincia da zero.") ].forEach(t => card.appendChild(h("p.small", "\u2022 " + t)));
     card.appendChild(h("h2", { style: { marginBlockStart: "12px" } }, T.tr("Avvertenza")));
     card.appendChild(h("p.small.muted", T.tr("Le simulazioni sono stime basate su rendimenti storici e sui dati che inserisci. Non sono una consulenza finanziaria, fiscale o previdenziale.")));
     card.appendChild(h("p.small.muted", T.tr("Spazio usato: ") + (JSON.stringify(S).length / 1024).toFixed(0) + T.tr(" KB \u00b7 ") + S.txs.length + T.tr(" movimenti")));
@@ -4015,7 +4647,7 @@ A.wiz = { step: 0 };
 A.renderOnboarding = main => {
   const S = A.S, w = A.wiz, steps = 4;
   const next = () => { w.step++; A.save(); A.render(); }, prev = () => { w.step = Math.max(0, w.step - 1); A.render(); };
-  const finish = async () => { S.profile.onboarded = true; await T.save(S, true); T.storage.persist(); A.fire.key = ""; w.step = 0; A.go("home", null, true); };
+  const finish = async () => { S.profile.onboarded = true; await T.save(S, true); T.storage.persist(); A.fire.key = ""; w.step = 0; A.go("home", null, true); A.autoSync(); };
   if (w.step > 0) main.appendChild(h("div.wiz-steps", Array.from({ length: steps }, (_, i) => h("i" + (i < w.step ? ".on" : "")))));
   const card = h("div.card"); main.appendChild(card);
   const nav = (canSkip, nextLabel) => h("div.row", { style: { marginBlockStart: "16px" } }, h("button.btn", { type: "button", onclick: prev }, T.tr("Indietro")), h("div.grow"), canSkip ? h("button.btn.ghost", { type: "button", onclick: next }, T.tr("Salta")) : null, h("button.btn.primary", { type: "button", onclick: next }, nextLabel || T.tr("Avanti")));
@@ -4089,6 +4721,7 @@ A.syncNow = async silent => {
   try {
     const r = await T.bankSync(A.S);
     A.fire.key = ""; await T.save(A.S, true);
+    if (A.inFamily && A.inFamily()) A.famSoon(300);
     if (!silent || r.added) T.toast(r.added ? r.added + (r.added === 1 ? T.tr(" nuovo movimento") : T.tr(" nuovi movimenti")) + T.tr(" da Revolut") : T.tr("Revolut aggiornato: niente di nuovo"));
     if (r.noFx) T.toast(T.tr("Manca il cambio per alcune valute: aggiungilo in Profilo e reddito"));
   } catch (e) {
@@ -4148,6 +4781,8 @@ A.renderCollega = card => {
   const S = A.S, B = S.bank, on = T.bankConnected(S), exp = T.bankExpired(S), left = T.bankDaysLeft(S);
   card.appendChild(h("h2", T.tr("Collegamento automatico Revolut")));
   card.appendChild(h("p.sub", T.tr("I movimenti arrivano da soli, in sola lettura, tramite Enable Banking e il tuo ponte personale. L'import dei file resta sempre disponibile.")));
+  const member = A.isMember && A.isMember();
+  if (member) card.appendChild(h("div.note", { style: { marginBlockEnd: "10px" } }, T.tr("Il collegamento Revolut e' di {n} e arriva con la famiglia: qui puoi aggiornare i movimenti. Il consenso lo rinnova {n} dal suo telefono.", { n: A.masterName() })));
   /* stato */
   if (on) {
     card.appendChild(h("div.note" + (exp || (left != null && left < 14) ? ".warn" : ""),
@@ -4157,8 +4792,9 @@ A.renderCollega = card => {
     card.appendChild(h("div.list", B.accounts.map(a => h("div.li", h("div.grow", h("div.t", (a.currency || "") + " " + (a.name || T.tr("Conto"))), h("div.d", a.iban || ""))))));
     card.appendChild(h("label.row", { style: { marginBlock: "10px" } }, h("input", { type: "checkbox", checked: B.auto, onchange: e => { B.auto = e.target.checked; A.save(); } }), T.tr("Aggiorna da solo all'apertura (al massimo ogni 4 ore)")));
     card.appendChild(h("div.row.wrap", h("button.btn.primary", { type: "button", disabled: !!A._syncing || exp, onclick: () => A.syncNow(false) }, A._syncing ? T.tr("Aggiornamento...") : T.tr("Aggiorna ora")),
-      h("button.btn", { type: "button", onclick: () => A.startConnect() }, exp ? T.tr("Ricollega Revolut") : T.tr("Rinnova il consenso")), h("button.btn.danger", { type: "button", onclick: () => A.disconnect() }, T.tr("Scollega"))));
-  } else card.appendChild(h("div.note", T.tr("Non collegato. Segui i 3 passi qui sotto (la guida completa e' nel file GUIDA-COLLEGAMENTO-REVOLUT.md del progetto).")));
+      member ? null : h("button.btn", { type: "button", onclick: () => A.startConnect() }, exp ? T.tr("Ricollega Revolut") : T.tr("Rinnova il consenso")), member ? null : h("button.btn.danger", { type: "button", onclick: () => A.disconnect() }, T.tr("Scollega"))));
+  } else card.appendChild(h("div.note", member ? T.tr("Revolut non e' collegato in questo momento: lo collega {n} dal suo telefono.", { n: A.masterName() }) : T.tr("Non collegato. Segui i 3 passi qui sotto (la guida completa e' nel file GUIDA-COLLEGAMENTO-REVOLUT.md del progetto).")));
+  if (member) return;
 
   /* passo 1: indirizzo dell'app */
   const url = A.appUrl();
@@ -4184,6 +4820,7 @@ A.renderCollega = card => {
         const line = (okv, txt) => h("div", (okv ? "\u2705 " : "\u274c ") + txt);
         res.appendChild(h("div.note", line(true, T.tr("Ponte raggiungibile e codice corretto")), line(true, T.tr("Applicazione Enable Banking: ") + (d.name || "") + " (" + (d.environment || "") + ")"),
           line(d.environment === "PRODUCTION", T.tr("Ambiente di produzione") + (d.environment === "PRODUCTION" ? "" : T.tr(": registra l'app in PRODUCTION, non in SANDBOX"))),
+          line(!!d.family, d.family ? T.tr("Spazio per la famiglia pronto") : T.tr("Spazio per la famiglia assente (serve solo se vuoi condividere con un altro telefono)")),
           line(!!d.active, d.active ? T.tr("Applicazione attiva") : T.tr("Applicazione non ancora attiva: nel Control Panel usa \u00abActivate by linking accounts\u00bb")),
           line(!!d.redirect_ok && d.redirect_url === url, d.redirect_ok && d.redirect_url === url ? T.tr("Indirizzo di ritorno corretto") : T.tr("Indirizzo di ritorno: nel ponte c'e' \u00ab") + (d.redirect_url || "") + T.tr("\u00bb, l'app e' su \u00ab") + url + T.tr("\u00bb e su Enable Banking deve esserci lo stesso indirizzo"))));
       } catch (e) { T.clear(res); res.appendChild(h("div.note.warn", e.message)); }
@@ -4194,6 +4831,201 @@ A.renderCollega = card => {
     T.selectField(T.tr("Paese di Revolut"), B.country, COUNTRIES, v => { B.country = v; A.save(); }, { hint: T.tr("Per i conti Revolut con IBAN LT usa Lituania. Se Revolut non viene trovato, prova Svizzera o Italia.") }),
     h("p.small.muted", T.tr("Si apre la pagina di Enable Banking e poi l'app Revolut, dove confermi l'accesso in sola lettura. Fallo dal telefono su cui hai l'app Revolut. Alla fine torni qui e i movimenti si scaricano.")),
     h("button.btn.primary.block", { type: "button", disabled: !B.url || !B.token, onclick: () => A.startConnect() }, on ? T.tr("Ricollega Revolut") : T.tr("Collega Revolut")))));
+};
+})();
+
+/* myFinances on FIRE · schermata Famiglia, ingresso con il QR, allineamento automatico, ricomincia da zero */
+"use strict";
+(function () {
+const h = T.h, A = T.A;
+A.isMember = () => !!(A.S && A.S.family && A.S.family.role === "member");
+A.inFamily = () => !!(A.S && A.S.family && A.S.family.id);
+A.masterName = () => (A.S.family && (A.S.family.master || "")) || T.tr("chi ha creato la famiglia");
+
+/* ---------- allineamento ---------- */
+const editing = () => { const ae = document.activeElement; return !T.$("sheet").hidden || !!(ae && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName || "")); };
+A.softRender = () => { if (editing()) { A._dirtyRender = true; return; } A._dirtyRender = false; A.render(); };
+A.famSync = async (silent, force) => {
+  const S = A.S;
+  if (!A.inFamily() || S.family.gone && !force) return null;
+  if (A._famBusy) { A._famAgain = true; return null; }
+  /* mentre scrivi o hai un foglio aperto aspetta un poco, per non cambiare i dati sotto le dita */
+  if (!force && editing() && (A._famWait = (A._famWait || 0) + 1) <= 6) { A.famSoon(5000); return null; }
+  A._famWait = 0; A._famBusy = true;
+  let res = null;
+  try {
+    res = await T.famSync(S);
+    S.family.lastError = null;
+    if (res.pulled) { A.fire.key = ""; if (res.by && res.by !== S.family.name) T.toast(T.tr("Aggiornato con le modifiche di {n}", { n: res.by })); }
+  } catch (e) {
+    if (S.family) S.family.lastError = e.message;
+    if (!silent) T.toast(e.message);
+  } finally {
+    A._famSaving = true; try { await T.save(S, true); } finally { A._famSaving = false; }
+    A._famBusy = false;
+    if ((res && res.pulled) || (S.family && S.family.gone) || A.view === "altro") A.softRender();
+    if (A._famAgain) { A._famAgain = false; A.famSoon(1500); }
+  }
+  return res;
+};
+A.famSoon = ms => { clearTimeout(A._famT); A._famT = setTimeout(() => A.famSync(true), ms == null ? 5000 : ms); };
+T.onSaved = st => { if (A.S && st === A.S && A.inFamily() && !st.family.gone && !A._famSaving) A.famSoon(); };
+
+/* ---------- ingresso dal QR (o dal collegamento incollato) ---------- */
+A.joinFlow = p => {
+  const S = A.S;
+  if (S.family && S.family.id === p.fid) { T.toast(T.tr("Questo telefono e' gia' in questa famiglia")); return; }
+  const st = { name: "" }, msg = h("div");
+  const hasData = S.txs.length > 0;
+  const body = h("div",
+    h("p", T.tr("{n} ti invita a condividere spese, categorie e budget.", { n: p.name || T.tr("Qualcuno") })),
+    h("p.small.muted", T.tr("Vedrai gli stessi dati e potrai modificarli; i movimenti Revolut arrivano anche qui. Il FIRE e il reddito li gestisce {n}.", { n: p.name || T.tr("chi ti invita") })),
+    T.textField(T.tr("Il tuo nome"), "", v => st.name = v.trim(), { ph: T.tr("per esempio Debora") }),
+    hasData ? h("div.note.warn", T.tr("I dati gia' presenti su questo telefono vengono sostituiti da quelli della famiglia.")) : null,
+    S.family ? h("div.note.warn", { style: { marginBlockStart: "8px" } }, T.tr("Questo telefono e' gia' in un'altra famiglia: entrando qui, esci da quella.")) : null,
+    msg);
+  const go = h("button.btn.primary", { type: "button", onclick: async () => {
+    go.disabled = true; T.clear(msg); msg.appendChild(h("div.row", { style: { marginBlockStart: "10px" } }, h("span.spinner"), h("span.muted", T.tr("Scarico i dati della famiglia..."))));
+    try {
+      const ns = await T.famJoin(p, st.name || T.tr("Telefono"), T.LANG);
+      A.S = ns; A.fire.key = ""; A.ui.week = null;
+      await T.save(ns, true);
+      T.closeSheet(); T.toast(T.tr("Ora sei nella famiglia di {n}", { n: p.name || "" }));
+      A.go("home", null, true);
+      A.famSync(true).then(() => A.autoSync());
+    } catch (e) { go.disabled = false; T.clear(msg); msg.appendChild(h("div.note.warn", { style: { marginBlockStart: "10px" } }, e.message)); }
+  } }, T.tr("Entra nella famiglia"));
+  T.sheet(T.tr("Entra nella famiglia"), body, [h("button.btn", { type: "button", onclick: () => T.closeSheet() }, T.tr("Annulla")), go]);
+};
+/* collegamento con #famiglia=... all'apertura: lo toglie subito dalla barra degli indirizzi */
+A._joinHash = (() => { try { return location.hash || ""; } catch (e) { return ""; } })();   /* letto subito, prima di ogni navigazione */
+A.checkJoinLink = () => {
+  const hash = A._joinHash || ""; A._joinHash = "";
+  if (!/famiglia=/.test(hash)) return false;
+  try { history.replaceState(null, "", location.pathname + (location.search || "")); } catch (e) { }
+  const p = T.famParse(hash);
+  if (!p) { T.toast(T.tr("Il QR della famiglia non e' valido")); return false; }
+  A.joinFlow(p); return true;
+};
+
+/* ---------- schermata Famiglia (Altro > Famiglia) ---------- */
+A.renderFamiglia = card => {
+  const S = A.S, F = S.family, B = S.bank;
+  card.appendChild(h("h2", T.tr("Famiglia")));
+  const devices = () => {
+    const list = h("div.list");
+    Object.entries(F.devices || {}).sort((a, b) => (a[1].role === "master" ? 0 : 1) - (b[1].role === "master" ? 0 : 1)).forEach(([id, d]) => list.appendChild(h("div.li",
+      h("div.grow", h("div.t", (d.name || T.tr("Telefono")) + (id === F.device ? T.tr(" (questo telefono)") : "")), h("div.d", (d.role === "master" ? T.tr("gestisce il FIRE") : T.tr("spese e budget")) + " \u00b7 " + T.tr("visto ") + A.relTime(d.seen))))));
+    return list;
+  };
+  const status = () => h("div.note" + (F.gone || F.lastError ? ".warn" : ""),
+    h("b", F.gone ? T.tr("La famiglia non e' piu' raggiungibile") : F.role === "master" ? T.tr("Famiglia attiva") : T.tr("Sei nella famiglia di {n}", { n: A.masterName() })),
+    h("div", F.gone ? T.tr("E' stata sciolta o la chiave e' cambiata. Chiedi un QR nuovo oppure esci dalla famiglia.") : T.tr("Ultimo allineamento: ") + A.relTime(F.lastSync)),
+    F.lastError && !F.gone ? h("div.bad", F.lastError) : null);
+  const joinBox = () => {
+    let val = "";
+    return h("details.acc", h("summary", T.tr("Hai ricevuto un QR?")), h("div.acc-in",
+      h("p.small.muted", T.tr("Inquadralo con la fotocamera del telefono e tocca il collegamento: si apre l'app e ti chiede di entrare. In alternativa incolla qui il collegamento.")),
+      T.textField(T.tr("Collegamento della famiglia"), "", v => val = v, { ph: "https://...#famiglia=..." }),
+      h("button.btn", { type: "button", onclick: () => { const p = T.famParse(val); if (!p) T.toast(T.tr("Il collegamento non e' valido")); else A.joinFlow(p); } }, T.tr("Entra"))));
+  };
+  if (!F) {
+    card.appendChild(h("p.sub", T.tr("Condividi spese, categorie, budget e collegamento Revolut con un altro telefono, per esempio quello di tua moglie o di tuo marito. I dati passano dal tuo ponte gia' cifrati: senza la chiave del QR nessuno li puo' leggere, nemmeno Cloudflare.")));
+    [T.tr("Spese, categorie, regole, budget, costi fissi e vacanze: li modificate tutti e due."),
+     T.tr("FIRE e reddito: li gestisci tu, gli altri li vedono."),
+     T.tr("Revolut: i movimenti li scarica un telefono alla volta e arrivano anche sull'altro.")].forEach(t => card.appendChild(h("p.small", "\u2022 " + t)));
+    if (!B.url || !B.token) {
+      card.appendChild(h("div.note.warn", T.tr("Per creare la famiglia serve il ponte: configuralo prima in Collegamento automatico.")));
+      card.appendChild(h("button.btn", { type: "button", style: { marginBlockStart: "10px" }, onclick: () => A.go("altro", "collega") }, T.tr("Apri il collegamento")));
+    } else {
+      let name = S.profile.name && !/\se\s|&/.test(S.profile.name) ? S.profile.name : "";
+      const msg = h("div");
+      card.appendChild(T.textField(T.tr("Il tuo nome"), name, v => name = v.trim(), { ph: T.tr("per esempio Marco") }));
+      const btn = h("button.btn.primary.block", { type: "button", onclick: async () => {
+        btn.disabled = true; T.clear(msg); msg.appendChild(h("div.row", { style: { marginBlockStart: "10px" } }, h("span.spinner"), h("span.muted", T.tr("Creo la famiglia..."))));
+        try { await T.famCreate(S, name || T.tr("Telefono")); await T.save(S, true); A.ui.showQr = true; T.toast(T.tr("Famiglia creata")); A.render(); }
+        catch (e) { btn.disabled = false; T.clear(msg); msg.appendChild(h("div.note.warn", { style: { marginBlockStart: "10px" } }, e.message)); }
+      } }, T.tr("Crea la famiglia"));
+      card.appendChild(btn); card.appendChild(msg);
+    }
+    card.appendChild(joinBox());
+    return;
+  }
+  card.appendChild(status());
+  if (!F.gone) card.appendChild(h("p.small.muted", { style: { marginBlockStart: "8px" } }, F.role === "master"
+    ? T.tr("Spese, categorie e budget sono condivisi. FIRE e reddito li gestisci tu.")
+    : T.tr("Spese, categorie e budget sono condivisi. FIRE e reddito li gestisce {n}: qui li vedi.", { n: A.masterName() })));
+  card.appendChild(h("h4", T.tr("Telefoni")));
+  card.appendChild(devices());
+  card.appendChild(h("div.row.wrap", { style: { marginBlockStart: "10px" } },
+    h("button.btn", { type: "button", disabled: !!A._famBusy, onclick: async () => { await A.famSync(false, true); A.render(); } }, T.tr("Allinea ora"))));
+  if (F.role === "master" && !F.gone) {
+    const qrBox = h("div.qr-box");
+    const fillQr = () => {
+      T.clear(qrBox);
+      if (!A.ui.showQr) { qrBox.appendChild(h("button.btn.primary.block", { type: "button", onclick: () => { A.ui.showQr = true; fillQr(); } }, T.tr("Mostra il QR per aggiungere un telefono"))); return; }
+      const link = T.famLink(S, A.appUrl());
+      qrBox.appendChild(h("div.qr-wrap", T.qrSvg(link, 280, T.tr("QR per entrare nella famiglia"))));
+      qrBox.appendChild(h("ol.steps",
+        h("li", T.tr("Sull'altro telefono apri la fotocamera e inquadra il QR.")),
+        h("li", T.tr("Tocca il collegamento che compare: si apre l'app con i tuoi dati e chiede il nome.")),
+        h("li", T.tr("Dal menu del browser scegli Installa app (o Aggiungi a schermata Home)."))));
+      qrBox.appendChild(h("div.note.warn", T.tr("Mostralo solo di persona: chi ha questo QR vede tutte le vostre finanze. Non fare screenshot e non inviarlo in chat.")));
+      qrBox.appendChild(h("button.btn.block", { type: "button", style: { marginBlockStart: "8px" }, onclick: () => { A.ui.showQr = false; fillQr(); } }, T.tr("Nascondi il QR")));
+    };
+    fillQr();
+    card.appendChild(h("h4", T.tr("Aggiungi un telefono")));
+    card.appendChild(qrBox);
+    card.appendChild(h("h4", T.tr("Sicurezza")));
+    card.appendChild(h("div.row.wrap",
+      h("button.btn", { type: "button", onclick: async () => {
+        if (!(await T.confirm(T.tr("Cambiare la chiave?"), T.tr("Gli altri telefoni smettono di ricevere gli aggiornamenti finche' non inquadrano il nuovo QR. Usalo se hai perso un telefono o se il QR e' finito in mani sbagliate."), T.tr("Cambia la chiave"), true))) return;
+        try { await T.famRekey(S); await T.save(S, true); A.ui.showQr = true; T.toast(T.tr("Chiave cambiata: fai inquadrare il nuovo QR")); A.render(); } catch (e) { T.toast(e.message); }
+      } }, T.tr("Cambia la chiave")),
+      h("button.btn.danger", { type: "button", onclick: async () => {
+        if (!(await T.confirm(T.tr("Sciogliere la famiglia?"), T.tr("La copia condivisa viene cancellata dal ponte. Ogni telefono tiene i dati che ha, ma non si allineano piu'."), T.tr("Sciogli"), true))) return;
+        await T.famLeave(S); await T.save(S, true); T.toast(T.tr("Famiglia sciolta")); A.render();
+      } }, T.tr("Sciogli la famiglia"))));
+  } else {
+    card.appendChild(h("button.btn.danger", { type: "button", style: { marginBlockStart: "10px" }, onclick: async () => {
+      if (!(await T.confirm(T.tr("Uscire dalla famiglia?"), T.tr("Su questo telefono resta una copia dei dati, senza il collegamento Revolut di {n}.", { n: A.masterName() }), T.tr("Esci"), true))) return;
+      await T.famLeave(S); await T.save(S, true); T.toast(T.tr("Non fai piu' parte della famiglia")); A.render();
+    } }, T.tr("Esci dalla famiglia")));
+    if (F.gone) card.appendChild(joinBox());
+  }
+};
+
+/* ---------- ricomincia da zero ---------- */
+A.resetFlow = () => {
+  const S = A.S, B = S.bank, F = S.family, member = A.isMember(), canKeep = !member && !!(B.url && B.token);
+  const st = { keep: canKeep };
+  const body = h("div",
+    h("p", T.tr("Cancella da questo telefono movimenti, categorie, regole, budget, costi fissi e impostazioni del FIRE, e riparte dalla configurazione iniziale.")),
+    h("button.btn.block", { type: "button", onclick: () => A.exportBackup() }, T.tr("Scarica prima un backup")),
+    canKeep ? h("label.row", { style: { gap: "10px", marginBlockStart: "12px", alignItems: "flex-start" } }, h("input", { type: "checkbox", checked: true, onchange: e => st.keep = e.target.checked }),
+      h("span", h("b", T.tr("Tieni il ponte e il collegamento Revolut")), h("div.small.muted", T.bankConnected(S) ? T.tr("Non devi reinserire nulla: i movimenti Revolut degli ultimi 90 giorni si riscaricano da soli.") : T.tr("Non devi reinserire indirizzo e codice del ponte.")))) : null,
+    F && !member ? h("div.note.warn", { style: { marginBlockStart: "12px" } }, T.tr("La famiglia viene sciolta: gli altri telefoni tengono la loro copia ma non ricevono piu' aggiornamenti.")) : null,
+    member ? h("div.note.warn", { style: { marginBlockStart: "12px" } }, T.tr("Esci dalla famiglia di {n}: i dati condivisi restano sugli altri telefoni.", { n: A.masterName() })) : null);
+  T.sheet(T.tr("Ricomincia da zero"), body, [h("button.btn", { type: "button", onclick: () => T.closeSheet() }, T.tr("Annulla")),
+    h("button.btn.danger", { type: "button", onclick: async () => {
+      if (!(await T.confirm(T.tr("Sei sicuro?"), T.tr("Tutti i dati di questo telefono vengono cancellati. Non si puo' annullare."), T.tr("Si', cancella tutto"), true))) return;
+      await A.doReset(st.keep);
+    } }, T.tr("Ricomincia"))]);
+};
+A.doReset = async keep => {
+  const S = A.S, B = S.bank, F = S.family, member = A.isMember();
+  clearTimeout(A._famT);
+  if (F) { try { await T.famLeave(S); } catch (e) { } }
+  if (!keep && !member && B.session) { try { await T.bankCall(S, "/disconnect", { session_id: B.session }); } catch (e) { } }
+  const kept = keep && !member ? { url: B.url, token: B.token, country: B.country, aspsp: B.aspsp, session: B.session, validUntil: B.validUntil, accounts: B.accounts, auto: B.auto } : null;
+  await T.storage.wipe();
+  const ns = T.newState();
+  if (kept && kept.url) Object.assign(ns.bank, kept);
+  A.S = ns; A.fire.key = ""; A.fire.base = null; A.wiz.step = 0;
+  A.ui = { months: null, vac: false, cat: null, q: "", page: 0, flow: "spesa", week: null };
+  await T.save(ns, true);
+  T.toast(T.tr("Fatto: l'app riparte da zero"));
+  A.go("home", null, true);
 };
 })();
 
@@ -4213,7 +5045,8 @@ async function start() {
   document.addEventListener("visibilitychange", async () => {
     if (document.visibilityState !== "visible") return;
     try { const s = await T.load(); if (s && s.meta.lastSaved && (!A.S.meta.lastSaved || s.meta.lastSaved > A.S.meta.lastSaved)) { A.S = s; A.fire.key = ""; A.render(); } } catch (e) { }
-    A.autoSync();
+    /* famiglia: prima si allinea (cosi' si sa se l'altro telefono ha gia' scaricato da Revolut), poi Revolut */
+    if (A.inFamily()) A.famSync(true).then(() => A.autoSync()); else A.autoSync();
   });
   T.$("sheet").addEventListener("click", e => { if (e.target === T.$("sheet")) T.closeSheet(); });
   document.addEventListener("keydown", e => { if (e.key === "Escape") T.closeSheet(); });
@@ -4236,7 +5069,12 @@ async function start() {
   /* ritorno dal consenso Revolut: ?code=...&state=... */
   let qs = null; try { qs = new URLSearchParams(location.search); } catch (e) { }
   if (qs && (qs.has("code") || qs.has("error"))) { try { history.replaceState(null, "", location.pathname); } catch (e) { } await A.finishConnect(qs); }
+  else if (A.checkJoinLink()) { /* ingresso nella famiglia dal QR */ }
+  else if (A.inFamily()) A.famSync(true).then(() => A.autoSync());
   else A.autoSync();
+  /* con l'app aperta, ogni 3 minuti guarda se ci sono modifiche dagli altri telefoni */
+  const iv = setInterval(() => { if (A.inFamily() && document.visibilityState === "visible") A.famSync(true); }, 180000);
+  if (iv && iv.unref) iv.unref();
 }
 window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); A.installPrompt = e; });
 if ("serviceWorker" in navigator && /^https:$|^http:$/.test(location.protocol) && (location.protocol === "https:" || /^(localhost|127\.0\.0\.1)$/.test(location.hostname))) {

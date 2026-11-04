@@ -60,5 +60,41 @@ for (const fmt of ["pkcs8", "pkcs1"]) {
   r = await worker.fetch(req("/disconnect", { session_id: SID }), env); d = await r.json();
   ok(d.ok, fmt + ": scollegamento");
 }
+/* cassaforte della famiglia (KV simulato) */
+{
+  const { privateKey } = generateKeyPairSync("rsa", { modulusLength: 2048, publicKeyEncoding: { type: "spki", format: "pem" }, privateKeyEncoding: { type: "pkcs8", format: "pem" } });
+  const base = { EB_APP_ID: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee", EB_PRIVATE_KEY: privateKey, APP_TOKEN: TOKEN, ALLOWED_ORIGIN: ORIGIN, REDIRECT_URL: "https://utente.github.io/app/" };
+  const req = (body, tok) => new Request("https://ponte.example.workers.dev/family", { method: "POST", headers: { Origin: ORIGIN, Authorization: "Bearer " + (tok || TOKEN), "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  let r = await worker.fetch(req({ op: "get", fid: "f".repeat(24) }), base);
+  ok(r.status === 501 && (await r.json()).error === "family_storage_missing", "famiglia: spazio KV mancante segnalato");
+  const mem = new Map();
+  const KV = { get: async (k, t) => mem.has(k) ? (t === "json" ? JSON.parse(mem.get(k)) : mem.get(k)) : null, put: async (k, v) => { mem.set(k, v); }, delete: async k => { mem.delete(k); } };
+  const env = Object.assign({ FAMIGLIA: KV }, base), FID = "Ab3_-".repeat(5) + "xyz", DATA = "v1.g.aaaaaaaaaaaaaaaa.bbbbbbbbbbbbbbbbbbbb";
+  r = await worker.fetch(new Request("https://p/", { method: "GET" }), env); let d = await r.json();
+  ok(d.family === true && !JSON.stringify(d).includes(TOKEN), "famiglia: stato del ponte indica lo spazio pronto");
+  r = await worker.fetch(req({ op: "get", fid: FID }, "x".repeat(40)), env);
+  ok(r.status === 401, "famiglia: senza codice di accesso rifiutata");
+  r = await worker.fetch(req({ op: "get", fid: "../x" }), env);
+  ok(r.status === 400, "famiglia: identificativo non valido rifiutato");
+  r = await worker.fetch(req({ op: "get", fid: FID }), env);
+  ok(r.status === 404, "famiglia: inesistente");
+  r = await worker.fetch(req({ op: "put", fid: FID, data: "testo in chiaro", create: true }), env);
+  ok(r.status === 400, "famiglia: rifiuta dati non cifrati");
+  r = await worker.fetch(req({ op: "put", fid: FID, data: DATA, create: true }), env); d = await r.json();
+  ok(r.status === 200 && d.ver === 1, "famiglia: creata (versione 1)");
+  r = await worker.fetch(req({ op: "put", fid: FID, data: DATA, create: true }), env);
+  ok(r.status === 409, "famiglia: non si crea due volte");
+  r = await worker.fetch(req({ op: "get", fid: FID }), env); d = await r.json();
+  ok(d.ver === 1 && d.data === DATA, "famiglia: lettura");
+  r = await worker.fetch(req({ op: "get", fid: FID, have: 1 }), env); d = await r.json();
+  ok(d.same === true && !d.data, "famiglia: nessun dato se gia' aggiornata");
+  r = await worker.fetch(req({ op: "put", fid: FID, data: DATA + "c", base: 1 }), env); d = await r.json();
+  ok(d.ver === 2, "famiglia: scrittura sulla versione attuale");
+  r = await worker.fetch(req({ op: "put", fid: FID, data: DATA, base: 1 }), env); d = await r.json();
+  ok(r.status === 409 && d.ver === 2, "famiglia: scrittura su versione vecchia rifiutata (conflitto)");
+  r = await worker.fetch(req({ op: "delete", fid: FID }), env);
+  r = await worker.fetch(req({ op: "get", fid: FID }), env);
+  ok(r.status === 404, "famiglia: sciolta");
+}
 console.log(fails ? fails + " test falliti" : "Tutti i test del ponte passati");
 process.exitCode = fails ? 1 : 0;
