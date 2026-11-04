@@ -173,3 +173,7 @@ fieldset.plain:disabled{opacity:.7}
 .qr-wrap svg{inline-size:min(280px,100%);block-size:auto}
 ol.steps{margin:8px 0 10px;padding-inline-start:20px;font-size:13.5px}
 ol.steps li{margin-block:3px}
+/* 1.6: periodo della schermata Spese */
+.seg.g2{display:grid;grid-template-columns:1fr 1fr;border-radius:18px}
+.seg.g2 button{border-radius:14px}
+input[type=date]{inline-size:100%;min-block-size:44px;border:1px solid var(--line);border-radius:14px;background:var(--card);padding:8px 12px}

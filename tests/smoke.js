@@ -54,6 +54,7 @@ const check = (cond, msg) => { console.log((cond ? "OK   " : "FAIL ") + msg); if
   for (const t of ["home", "spese", "budget", "fire", "altro"]) { await tab(t); await wait(900); check(txt($("view")).length > 100, "schermata " + t + " disegnata (" + txt($("view")).length + " caratteri)"); }
   await tab("home"); await wait(900);
   { const v = txt($("view"));
+    check(/dove dovresti essere oggi, giorno \d+ su \d+: [\d'’.,]+ CHF \([\d'’.,]+ CHF (di troppo|ancora disponibili)\)/.test(v), "home: tacca del mese con cifra di oggi e differenza");
     check(/Budget settimanale/.test(v) && /giorno per giorno/i.test(v) && /del numero FIRE/.test(v) && !/Ultime 8 settimane/.test(v), "home: settimana, giorno per giorno e FIRE"); }
   { const hits = $("dayCard").querySelectorAll("rect.hit");
     check(hits.length >= 1, "home: giorni toccabili (" + hits.length + ")");
@@ -79,18 +80,36 @@ const check = (cond, msg) => { console.log((cond ? "OK   " : "FAIL ") + msg); if
     check(txt($("fanCard").querySelector("div.readout")) !== before && /mediana/.test(txt($("fanCard"))), "fire: tocco sul grafico del patrimonio mostra i valori");
     F.retireAge = null; T.A.save(); }
   await tab("spese"); await wait(300);
-  { const wk = $("weeksCard").querySelectorAll("rect.hit");
-    check(wk.length === 8, "spese: ultime 8 settimane toccabili");
-    wk[6].dispatch("click"); await wait(100);
-    check(!$("sheet").hidden && /Settimana dal/.test(txt($("sheetBody"))), "spese: pannello della settimana");
-    const dh = $("sheetBody").querySelectorAll("rect.hit"); dh[0].dispatch("click"); await wait(100);
-    check(/Movimenti/.test(txt($("sheetBody"))), "spese: dalla settimana al giorno");
+  { const v = txt($("view"));
+    check(!/Ultime 8 settimane/.test(v) && !/Giorni della settimana/.test(v) && /Da inizio anno/.test(v) && /Mese per mese|Settimana per settimana/.test(v), "spese: periodo in testa, senza 8 settimane e giorni della settimana");
+    await tap($("periodCard"), "Mese precedente"); await wait(200);
+    const p = T.A.period();
+    check(p.key === "prec" && p.from.endsWith("-01") && /Giorno per giorno/.test(txt($("trendCard"))) && $("trendCard").querySelectorAll("rect.hit").length >= 28, "spese: mese precedente, grafico giorno per giorno");
+    await tap($("periodCard"), "Personalizzato"); await wait(100);
+    let di = $("periodCard").querySelectorAll("input").filter(i => i.attributes.type === "date"); di[0].value = "2026-08-01"; di[0].dispatch("change"); await wait(100);
+    di = $("periodCard").querySelectorAll("input").filter(i => i.attributes.type === "date"); di[1].value = "2026-09-30"; di[1].dispatch("change"); await wait(100);
+    check(T.A.period().from === "2026-08-01" && T.A.period().to === "2026-09-30" && /Settimana per settimana/.test(txt($("trendCard"))), "spese: periodo personalizzato, grafico settimana per settimana");
+    await tap($("periodCard"), "Da inizio anno"); await wait(100);
+    check(/Mese per mese/.test(txt($("trendCard"))) && T.A.period().from.endsWith("-01-01"), "spese: da inizio anno, grafico mese per mese");
+    const tot0 = txt($("view").querySelector("div.kpis"));
+    await tap($("periodCard"), "Con i costi fissi"); await wait(100);
+    check(T.A.S.fixed.length > 0 && /di cui/.test(txt($("view").querySelector("div.kpis"))) && txt($("view").querySelector("div.kpis")) !== tot0 && /Costi fissi/.test(txt($("catCard"))), "spese: interruttore costi fissi (totale, ciambella, elenco)");
+    $("catCard").querySelectorAll("div.li.tap").find(x => /^Costi fissi/.test(txt(x))).dispatch("click"); await wait(80);
+    check(!$("sheet").hidden && /distribuiti giorno per giorno/.test(txt($("sheetBody"))), "spese: dettaglio dei costi fissi"); T.closeSheet();
+    await tap($("periodCard"), "Solo spese variabili"); await wait(100);
+    const crow = $("catCard").querySelectorAll("div.li.tap")[0], cname = txt(crow.querySelector("span.t"));
+    crow.dispatch("click"); await wait(80);
+    check(!$("sheet").hidden && txt($("sheetBody").querySelector("h3")) === cname && /Movimenti/.test(txt($("sheetBody"))) && T.A.view === "spese", "spese: tocco su una categoria apre il dettaglio (" + cname + ")"); T.closeSheet();
+    const slice = $("catCard").querySelector("path"); slice.dispatch("click"); await wait(80);
+    check(!$("sheet").hidden, "spese: tocco sulla ciambella apre il dettaglio"); T.closeSheet();
+    const bars = $("trendCard").querySelectorAll("rect.hit"); bars[bars.length - 2].dispatch("click"); await wait(80);
+    check(/Per categoria/.test(txt($("sheetBody"))), "spese: tocco su una colonna apre il dettaglio del mese");
+    $("sheetBody").querySelectorAll("div.li.tap")[0].dispatch("click"); await wait(80);
+    check(!!$("sheetBody").querySelectorAll("button").find(b => txt(b) === "Indietro"), "spese: dal mese alla categoria");
     await tap($("sheetBody"), "Indietro");
-    check(/Settimana dal/.test(txt($("sheetBody"))), "spese: indietro alla settimana"); T.closeSheet(); }
-  /* spese: filtro mese, categoria, modifica movimento */
-  await tab("spese");
-  const chip = $("view").querySelectorAll("button.chip")[1]; chip.click(); await wait(200);
-  check(T.A.ui.months && T.A.ui.months.size === 1, "spese: filtro mese");
+    check(/Per categoria/.test(txt($("sheetBody"))), "spese: indietro al mese"); T.closeSheet(); }
+  /* spese: modifica movimento con regola */
+  { const q = $("view").querySelectorAll("input").find(i => i.attributes.type === "search"); q.value = "Coop"; q.dispatch("change"); await wait(100); }
   const li = $("view").querySelectorAll("div.li.tap").find(x => /^Coop\d{2}\.\d{2}\.\d{4}/.test(txt(x)));
   li.dispatch("click"); await wait();
   check(!$("sheet").hidden && txt($("sheetBody")).includes("Modifica movimento"), "spese: apre la modifica del movimento");

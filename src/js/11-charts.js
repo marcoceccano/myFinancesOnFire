@@ -38,7 +38,7 @@ T.columns = (host, items, opt) => {
   const max = Math.max(opt.ref || 0, ...items.map(it => T.sum((it.parts || [{ v: it.v }]).map(p => Math.max(0, p.v)))), 1);
   const step = nice(max / 4), top = Math.ceil(max / step) * step;
   for (let v = 0; v <= top + 1e-9; v += step) { const y = Tp + ih - v / top * ih; T.s("line", { x1: L, x2: w - R, y1: y, y2: y, stroke: "var(--line)" }, s); txt(s, L - 6, y + 4, T.fmt.k(v), { "text-anchor": "end" }); }
-  const bw = iw / Math.max(1, items.length), gap = Math.min(10, bw * 0.25);
+  const bw = iw / Math.max(1, items.length), gap = Math.min(10, bw * 0.25), every = Math.max(1, Math.ceil(items.length / (opt.maxLabels || 8)));
   items.forEach((it, i) => {
     let y = Tp + ih; const x = L + i * bw + gap / 2;
     for (const p of it.parts || [{ v: it.v, c: it.c }]) {
@@ -46,7 +46,7 @@ T.columns = (host, items, opt) => {
       const r = T.s("rect", { x, y, width: Math.max(2, bw - gap), height: hh, fill: paint(s, p.c || "var(--brand2)"), rx: 2 }, s);
       const tt = T.s("title", {}, r); tt.textContent = (it.title || it.l) + (p.n ? " · " + T.tr(p.n) : "") + ": " + T.fmt.money(p.v);
     }
-    if (it.l) txt(s, x + (bw - gap) / 2, h - 7, it.l, { "text-anchor": "middle" });
+    if (it.l && i % every === 0) txt(s, x + (bw - gap) / 2, h - 7, it.l, { "text-anchor": "middle" });
     if (opt.onClick) { const hit = T.s("rect", { x: L + i * bw, y: Tp, width: bw, height: ih, fill: "transparent", style: "cursor:pointer", class: "hit" }, s); hit.addEventListener("click", () => opt.onClick(it, i)); }
   });
   if (opt.ref) { const y = Tp + ih - opt.ref / top * ih; T.s("line", { x1: L, x2: w - R, y1: y, y2: y, stroke: "var(--bad)", "stroke-dasharray": "5 4", "stroke-width": 1.6 }, s); txt(s, w - R, y - 4, opt.refLabel || "", { "text-anchor": "end", style: "fill:var(--bad);font-size:11px" }); }

@@ -41,7 +41,12 @@ const ITALIAN = /\b(spese|movimenti|importa|aggiorna|settimana|giorni|risparmio|
     T.A.go("home"); await wait(1300);
     { const dh = $("dayCard") ? $("dayCard").querySelectorAll("rect.hit") : []; if (dh.length) { dh[dh.length - 1].dispatch("click"); await wait(80); seen.push(txt($("sheetBody"))); T.closeSheet(); } }
     T.A.go("spese"); await wait(300);
-    { const wk = $("weeksCard").querySelectorAll("rect.hit"); wk[7].dispatch("click"); await wait(80); seen.push(txt($("sheetBody"))); T.closeSheet(); }
+    /* 1.6: dettagli della schermata Spese, costi fissi, periodo personalizzato */
+    { $("catCard").querySelectorAll("div.li.tap")[0].dispatch("click"); await wait(80); seen.push(txt($("sheetBody"))); T.closeSheet();
+      const bars = $("trendCard").querySelectorAll("rect.hit"); bars[bars.length - 1].dispatch("click"); await wait(80); seen.push(txt($("sheetBody"))); T.closeSheet();
+      T.A.ui.withFixed = true; T.A.ui.period = "custom"; T.A.ui.from = "2026-09-01"; T.A.ui.to = "2026-10-15"; T.A.render(); await wait(200); seen.push(txt($("view")));
+      T.A.fixedSheet("2026-09-01", "2026-10-15"); await wait(50); seen.push(txt($("sheetBody"))); T.closeSheet();
+      T.A.ui.withFixed = false; T.A.ui.period = "anno"; T.A.render(); await wait(100); }
     T.A.S.fire.retireAge = 45; T.A.go("fire"); await wait(1300); seen.push(txt($("view"))); T.A.S.fire.retireAge = null;
     T.A.go("home"); await wait(1300);
     seen.push(txt($("title")) + " " + txt($("subtitle")) + " " + $("tabs").children.map(b => (b.querySelector("span") || { textContent: "" }).textContent).join(" "));

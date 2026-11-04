@@ -12,13 +12,13 @@ A.cat = id => A.S.categories.find(c => c.id === id) || { id, name: T.tr("Senza c
 
 /* navigazione con il tasto indietro di Android */
 A.go = (view, sub, replace) => {
-  A.view = view; A.sub = sub || null;
+  A.view = view; A.sub = sub || null; A._toTop = true;
   try { const st = { v: view, s: A.sub }; if (replace) history.replaceState(st, ""); else history.pushState(st, ""); } catch (e) { }
   A.render(); window.scrollTo && window.scrollTo(0, 0);
 };
 window.addEventListener && window.addEventListener("popstate", e => {
   if (!T.$("sheet").hidden) { T.closeSheet(); try { history.pushState({ v: A.view, s: A.sub }, ""); } catch (x) { } return; }
-  const st = e.state || { v: "home" }; A.view = st.v || "home"; A.sub = st.s || null; A.render();
+  const st = e.state || { v: "home" }; A.view = st.v || "home"; A.sub = st.s || null; A._toTop = true; A.render();
 });
 
 A.renderBar = () => {
@@ -29,6 +29,8 @@ A.renderBar = () => {
 };
 A.render = () => {
   const S = A.S, main = T.$("view");
+  /* ridisegnare la stessa schermata non deve riportarti in cima: si tiene la posizione */
+  const y = !A._toTop && typeof window.scrollY === "number" ? window.scrollY : 0; A._toTop = false;
   T.clear(main);
   T.fmt.cur = S.profile.currency || "CHF";
   const onb = !S.profile.onboarded;
@@ -47,6 +49,7 @@ A.render = () => {
   if (onb) return A.renderOnboarding(main);
   const fn = { home: A.renderHome, spese: A.renderSpese, budget: A.renderBudget, fire: A.renderFire, altro: A.renderAltro }[A.view] || A.renderHome;
   fn(main);
+  if (y > 0 && window.scrollTo) window.scrollTo(0, y);
 };
 
 /* ---------- risultati FIRE, calcolati in differita e messi in cache ---------- */
@@ -125,17 +128,6 @@ A.daySheet = (day, back) => {
   body.appendChild(lst);
   T.sheet(day.label, body, [back ? h("button.btn", { type: "button", onclick: back }, T.tr("Indietro")) : null, h("button.btn.primary", { type: "button", onclick: () => T.closeSheet() }, T.tr("Chiudi"))].filter(Boolean));
 };
-/* pannello di una settimana passata (dalla schermata Spese) */
-A.weekSheet = ws => {
-  const w = T.week(A.S, ws), body = h("div");
-  body.appendChild(h("div.row.between", h("div", h("div.big", A.money(w.spent)), h("div.small.muted", T.tr("spesi su ") + A.money(w.cap))),
-    h("div.mid" + (w.spent > w.cap ? ".bad" : ".ok"), w.spent > w.cap ? T.tr("Sforato di ") + A.money(w.spent - w.cap) : T.tr("Avanzati {v}", { v: A.money(w.cap - w.spent) }))));
-  if (w.vac > 0) body.appendChild(h("div.small", { style: { color: "var(--warn)", fontWeight: 600, marginBlockStart: "6px" } }, T.tr("In vacanza questa settimana: {v}, nel budget vacanze", { v: A.money(w.vac) })));
-  body.appendChild(h("p.sub", { style: { marginBlockStart: "10px" } }, T.tr("Tocca un giorno per vedere il dettaglio.")));
-  const box = h("div.chart-box"); body.appendChild(box);
-  T.sheet(T.tr("Settimana dal ") + T.fmt.date(ws), body, [h("button.btn.primary", { type: "button", onclick: () => T.closeSheet() }, T.tr("Chiudi"))]);
-  A.dayChartBlock(box, ws, d => A.daySheet(d, () => A.weekSheet(ws)));
-};
 
 /* ---------- HOME ---------- */
 A.renderHome = main => {
@@ -174,7 +166,9 @@ A.renderHome = main => {
     main.appendChild(h("div.card", h("h2", T.fmt.month(mk)),
       h("div.row.between", h("span", T.tr("Spese di tutti i giorni")), h("b", A.money(agg.total) + " / " + A.money(budgetM))),
       T.progress(agg.total, budgetM, agg.total > budgetM ? "var(--bad)" : "var(--brand2)", budgetM * elapsed / monthDays),
-      h("div.small.muted", { style: { marginBlockStart: "6px" } }, T.tr("La tacca indica dove dovresti essere oggi (") + elapsed + T.tr(" giorni su ") + monthDays + ")."),
+      (() => { const target = budgetM * elapsed / monthDays, diff = agg.total - target;
+        return h("div.small.muted", { style: { marginBlockStart: "6px" } }, T.tr("La tacca indica dove dovresti essere oggi, giorno {d} su {n}: ", { d: elapsed, n: monthDays }), h("b", { style: { color: "var(--ink)" } }, A.money(target)), " (",
+          h("span", { style: { color: diff > 0 ? "var(--bad)" : "var(--ok)", fontWeight: 700 } }, diff > 0 ? T.tr("{v} di troppo", { v: A.money(diff) }) : T.tr("{v} ancora disponibili", { v: A.money(-diff) })), ")."); })(),
       h("div.kpis", { style: { marginBlockStart: "12px" } }, T.kpi(T.tr("Costi fissi"), A.money(pic.now.fixed), T.tr("al mese")), T.kpi(T.tr("Tasso di risparmio"), pic.rateNow == null ? "-" : T.fmt.pct(pic.rateNow), pic.income ? T.tr("su ") + A.money(pic.income) + T.tr(" netti") : T.tr("inserisci il reddito")))));
   }
   /* FIRE: tutta la scheda porta al simulatore */

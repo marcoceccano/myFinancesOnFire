@@ -179,6 +179,14 @@ Quando l'utente corregge un movimento con *vale anche per gli altri*, nasce una 
 
 Propone il backup, permette di tenere ponte e consenso Revolut (i movimenti degli ultimi 90 giorni si riscaricano), altrimenti revoca il consenso. Scioglie la famiglia (chi l'ha creata) o ne esce (chi c'e' entrato). Cancella l'archivio, la base della famiglia, il database con il vecchio nome `traguardo` e le copie in localStorage, poi riparte dalla configurazione iniziale.
 
+## Schermata Spese (1.6)
+
+- **Periodo** (`A.period`): da inizio anno, da inizio mese, mese precedente, personalizzato (`ui.from`, `ui.to`). Si conta dal primo movimento importato; se i dati sono indietro di piu' di 3 giorni ci si ferma all'ultimo movimento e compare un avviso.
+- **Costi fissi** (`T.fixedInRange`): ogni voce (escluse quelle di risparmio, come il 3a) matura giorno per giorno: un mese intero vale l'importo mensile, un pezzo di mese la sua parte; vale anche il nuovo importo "dal".
+- **Grafico** (`A.buckets`): fino a 35 giorni per giorno, fino a 120 per settimana, oltre per mese. La linea e' il budget delle spese variabili (piu' i costi fissi se attivi) riportato al giorno, alla settimana o al mese.
+- **Dettagli** (`A.spendSheet`, `A.fixedSheet`): foglio dal basso con totale, media mensile, andamento, categorie o esercenti e movimenti; da una colonna si passa alla categoria e si torna indietro.
+- **Ridisegno:** `A.render` tiene la posizione di scorrimento; solo `A.go` (cambio schermata) riporta in cima.
+
 ## Migrazione 1.4
 
 Una volta sola (`meta.v14`): la soglia di probabilita' passa da 85% a 90% se era rimasta quella predefinita, e i colori delle categorie che erano nella vecchia tavolozza passano alla tavolozza Bosco nella stessa posizione (`T.PALETTE_OLD` -> `T.PALETTE`).

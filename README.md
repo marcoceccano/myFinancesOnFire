@@ -8,6 +8,12 @@ App per il telefono che mette insieme tre cose:
 
 Disponibile in italiano, inglese e tedesco. I dati restano sul telefono. L'app non ha server, account o statistiche: e' solo un insieme di file che il browser scarica e poi usa anche offline.
 
+## Novita' della 1.6
+
+- **Home:** sotto la barra del mese la cifra a cui dovresti essere oggi e la differenza con la spesa reale (rosso se sei sopra, verde se hai ancora margine).
+- **Spese:** periodo in testa (da inizio anno, da inizio mese, mese precedente, personalizzato con date), interruttore per sommare i costi fissi (distribuiti giorno per giorno), grafico che passa da giorni a settimane a mesi secondo il periodo, dettaglio in un pannello dal basso toccando colonne, categorie, fette della ciambella, esercenti e costi fissi. Tolti il grafico delle ultime 8 settimane e quello dei giorni della settimana.
+- **Correzione:** toccare qualcosa in una schermata non la riporta piu' in cima.
+
 ## Novita' della 1.5
 
 - **Famiglia:** condividi spese, categorie, budget e collegamento Revolut con un altro telefono. L'altro telefono inquadra un QR e vede subito gli stessi dati; le modifiche si allineano da sole. FIRE e reddito li gestisce chi crea la famiglia. I dati passano dal tuo ponte gia' cifrati. Guida: `GUIDA-FAMIGLIA.md`.
