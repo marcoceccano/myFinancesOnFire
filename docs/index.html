@@ -211,7 +211,7 @@ input[type=date]{inline-size:100%;min-block-size:44px;border:1px solid var(--lin
 /* myFinances on FIRE · utilita' comuni (nessuna dipendenza esterna) */
 "use strict";
 const T = (typeof globalThis !== "undefined" ? globalThis : window).T = {};
-T.APP = { name: "myFinances on FIRE", id: "myfinances-on-fire", version: "1.6.0", schema: 1 };
+T.APP = { name: "myFinances on FIRE", id: "myfinances-on-fire", version: "1.7.0", schema: 1 };
 
 /* ---------- numeri e date ---------- */
 T.round2 = v => Math.round(v * 100) / 100;
@@ -1186,7 +1186,121 @@ T.DICT = {
 "ogni 6 mesi": "every 6 months",
 "all'anno": "per year",
 "Nessun costo fisso inserito": "No fixed costs entered",
-"Ultimo movimento il {d}: aggiorna Revolut o importa l'estratto per completare il periodo.": "Last transaction on {d}: refresh Revolut or import the statement to complete the period."
+"Ultimo movimento il {d}: aggiorna Revolut o importa l'estratto per completare il periodo.": "Last transaction on {d}: refresh Revolut or import the statement to complete the period.",
+"valore nel tempo": "value over time",
+"Il report di Interactive Brokers non e' leggibile.": "The Interactive Brokers report cannot be read.",
+"Il report di Interactive Brokers e' vuoto: controlla le sezioni della Flex Query.": "The Interactive Brokers report is empty: check the sections of the Flex Query.",
+"Il token di Interactive Brokers e' scaduto: generane uno nuovo (Flex Web Service) e aggiornalo nel ponte come IBKR_TOKEN.": "The Interactive Brokers token has expired: generate a new one (Flex Web Service) and update it in the bridge as IBKR_TOKEN.",
+"Il token di Interactive Brokers non e' valido: ricopialo nel ponte come IBKR_TOKEN.": "The Interactive Brokers token is not valid: copy it again into the bridge as IBKR_TOKEN.",
+"Il numero della Flex Query non e' valido: controlla IBKR_QUERY_ID nel ponte (deve essere una Activity Flex Query).": "The Flex Query number is not valid: check IBKR_QUERY_ID in the bridge (it must be an Activity Flex Query).",
+"Il token e' limitato a un indirizzo IP: generane uno nuovo lasciando vuoto il campo IP.": "The token is restricted to an IP address: generate a new one and leave the IP field empty.",
+"Il Flex Web Service non e' attivo: attivalo in Interactive Brokers (Flex Web Service Configuration).": "The Flex Web Service is not active: activate it in Interactive Brokers (Flex Web Service Configuration).",
+"Troppe richieste a Interactive Brokers: riprova tra qualche minuto.": "Too many requests to Interactive Brokers: try again in a few minutes.",
+"Questa Flex Query e' di tipo vecchio: creane una nuova come Activity Flex Query.": "This Flex Query is a legacy type: create a new one as an Activity Flex Query.",
+"Interactive Brokers sta ancora preparando il report: riprova tra qualche minuto.": "Interactive Brokers is still preparing the report: try again in a few minutes.",
+"Errore di Interactive Brokers": "Interactive Brokers error",
+"Il ponte non e' configurato: inseriscilo prima in Collegamento automatico.": "The bridge is not set up: enter it first in Automatic Revolut connection.",
+"Nel ponte mancano IBKR_TOKEN e IBKR_QUERY_ID (vedi la guida).": "IBKR_TOKEN and IBKR_QUERY_ID are missing in the bridge (see the guide).",
+"Il ponte e' di una versione precedente: in Cloudflare incolla il nuovo ponte/worker.js (versione 1.2.0) e premi Deploy.": "The bridge is an older version: in Cloudflare paste the new ponte/worker.js (version 1.2.0) and press Deploy.",
+"Portafoglio": "Portfolio",
+"Il token di Interactive Brokers e' scaduto": "The Interactive Brokers token has expired",
+"Il token di Interactive Brokers scade tra {n} giorni": "The Interactive Brokers token expires in {n} days",
+"Generane uno nuovo e aggiornalo nel ponte (IBKR_TOKEN)": "Generate a new one and update it in the bridge (IBKR_TOKEN)",
+"Altri investimenti (fuori da Interactive Brokers)": "Other investments (outside Interactive Brokers)",
+"Per esempio azioni del datore di lavoro, 3a investito, altri conti.": "For example employer shares, invested pillar 3a, other accounts.",
+"Piu' Interactive Brokers: {i} (dati al {d}). Patrimonio investito totale: {t}.": "Plus Interactive Brokers: {i} (data as of {d}). Total invested wealth: {t}.",
+"Aggiorna da solo con Interactive Brokers": "Update automatically with Interactive Brokers",
+"Interactive Brokers": "Interactive Brokers",
+"Portafoglio al {d}": "Portfolio as of {d}",
+"Posizioni, ripartizione e dividendi, il FIRE si aggiorna da solo": "Positions, allocation and dividends; FIRE updates by itself",
+"Errore": "Error",
+"Se colleghi Interactive Brokers, il report passa dal tuo ponte senza essere salvato li': in Interactive Brokers resta solo in lettura.": "If you connect Interactive Brokers, the report goes through your bridge without being stored there: Interactive Brokers stays read-only.",
+"Interactive Brokers configurato": "Interactive Brokers set up",
+"Interactive Brokers non configurato (facoltativo)": "Interactive Brokers not set up (optional)",
+"Liquidita'": "Cash",
+"Portafoglio aggiornato: dati al {d}": "Portfolio updated: data as of {d}",
+"Il FIRE usa ora il valore di Interactive Brokers": "FIRE now uses the Interactive Brokers value",
+"Collega al FIRE": "Connect to FIRE",
+"Nel FIRE avevi inserito un patrimonio investito di {a}. Interactive Brokers vale oggi {b}.": "In FIRE you entered invested wealth of {a}. Interactive Brokers is worth {b} today.",
+"Quel valore comprende gia' Interactive Brokers?": "Does that value already include Interactive Brokers?",
+"Da ora in poi il FIRE somma da solo il valore aggiornato di Interactive Brokers agli altri investimenti (per esempio azioni del datore di lavoro, 3a investito).": "From now on FIRE adds the updated Interactive Brokers value to your other investments by itself (for example employer shares, invested pillar 3a).",
+"No, va aggiunto": "No, add it",
+"Si', e' gia' compreso": "Yes, it is already included",
+"Il FIRE usa di nuovo il valore inserito a mano": "FIRE uses the manually entered value again",
+"Apri il portafoglio": "Open the portfolio",
+"Interactive Brokers, dati al {d}": "Interactive Brokers, data as of {d}",
+"in 30 giorni": "in 30 days",
+"‹ Indietro": "‹ Back",
+"Collega Interactive Brokers per vedere qui posizioni, ripartizione, andamento e dividendi, e per aggiornare da solo il patrimonio del FIRE.": "Connect Interactive Brokers to see positions, allocation, performance and dividends here, and to update the FIRE wealth automatically.",
+"Configura Interactive Brokers": "Set up Interactive Brokers",
+"Valore del portafoglio": "Portfolio value",
+"dati al {d} · aggiornato {t}": "data as of {d} · updated {t}",
+"Aggiorna": "Refresh",
+"30 giorni": "30 days",
+"12 mesi": "12 months",
+"Guadagno non realizzato": "Unrealised gain",
+" sul costo": " on cost",
+"Le variazioni comprendono versamenti e prelievi. Liquidita' nel conto: {c}.": "Changes include deposits and withdrawals. Cash in the account: {c}.",
+"Manca il cambio {c} in Profilo e reddito: gli importi sono in {c}.": "The {c} exchange rate is missing in Profile and income: amounts are in {c}.",
+"Altri": "Others",
+"Ripartizione": "Allocation",
+"Per titolo": "By holding",
+"Per tipo": "By type",
+"Per valuta": "By currency",
+"totale": "total",
+" posizione": " position",
+" posizioni": " positions",
+"Andamento": "Performance",
+"Valore del conto giorno per giorno, versamenti compresi. Tocca il grafico per leggere un giorno.": "Account value day by day, deposits included. Tap the chart to read a day.",
+"Posizioni": "Positions",
+"Nessuna posizione aperta": "No open positions",
+"Dividendi": "Dividends",
+"Netti, dopo le ritenute alla fonte. Ultimi 12 mesi: {v}.": "Net, after withholding taxes. Last 12 months: {v}.",
+"Nel FIRE": "In FIRE",
+"Il patrimonio investito del FIRE si aggiorna da solo: {o} di altri investimenti + {i} di Interactive Brokers = {t}.": "The FIRE invested wealth updates by itself: {o} of other investments + {i} at Interactive Brokers = {t}.",
+"Scollega dal FIRE": "Disconnect from FIRE",
+"Il FIRE usa ancora il patrimonio inserito a mano ({v}).": "FIRE still uses the manually entered wealth ({v}).",
+"Il FIRE lo gestisce {n}.": "{n} manages FIRE.",
+"Azioni, ETF e fondi sono il {p} del conto (nel FIRE la quota in azioni e' {q}). Gli ETF obbligazionari contano qui come ETF.": "Shares, ETFs and funds are {p} of the account (the equity share in FIRE is {q}). Bond ETFs count as ETFs here.",
+" del portafoglio": " of the portfolio",
+"Quantita'": "Quantity",
+"Prezzo": "Price",
+"Valore in {c}": "Value in {c}",
+"Costo di acquisto": "Purchase cost",
+"Tipo": "Type",
+"Borsa": "Exchange",
+"Posizioni, liquidita', valore nel tempo e dividendi dal report Flex di Interactive Brokers, in sola lettura. Il token resta nel tuo ponte. La guida completa e' nel file GUIDA-INTERACTIVE-BROKERS.md.": "Positions, cash, value over time and dividends from the Interactive Brokers Flex report, read-only. The token stays in your bridge. The full guide is in the file GUIDA-INTERACTIVE-BROKERS.md.",
+"Dati al {d}, aggiornato {t}": "Data as of {d}, updated {t}",
+"Serve il ponte: configuralo prima in Collegamento automatico.": "The bridge is needed: set it up first in Automatic Revolut connection.",
+"1 · Crea la Flex Query": "1 · Create the Flex Query",
+"In Interactive Brokers: Performance & Reports, poi Flex Queries, poi + accanto a Activity Flex Query.": "In Interactive Brokers: Performance & Reports, then Flex Queries, then + next to Activity Flex Query.",
+"Sezioni: Account Information, Open Positions (opzione Summary), Cash Report, Net Asset Value (NAV) in Base, Cash Transactions (Dividends, Withholding Tax, Payment In Lieu Of Dividends). In ciascuna scegli Select All.": "Sections: Account Information, Open Positions (Summary option), Cash Report, Net Asset Value (NAV) in Base, Cash Transactions (Dividends, Withholding Tax, Payment In Lieu Of Dividends). In each one choose Select All.",
+"Formato XML, periodo Last 365 Calendar Days. Salva e annota il numero (Query ID).": "Format XML, period Last 365 Calendar Days. Save and note the number (Query ID).",
+"2 · Attiva il Flex Web Service": "2 · Activate the Flex Web Service",
+"Flex Queries, poi Flex Web Service Configuration: attivalo, scegli la scadenza piu' lunga, lascia vuoto il campo IP e genera il token.": "Flex Queries, then Flex Web Service Configuration: activate it, choose the longest expiry, leave the IP field empty and generate the token.",
+"Il token scade: segna qui sotto la data, l'app ti avvisa 14 giorni prima.": "The token expires: enter the date below and the app will remind you 14 days before.",
+"3 · Inseriscili nel ponte": "3 · Add them to the bridge",
+"In Cloudflare, Worker del ponte, Settings, Variables and Secrets: IBKR_TOKEN (Secret) con il token e IBKR_QUERY_ID (Text) con il numero.": "In Cloudflare, bridge Worker, Settings, Variables and Secrets: IBKR_TOKEN (Secret) with the token and IBKR_QUERY_ID (Text) with the number.",
+"Incolla il nuovo ponte/worker.js (versione 1.2.0) e premi Deploy.": "Paste the new ponte/worker.js (version 1.2.0) and press Deploy.",
+"Il token scade il": "The token expires on",
+"Scarico il report...": "Downloading the report...",
+"Scarica il portafoglio": "Download the portfolio",
+"Interactive Brokers prepara il report: di solito servono da 5 a 20 secondi.": "Interactive Brokers is preparing the report: it usually takes 5 to 20 seconds.",
+"Aggiorna da solo all'apertura (al massimo ogni 12 ore)": "Refresh automatically when opening (at most every 12 hours)",
+"Togliere il portafoglio?": "Remove the portfolio?",
+"Posizioni e storico vengono cancellati dall'app. Il FIRE torna al valore inserito a mano. Il token resta nel ponte finche' non lo togli tu.": "Positions and history are deleted from the app. FIRE goes back to the manually entered value. The token stays in the bridge until you remove it.",
+"Togli": "Remove",
+"Togli il portafoglio": "Remove the portfolio",
+"ETF": "ETF",
+"Azioni": "Shares",
+"Fondi": "Funds",
+"Obbligazioni": "Bonds",
+"Opzioni": "Options",
+"Futures": "Futures",
+"Cripto": "Crypto",
+"Materie prime": "Commodities",
+"Warrant": "Warrants",
+"Altro~tipo": "Other"
 },
 "de": {
 "Annulla": "Abbrechen",
@@ -2017,7 +2131,121 @@ T.DICT = {
 "ogni 6 mesi": "alle 6 Monate",
 "all'anno": "pro Jahr",
 "Nessun costo fisso inserito": "Keine Fixkosten erfasst",
-"Ultimo movimento il {d}: aggiorna Revolut o importa l'estratto per completare il periodo.": "Letzter Umsatz am {d}: Aktualisiere Revolut oder importiere den Auszug, um den Zeitraum zu vervollständigen."
+"Ultimo movimento il {d}: aggiorna Revolut o importa l'estratto per completare il periodo.": "Letzter Umsatz am {d}: Aktualisiere Revolut oder importiere den Auszug, um den Zeitraum zu vervollständigen.",
+"valore nel tempo": "Wert im Zeitverlauf",
+"Il report di Interactive Brokers non e' leggibile.": "Der Bericht von Interactive Brokers ist nicht lesbar.",
+"Il report di Interactive Brokers e' vuoto: controlla le sezioni della Flex Query.": "Der Bericht von Interactive Brokers ist leer: Prüfe die Abschnitte der Flex Query.",
+"Il token di Interactive Brokers e' scaduto: generane uno nuovo (Flex Web Service) e aggiornalo nel ponte come IBKR_TOKEN.": "Der Token von Interactive Brokers ist abgelaufen: Erzeuge einen neuen (Flex Web Service) und aktualisiere ihn in der Brücke als IBKR_TOKEN.",
+"Il token di Interactive Brokers non e' valido: ricopialo nel ponte come IBKR_TOKEN.": "Der Token von Interactive Brokers ist ungültig: Kopiere ihn erneut als IBKR_TOKEN in die Brücke.",
+"Il numero della Flex Query non e' valido: controlla IBKR_QUERY_ID nel ponte (deve essere una Activity Flex Query).": "Die Nummer der Flex Query ist ungültig: Prüfe IBKR_QUERY_ID in der Brücke (es muss eine Activity Flex Query sein).",
+"Il token e' limitato a un indirizzo IP: generane uno nuovo lasciando vuoto il campo IP.": "Der Token ist auf eine IP-Adresse beschränkt: Erzeuge einen neuen und lass das IP-Feld leer.",
+"Il Flex Web Service non e' attivo: attivalo in Interactive Brokers (Flex Web Service Configuration).": "Der Flex Web Service ist nicht aktiv: Aktiviere ihn in Interactive Brokers (Flex Web Service Configuration).",
+"Troppe richieste a Interactive Brokers: riprova tra qualche minuto.": "Zu viele Anfragen an Interactive Brokers: Versuch es in ein paar Minuten noch einmal.",
+"Questa Flex Query e' di tipo vecchio: creane una nuova come Activity Flex Query.": "Diese Flex Query ist ein alter Typ: Erstelle eine neue als Activity Flex Query.",
+"Interactive Brokers sta ancora preparando il report: riprova tra qualche minuto.": "Interactive Brokers bereitet den Bericht noch vor: Versuch es in ein paar Minuten noch einmal.",
+"Errore di Interactive Brokers": "Fehler von Interactive Brokers",
+"Il ponte non e' configurato: inseriscilo prima in Collegamento automatico.": "Die Brücke ist nicht eingerichtet: Gib sie zuerst unter Automatische Revolut-Verbindung ein.",
+"Nel ponte mancano IBKR_TOKEN e IBKR_QUERY_ID (vedi la guida).": "In der Brücke fehlen IBKR_TOKEN und IBKR_QUERY_ID (siehe Anleitung).",
+"Il ponte e' di una versione precedente: in Cloudflare incolla il nuovo ponte/worker.js (versione 1.2.0) e premi Deploy.": "Die Brücke hat eine ältere Version: Füge in Cloudflare das neue ponte/worker.js (Version 1.2.0) ein und drücke Deploy.",
+"Portafoglio": "Portfolio",
+"Il token di Interactive Brokers e' scaduto": "Der Token von Interactive Brokers ist abgelaufen",
+"Il token di Interactive Brokers scade tra {n} giorni": "Der Token von Interactive Brokers läuft in {n} Tagen ab",
+"Generane uno nuovo e aggiornalo nel ponte (IBKR_TOKEN)": "Erzeuge einen neuen und aktualisiere ihn in der Brücke (IBKR_TOKEN)",
+"Altri investimenti (fuori da Interactive Brokers)": "Andere Anlagen (ausserhalb von Interactive Brokers)",
+"Per esempio azioni del datore di lavoro, 3a investito, altri conti.": "Zum Beispiel Aktien des Arbeitgebers, investierte Säule 3a, andere Konten.",
+"Piu' Interactive Brokers: {i} (dati al {d}). Patrimonio investito totale: {t}.": "Plus Interactive Brokers: {i} (Daten vom {d}). Investiertes Vermögen insgesamt: {t}.",
+"Aggiorna da solo con Interactive Brokers": "Automatisch mit Interactive Brokers aktualisieren",
+"Interactive Brokers": "Interactive Brokers",
+"Portafoglio al {d}": "Portfolio vom {d}",
+"Posizioni, ripartizione e dividendi, il FIRE si aggiorna da solo": "Positionen, Aufteilung und Dividenden; FIRE aktualisiert sich selbst",
+"Errore": "Fehler",
+"Se colleghi Interactive Brokers, il report passa dal tuo ponte senza essere salvato li': in Interactive Brokers resta solo in lettura.": "Wenn du Interactive Brokers verbindest, läuft der Bericht über deine Brücke, ohne dort gespeichert zu werden: Interactive Brokers bleibt nur lesend.",
+"Interactive Brokers configurato": "Interactive Brokers eingerichtet",
+"Interactive Brokers non configurato (facoltativo)": "Interactive Brokers nicht eingerichtet (optional)",
+"Liquidita'": "Liquidität",
+"Portafoglio aggiornato: dati al {d}": "Portfolio aktualisiert: Daten vom {d}",
+"Il FIRE usa ora il valore di Interactive Brokers": "FIRE verwendet jetzt den Wert von Interactive Brokers",
+"Collega al FIRE": "Mit FIRE verbinden",
+"Nel FIRE avevi inserito un patrimonio investito di {a}. Interactive Brokers vale oggi {b}.": "Im FIRE hast du ein investiertes Vermögen von {a} eingegeben. Interactive Brokers ist heute {b} wert.",
+"Quel valore comprende gia' Interactive Brokers?": "Enthält dieser Wert Interactive Brokers bereits?",
+"Da ora in poi il FIRE somma da solo il valore aggiornato di Interactive Brokers agli altri investimenti (per esempio azioni del datore di lavoro, 3a investito).": "Ab jetzt addiert FIRE den aktuellen Wert von Interactive Brokers selbst zu den anderen Anlagen (zum Beispiel Aktien des Arbeitgebers, investierte Säule 3a).",
+"No, va aggiunto": "Nein, hinzufügen",
+"Si', e' gia' compreso": "Ja, schon enthalten",
+"Il FIRE usa di nuovo il valore inserito a mano": "FIRE verwendet wieder den manuell eingegebenen Wert",
+"Apri il portafoglio": "Portfolio öffnen",
+"Interactive Brokers, dati al {d}": "Interactive Brokers, Daten vom {d}",
+"in 30 giorni": "in 30 Tagen",
+"‹ Indietro": "‹ Zurück",
+"Collega Interactive Brokers per vedere qui posizioni, ripartizione, andamento e dividendi, e per aggiornare da solo il patrimonio del FIRE.": "Verbinde Interactive Brokers, um hier Positionen, Aufteilung, Entwicklung und Dividenden zu sehen und das FIRE-Vermögen automatisch zu aktualisieren.",
+"Configura Interactive Brokers": "Interactive Brokers einrichten",
+"Valore del portafoglio": "Portfoliowert",
+"dati al {d} · aggiornato {t}": "Daten vom {d} · aktualisiert {t}",
+"Aggiorna": "Aktualisieren",
+"30 giorni": "30 Tage",
+"12 mesi": "12 Monate",
+"Guadagno non realizzato": "Unrealisierter Gewinn",
+" sul costo": " auf die Kosten",
+"Le variazioni comprendono versamenti e prelievi. Liquidita' nel conto: {c}.": "Die Veränderungen enthalten Einzahlungen und Abhebungen. Liquidität im Konto: {c}.",
+"Manca il cambio {c} in Profilo e reddito: gli importi sono in {c}.": "Der Wechselkurs {c} fehlt unter Profil und Einkommen: Die Beträge sind in {c}.",
+"Altri": "Weitere",
+"Ripartizione": "Aufteilung",
+"Per titolo": "Nach Titel",
+"Per tipo": "Nach Typ",
+"Per valuta": "Nach Währung",
+"totale": "Total",
+" posizione": " Position",
+" posizioni": " Positionen",
+"Andamento": "Entwicklung",
+"Valore del conto giorno per giorno, versamenti compresi. Tocca il grafico per leggere un giorno.": "Kontowert Tag für Tag, Einzahlungen inbegriffen. Tippe auf das Diagramm, um einen Tag abzulesen.",
+"Posizioni": "Positionen",
+"Nessuna posizione aperta": "Keine offenen Positionen",
+"Dividendi": "Dividenden",
+"Netti, dopo le ritenute alla fonte. Ultimi 12 mesi: {v}.": "Netto, nach Quellensteuern. Letzte 12 Monate: {v}.",
+"Nel FIRE": "Im FIRE",
+"Il patrimonio investito del FIRE si aggiorna da solo: {o} di altri investimenti + {i} di Interactive Brokers = {t}.": "Das investierte FIRE-Vermögen aktualisiert sich selbst: {o} andere Anlagen + {i} bei Interactive Brokers = {t}.",
+"Scollega dal FIRE": "Von FIRE trennen",
+"Il FIRE usa ancora il patrimonio inserito a mano ({v}).": "FIRE verwendet noch das manuell eingegebene Vermögen ({v}).",
+"Il FIRE lo gestisce {n}.": "FIRE verwaltet {n}.",
+"Azioni, ETF e fondi sono il {p} del conto (nel FIRE la quota in azioni e' {q}). Gli ETF obbligazionari contano qui come ETF.": "Aktien, ETFs und Fonds machen {p} des Kontos aus (im FIRE ist der Aktienanteil {q}). Anleihen-ETFs zählen hier als ETFs.",
+" del portafoglio": " des Portfolios",
+"Quantita'": "Menge",
+"Prezzo": "Preis",
+"Valore in {c}": "Wert in {c}",
+"Costo di acquisto": "Kaufkosten",
+"Tipo": "Typ",
+"Borsa": "Börse",
+"Posizioni, liquidita', valore nel tempo e dividendi dal report Flex di Interactive Brokers, in sola lettura. Il token resta nel tuo ponte. La guida completa e' nel file GUIDA-INTERACTIVE-BROKERS.md.": "Positionen, Liquidität, Wert im Zeitverlauf und Dividenden aus dem Flex-Bericht von Interactive Brokers, nur lesend. Der Token bleibt in deiner Brücke. Die vollständige Anleitung steht in der Datei GUIDA-INTERACTIVE-BROKERS.md.",
+"Dati al {d}, aggiornato {t}": "Daten vom {d}, aktualisiert {t}",
+"Serve il ponte: configuralo prima in Collegamento automatico.": "Die Brücke wird benötigt: Richte sie zuerst unter Automatische Revolut-Verbindung ein.",
+"1 · Crea la Flex Query": "1 · Flex Query erstellen",
+"In Interactive Brokers: Performance & Reports, poi Flex Queries, poi + accanto a Activity Flex Query.": "In Interactive Brokers: Performance & Reports, dann Flex Queries, dann + neben Activity Flex Query.",
+"Sezioni: Account Information, Open Positions (opzione Summary), Cash Report, Net Asset Value (NAV) in Base, Cash Transactions (Dividends, Withholding Tax, Payment In Lieu Of Dividends). In ciascuna scegli Select All.": "Abschnitte: Account Information, Open Positions (Option Summary), Cash Report, Net Asset Value (NAV) in Base, Cash Transactions (Dividends, Withholding Tax, Payment In Lieu Of Dividends). Wähle jeweils Select All.",
+"Formato XML, periodo Last 365 Calendar Days. Salva e annota il numero (Query ID).": "Format XML, Zeitraum Last 365 Calendar Days. Speichern und die Nummer (Query ID) notieren.",
+"2 · Attiva il Flex Web Service": "2 · Flex Web Service aktivieren",
+"Flex Queries, poi Flex Web Service Configuration: attivalo, scegli la scadenza piu' lunga, lascia vuoto il campo IP e genera il token.": "Flex Queries, dann Flex Web Service Configuration: aktivieren, die längste Gültigkeit wählen, das IP-Feld leer lassen und den Token erzeugen.",
+"Il token scade: segna qui sotto la data, l'app ti avvisa 14 giorni prima.": "Der Token läuft ab: Trag unten das Datum ein, die App erinnert dich 14 Tage vorher.",
+"3 · Inseriscili nel ponte": "3 · In die Brücke eintragen",
+"In Cloudflare, Worker del ponte, Settings, Variables and Secrets: IBKR_TOKEN (Secret) con il token e IBKR_QUERY_ID (Text) con il numero.": "In Cloudflare, Worker der Brücke, Settings, Variables and Secrets: IBKR_TOKEN (Secret) mit dem Token und IBKR_QUERY_ID (Text) mit der Nummer.",
+"Incolla il nuovo ponte/worker.js (versione 1.2.0) e premi Deploy.": "Füge das neue ponte/worker.js (Version 1.2.0) ein und drücke Deploy.",
+"Il token scade il": "Der Token läuft ab am",
+"Scarico il report...": "Bericht wird geladen...",
+"Scarica il portafoglio": "Portfolio laden",
+"Interactive Brokers prepara il report: di solito servono da 5 a 20 secondi.": "Interactive Brokers bereitet den Bericht vor: Das dauert meist 5 bis 20 Sekunden.",
+"Aggiorna da solo all'apertura (al massimo ogni 12 ore)": "Beim Öffnen automatisch aktualisieren (höchstens alle 12 Stunden)",
+"Togliere il portafoglio?": "Portfolio entfernen?",
+"Posizioni e storico vengono cancellati dall'app. Il FIRE torna al valore inserito a mano. Il token resta nel ponte finche' non lo togli tu.": "Positionen und Verlauf werden aus der App gelöscht. FIRE kehrt zum manuell eingegebenen Wert zurück. Der Token bleibt in der Brücke, bis du ihn entfernst.",
+"Togli": "Entfernen",
+"Togli il portafoglio": "Portfolio entfernen",
+"ETF": "ETF",
+"Azioni": "Aktien",
+"Fondi": "Fonds",
+"Obbligazioni": "Anleihen",
+"Opzioni": "Optionen",
+"Futures": "Futures",
+"Cripto": "Krypto",
+"Materie prime": "Rohstoffe",
+"Warrant": "Optionsscheine",
+"Altro~tipo": "Andere"
 }
 };
 
@@ -2126,7 +2354,7 @@ T.FIRE_DEFAULTS = {
   birthYear: null, investable: 0, cash: 0, equityShare: 0.9, market: "world", safeReturn: 0.01, inflation: 0.015,
   savingMode: "auto", monthlySaving: 0, savingGrowth: 0, spendMode: "auto", spendFire: 0,
   withdrawalRate: 0.035, strategy: "guardrail", band: 0.2, step: 0.1, floor: 0.8, taxRate: 0,
-  pensions: [], lumps: [], endAge: 95, confidence: 0.9, sims: 2000, blockLen: 5, retireAge: null
+  pensions: [], lumps: [], endAge: 95, confidence: 0.9, sims: 2000, blockLen: 5, retireAge: null, ibkrLink: false, investableOther: 0
 };
 T.newState = () => ({
   app: T.APP.id, schema: T.APP.schema,
@@ -2135,7 +2363,7 @@ T.newState = () => ({
   rules: [], txs: [], vacations: [], fixed: [],
   budget: { preset: "attuale", vacationYear: 0, investMonthly: 0 },
   fire: clone(T.FIRE_DEFAULTS),
-  csvProfiles: [], imports: [], meta: { lastBackup: null, lastSaved: null, v14: true }, bank: T.bankDefaults(), family: null
+  csvProfiles: [], imports: [], meta: { lastBackup: null, lastSaved: null, v14: true }, bank: T.bankDefaults(), family: null, portfolio: null
 });
 
 /* migrazioni future: ogni versione dello schema aggiunge un passo */
@@ -2970,7 +3198,7 @@ T.firePrepare = (st, override) => {
     let k = 0;
     while (k < years) { const st0 = Math.floor(rand() * series.length); for (let j = 0; j < L && k < years; j++, k++) { const re = (1 + series[(st0 + j) % series.length]) / (1 + infl) - 1; R[s * years + k] = eq * re + (1 - eq) * safeReal; } }
   }
-  const W0 = (+f.investable || 0) + (+f.cash || 0);
+  const W0 = T.investableNow(Object.assign({}, st, { fire: f })) + (+f.cash || 0);
   const pensions = (f.pensions || []).filter(p => +p.monthly > 0), lumps = (f.lumps || []).filter(l => +l.amount);
   const tax = T.clamp(+f.taxRate || 0, 0, 0.6), g = +f.savingGrowth || 0;
   /* tabelle per anno: pensioni, capitali in arrivo, risparmio */
@@ -3199,6 +3427,7 @@ T.famShared = st => {
   for (const k in LISTS) out[k] = st[k] || [];
   out.budget = st.budget; out.fire = st.fire; out.profile = pick(st.profile, PROFILE); out.bank = pick(st.bank, BANK);
   out.devices = (st.family && st.family.devices) || {};
+  out.portfolio = st.portfolio ? Object.assign({}, st.portfolio, { lastError: null }) : null;
   return copy(out);
 };
 const core = sh => { if (!sh) return null; const c = Object.assign({}, sh); delete c.by; delete c.at; return c; };
@@ -3231,6 +3460,18 @@ function mergeBank(l, r, role) {
   res.cursors = cur;
   return res;
 }
+/* portafoglio: vince l'ultimo scaricato; storico e dividendi si uniscono */
+function mergePf(l, r) {
+  if (!l || !r) return l || r || null;
+  const newer = (l.lastSync || "") >= (r.lastSync || "") ? l : r, older = newer === l ? r : l;
+  const res = Object.assign({}, newer), h = {}, dv = {};
+  for (const x of (older.history || []).concat(newer.history || [])) h[x.d] = x.v;
+  for (const x of (older.divs || []).concat(newer.divs || [])) dv[x.key] = x;
+  res.history = Object.keys(h).sort().map(d => ({ d, v: h[d] }));
+  res.divs = Object.values(dv).sort((a, b) => a.d < b.d ? -1 : 1);
+  if (res.tokenUntil == null && older.tokenUntil) res.tokenUntil = older.tokenUntil;
+  return res;
+}
 T.famMerge = (base, loc, rem, role) => {
   const out = { v: 1 };
   for (const k in LISTS) out[k] = mergeList(base && base[k], loc[k], rem[k], LISTS[k]);
@@ -3240,6 +3481,7 @@ T.famMerge = (base, loc, rem, role) => {
   const own = role === "master" ? loc : rem;
   out.fire = own.fire; out.profile = own.profile;
   out.bank = mergeBank(loc.bank, rem.bank, role);
+  out.portfolio = mergePf(loc.portfolio, rem.portfolio);
   return copy(out);
 };
 /* applica la copia condivisa allo stato del telefono (lingua, interfaccia e chiavi restano locali).
@@ -3254,6 +3496,7 @@ T.famApply = (st, sh, role, keepLocalRetire) => {
   Object.assign(st.profile, copy(sh.profile || {}));
   st.bank = Object.assign(st.bank || T.bankDefaults(), copy(sh.bank || {}));
   if (st.family) st.family.devices = copy(sh.devices || {});
+  if (!same(st.portfolio || null, sh.portfolio || null)) { const err = st.portfolio && st.portfolio.lastError; st.portfolio = sh.portfolio ? copy(sh.portfolio) : null; if (st.portfolio && err) st.portfolio.lastError = err; }
 };
 
 /* cifratura: JSON compresso (gzip) e cifrato AES-GCM, con l'identificativo della famiglia come dato associato */
@@ -3534,6 +3777,166 @@ T.qrSvg = (text, px, label) => {
 };
 })();
 
+/* myFinances on FIRE · Interactive Brokers: lettura del report Flex (sola lettura) e portafoglio
+   Il ponte scarica il report con il token che resta su Cloudflare; qui si legge l'XML e si tiene una sintesi. */
+"use strict";
+(function () {
+/* lettura semplice dell'XML Flex: elementi con attributi, senza librerie */
+const ENT = { amp: "&", lt: "<", gt: ">", quot: "\"", apos: "'" };
+const unesc = s => String(s).replace(/&(#x[0-9a-f]+|#\d+|\w+);/gi, (m, e) => e[0] === "#" ? String.fromCodePoint(e[1] === "x" || e[1] === "X" ? parseInt(e.slice(2), 16) : +e.slice(1)) : (ENT[e] != null ? ENT[e] : m));
+const attrs = s => { const o = {}; s.replace(/([\w:.-]+)\s*=\s*"([^"]*)"/g, (m, k, v) => { o[k] = unesc(v); return m; }); return o; };
+const tags = (xml, name) => { const out = [], re = new RegExp("<" + name + "\\b([^>]*?)\\/?>", "g"); let m; while ((m = re.exec(xml))) out.push(attrs(m[1])); return out; };
+const num = v => { const x = parseFloat(String(v == null ? "" : v).replace(/,/g, "")); return isFinite(x) ? x : 0; };
+/* date Flex: 20261105, 2026-11-05, 20261105;061502, 11/05/2026 */
+T.flexDate = v => {
+  const s = String(v || "").trim(); let m;
+  if ((m = s.match(/^(\d{4})-?(\d{2})-?(\d{2})/))) return m[1] + "-" + m[2] + "-" + m[3];
+  if ((m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})/))) return m[3] + "-" + m[1] + "-" + m[2];
+  return null;
+};
+T.flexXmlTags = tags;
+
+/* tipo di strumento, per la ripartizione */
+T.PF_TYPES = { ETF: "ETF", STK: "Azioni", FUND: "Fondi", BOND: "Obbligazioni", OPT: "Opzioni", FUT: "Futures", CRYPTO: "Cripto", CASH: "Liquidita'", CMDTY: "Materie prime", WAR: "Warrant", OTHER: "Altro~tipo" };
+const typeOf = p => /ETF/i.test(p.subCategory || "") ? "ETF" : T.PF_TYPES[p.assetCategory] ? p.assetCategory : "OTHER";
+
+/* XML Flex -> sintesi del portafoglio (importi nella valuta base del conto) */
+T.parseFlex = xml => {
+  xml = String(xml || "");
+  if (!/<FlexQueryResponse[\s>]/.test(xml)) {
+    const code = (xml.match(/<ErrorCode>(\d+)<\/ErrorCode>/) || [])[1];
+    throw new Error(code ? T.ibkrErrorText(code) : T.tr("Il report di Interactive Brokers non e' leggibile."));
+  }
+  const stmts = [], re = /<FlexStatement\b([^>]*)>([\s\S]*?)<\/FlexStatement>/g; let m;
+  while ((m = re.exec(xml))) stmts.push({ a: attrs(m[1]), body: m[2] });
+  if (!stmts.length) throw new Error(T.tr("Il report di Interactive Brokers e' vuoto: controlla le sezioni della Flex Query."));
+  /* piu' conti o piu' giorni: per le posizioni conta l'ultimo estratto di ogni conto */
+  const lastByAcc = {};
+  for (const s of stmts) { const acc = s.a.accountId || "?", to = T.flexDate(s.a.toDate) || ""; if (!lastByAcc[acc] || to >= lastByAcc[acc].to) lastByAcc[acc] = { s, to }; }
+  const accounts = Object.keys(lastByAcc);
+  let base = "", date = "", cash = 0;
+  const positions = [], hist = {}, divs = [], seenDiv = new Set();
+  for (const acc of accounts) {
+    const body = lastByAcc[acc].s.body, info = tags(body, "AccountInformation")[0] || {};
+    base = base || info.currency || "";
+    date = lastByAcc[acc].to > date ? lastByAcc[acc].to : date;
+    let ps = tags(body, "OpenPosition");
+    if (ps.some(p => p.levelOfDetail)) ps = ps.filter(p => !p.levelOfDetail || /SUMMARY/i.test(p.levelOfDetail));
+    for (const p of ps) {
+      const fx = num(p.fxRateToBase) || 1;
+      const valueLoc = num(p.positionValue) || num(p.position) * num(p.markPrice) * (num(p.multiplier) || 1);
+      positions.push({ acc, sym: p.symbol || p.isin || "?", desc: p.description || p.symbol || "", type: typeOf(p), cur: p.currency || base, qty: num(p.position), price: num(p.markPrice),
+        valueLoc, value: valueLoc * fx, cost: num(p.costBasisMoney) * fx, pnl: num(p.fifoPnlUnrealized) * fx, isin: p.isin || "", exch: p.listingExchange || "", fx });
+      if (!base && p.fxRateToBase && num(p.fxRateToBase) === 1) base = p.currency;
+    }
+    const cr = tags(body, "CashReportCurrency"), bs = cr.find(c => c.currency === "BASE_SUMMARY");
+    cash += bs ? num(bs.endingCash) : 0;
+  }
+  /* valore nel tempo (tutti gli estratti, sommando i conti nello stesso giorno) */
+  for (const s of stmts) for (const e of tags(s.body, "EquitySummaryByReportDateInBase")) {
+    const d = T.flexDate(e.reportDate); if (!d) continue;
+    const k = (s.a.accountId || "?") + "|" + d; hist[k] = { d, v: num(e.total) };
+    if (!base && e.currency) base = e.currency;
+  }
+  const byDay = {}; for (const k in hist) byDay[hist[k].d] = (byDay[hist[k].d] || 0) + hist[k].v;
+  /* dividendi netti: dividendi, sostitutivi e ritenute alla fonte */
+  for (const s of stmts) for (const c of tags(s.body, "CashTransaction")) {
+    if (!/dividend|withholding|in lieu/i.test(c.type || "")) continue;
+    const d = T.flexDate(c.dateTime || c.settleDate || c.reportDate); if (!d) continue;
+    const amt = num(c.amount) * (num(c.fxRateToBase) || 1), key = [s.a.accountId, d, c.symbol, c.type, c.amount, c.transactionID || ""].join("|");
+    if (seenDiv.has(key)) continue; seenDiv.add(key);
+    divs.push({ d, sym: c.symbol || "", amt, tax: /withholding/i.test(c.type || ""), key: T.hash(key) });
+  }
+  const invested = T.sum(positions.map(p => p.value));
+  if (!date) date = Object.keys(byDay).sort().pop() || "";
+  const history = Object.keys(byDay).sort().map(d => ({ d, v: T.round2(byDay[d]) }));
+  /* il valore piu' recente: posizioni + liquidita' (se c'e' il riepilogo del giorno usa quello) */
+  const navNow = positions.length || cash ? invested + cash : (history.length ? history[history.length - 1].v : 0);
+  if (!history.length || history[history.length - 1].d < date) history.push({ d: date, v: T.round2(navNow) });
+  return { base: base || "CHF", accounts: accounts.map(a => a === "?" ? "" : a), date, positions: positions.sort((a, b) => b.value - a.value), cash: T.round2(cash), invested: T.round2(invested), nav: T.round2(navNow), history, divs };
+};
+
+/* errori di Interactive Brokers in parole semplici */
+T.ibkrErrorText = (code, msg) => {
+  code = String(code || "");
+  if (code === "1012") return T.tr("Il token di Interactive Brokers e' scaduto: generane uno nuovo (Flex Web Service) e aggiornalo nel ponte come IBKR_TOKEN.");
+  if (code === "1015") return T.tr("Il token di Interactive Brokers non e' valido: ricopialo nel ponte come IBKR_TOKEN.");
+  if (code === "1014") return T.tr("Il numero della Flex Query non e' valido: controlla IBKR_QUERY_ID nel ponte (deve essere una Activity Flex Query).");
+  if (code === "1013") return T.tr("Il token e' limitato a un indirizzo IP: generane uno nuovo lasciando vuoto il campo IP.");
+  if (code === "1011") return T.tr("Il Flex Web Service non e' attivo: attivalo in Interactive Brokers (Flex Web Service Configuration).");
+  if (code === "1018" || code === "1025") return T.tr("Troppe richieste a Interactive Brokers: riprova tra qualche minuto.");
+  if (code === "1010") return T.tr("Questa Flex Query e' di tipo vecchio: creane una nuova come Activity Flex Query.");
+  if (["1001", "1003", "1004", "1005", "1006", "1007", "1008", "1009", "1019", "1021"].includes(code)) return T.tr("Interactive Brokers sta ancora preparando il report: riprova tra qualche minuto.");
+  return T.tr("Errore di Interactive Brokers") + (code ? " " + code : "") + (msg ? ": " + String(msg).slice(0, 120) : ".");
+};
+
+/* stato del portafoglio */
+T.pfDefaults = () => ({ lastSync: null, lastError: null, auto: true, base: "", accounts: [], date: null, nav: 0, cash: 0, invested: 0, positions: [], history: [], divs: [], tokenUntil: null });
+T.pfHas = st => !!(st.portfolio && st.portfolio.date);
+/* cambio dalla valuta del conto alla valuta dell'app (null se manca) */
+T.pfRate = st => { const P = st.portfolio || {}, cur = (st.profile && st.profile.currency) || "CHF"; if (!P.base || P.base === cur) return 1; const r = st.profile.fx && +st.profile.fx[P.base]; return r > 0 ? r : null; };
+T.pfToApp = (st, v) => v * (T.pfRate(st) || 1);
+T.pfNavApp = st => T.pfHas(st) ? T.pfToApp(st, st.portfolio.nav) : 0;
+
+/* unisce il report nuovo a quello salvato: storico e dividendi si accumulano oltre l'anno del report */
+T.pfMerge = (old, rep) => {
+  const P = Object.assign(T.pfDefaults(), old || {});
+  const h = {}; for (const x of P.history || []) h[x.d] = x.v; for (const x of rep.history) h[x.d] = x.v;
+  const dv = {}; for (const x of P.divs || []) dv[x.key] = x; for (const x of rep.divs) dv[x.key] = x;
+  Object.assign(P, { base: rep.base, accounts: rep.accounts, date: rep.date, nav: rep.nav, cash: rep.cash, invested: rep.invested, positions: rep.positions,
+    history: Object.keys(h).sort().map(d => ({ d, v: h[d] })), divs: Object.values(dv).sort((a, b) => a.d < b.d ? -1 : 1) });
+  return P;
+};
+
+/* scarica dal ponte, legge e salva; aggiorna il patrimonio del FIRE se collegato */
+T.ibkrSync = async st => {
+  if (!st.bank || !st.bank.url || !st.bank.token) throw new Error(T.tr("Il ponte non e' configurato: inseriscilo prima in Collegamento automatico."));
+  let d;
+  try { d = await T.bankCall(st, "/ibkr", {}); }
+  catch (e) {
+    const x = e.data || {};
+    if (x.error === "ibkr_not_configured") throw new Error(T.tr("Nel ponte mancano IBKR_TOKEN e IBKR_QUERY_ID (vedi la guida)."));
+    if (x.error === "ibkr_error") throw new Error(T.ibkrErrorText(x.code, x.message));
+    if (x.error === "ibkr_pending") throw new Error(T.ibkrErrorText("1019"));
+    if (x.error === "not_found") throw new Error(T.tr("Il ponte e' di una versione precedente: in Cloudflare incolla il nuovo ponte/worker.js (versione 1.2.0) e premi Deploy."));
+    throw e;
+  }
+  const rep = T.parseFlex(d && d.xml);
+  st.portfolio = T.pfMerge(st.portfolio, rep);
+  st.portfolio.lastSync = new Date().toISOString(); st.portfolio.lastError = null;
+  T.pfSyncFire(st);
+  return rep;
+};
+/* patrimonio investito del FIRE = altri investimenti + Interactive Brokers (se collegato) */
+T.investableNow = st => {
+  const F = st.fire || {};
+  return F.ibkrLink && T.pfHas(st) ? (+F.investableOther || 0) + T.pfNavApp(st) : +F.investable || 0;
+};
+T.pfSyncFire = st => { if (st.fire && st.fire.ibkrLink && T.pfHas(st)) st.fire.investable = Math.round(T.investableNow(st)); };
+
+/* raggruppamenti per la ripartizione */
+T.pfGroups = (st, by) => {
+  const P = st.portfolio, g = {};
+  for (const p of P.positions) { const k = by === "tipo" ? p.type : by === "valuta" ? p.cur : p.sym; (g[k] = g[k] || { k, v: 0, items: [] }).v += p.value; g[k].items.push(p); }
+  if (P.cash > 0) { const k = by === "tipo" ? "CASH" : by === "valuta" ? P.base : "__cash"; (g[k] = g[k] || { k, v: 0, items: [] }).v += P.cash; g[k].cash = true; }
+  return Object.values(g).sort((a, b) => b.v - a.v);
+};
+/* variazione del valore da una data (compresi versamenti e prelievi) */
+T.pfChange = (P, fromIso) => {
+  const h = P.history || []; if (h.length < 2) return null;
+  let b = null; for (const x of h) { if (x.d <= fromIso) b = x; else break; }
+  if (!b) b = h[0];
+  const last = h[h.length - 1]; if (b.d === last.d || !b.v) return null;
+  return { from: b.d, v0: b.v, v1: last.v, abs: last.v - b.v, pct: (last.v - b.v) / b.v };
+};
+/* dividendi netti per mese, ultimi 12 mesi */
+T.pfDivMonths = (P, today) => {
+  const out = [], d0 = T.parseIso(today.slice(0, 7) + "-01");
+  for (let i = 11; i >= 0; i--) { const d = new Date(d0); d.setMonth(d.getMonth() - i); const mk = T.iso(d).slice(0, 7); out.push({ mk, v: T.sum((P.divs || []).filter(x => x.d.slice(0, 7) === mk).map(x => x.amt)) }); }
+  return out;
+};
+})();
+
 /* myFinances on FIRE · dati di esempio inventati (per provare l'app senza dati reali) */
 "use strict";
 (function () {
@@ -3583,7 +3986,25 @@ T.makeDemoState = () => {
   st.budget = { preset: "realistico", vacationYear: 4000, investMonthly: 300 };
   Object.assign(st.fire, { birthYear: new Date().getFullYear() - 38, investable: 140000, cash: 25000, equityShare: 0.85,
     pensions: [{ name: T.tr("Pensione statale"), age: 65, monthly: 1900 }, { name: T.tr("Rendita cassa pensione"), age: 65, monthly: 1100 }], lumps: [] });
+  st.portfolio = T.demoPortfolio();
   return st;
+};
+/* portafoglio inventato per i dati di esempio (valuta del conto: CHF) */
+T.demoPortfolio = () => {
+  let seed = 99; const rnd = () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
+  const td = T.today(), P = T.pfDefaults();
+  const pos = [["VWRA", "VANGUARD FTSE ALL-WORLD UCITS ETF", "ETF", "USD", 520, 145.2, 0.8, 52000], ["CHSPI", "ISHARES CORE SPI ETF", "ETF", "CHF", 120, 170.3, 1, 19000],
+    ["CSPX", "ISHARES CORE S&P 500 UCITS ETF", "ETF", "USD", 30, 640.5, 0.8, 14500], ["EIMI", "ISHARES CORE MSCI EM IMI ETF", "ETF", "USD", 300, 38.4, 0.8, 8900], ["AGGH", "ISHARES GLOBAL AGGREGATE BOND ETF", "ETF", "CHF", 1500, 4.95, 1, 7600]];
+  P.positions = pos.map(([sym, desc, type, cur, qty, price, fx, cost]) => ({ acc: "U0000000", sym, desc, type, cur, qty, price, valueLoc: qty * price, value: T.round2(qty * price * fx), cost, pnl: T.round2(qty * price * fx - cost), isin: "", exch: "", fx }));
+  P.cash = 4200; P.invested = T.round2(T.sum(P.positions.map(p => p.value))); P.nav = T.round2(P.invested + P.cash);
+  P.base = "CHF"; P.accounts = ["U0000000"]; P.date = T.addDays(td, -1); P.lastSync = new Date().toISOString();
+  const n = 365, vals = []; let v = 1;
+  for (let i = 0; i < n; i++) { vals.push(v); v *= 1 + (rnd() - 0.47) * 0.018; }
+  const k = P.nav / vals[n - 1];
+  for (let i = 0; i < n; i++) { const d = T.addDays(P.date, i - n + 1), wd = T.parseIso(d).getDay(); if (wd === 0 || wd === 6) continue; P.history.push({ d, v: T.round2(vals[i] * k * (0.82 + 0.18 * i / n)) }); }
+  P.history[P.history.length - 1] = { d: P.date, v: P.nav };
+  for (let m = 1; m <= 12; m += 3) { const d = T.addDays(td, -m * 30); P.divs.push({ d, sym: "CHSPI", amt: 95, tax: false, key: "demo" + m }); }
+  return P;
 };
 })();
 
@@ -3880,6 +4301,42 @@ T.dayChart = (host, days, opt) => {
   if (opt.cap) { const y = Y(opt.cap); T.s("line", { x1: L, x2: w - R, y1: y, y2: y, stroke: "var(--accent2)", "stroke-dasharray": "5 4", "stroke-width": 1.5 }, s); }
   return s;
 };
+/* valore nel tempo (portafoglio): linea con area, tocca per leggere il valore di un giorno */
+T.valueChart = (host, pts, opt) => {
+  opt = opt || {};
+  const w = W(host), h = opt.h || 190, L = 48, R = 10, Tp = 12, B = 24, iw = w - L - R, ih = h - Tp - B;
+  const s = svgBox(w, h, opt.label || T.tr("valore nel tempo"));
+  if (!pts.length) return s;
+  const t0 = T.parseIso(pts[0].d).getTime(), t1 = T.parseIso(pts[pts.length - 1].d).getTime() || t0 + 1;
+  let lo = Math.min(...pts.map(p => p.v)), hi = Math.max(...pts.map(p => p.v));
+  if (hi - lo < hi * 0.02) { lo -= hi * 0.02; hi += hi * 0.02; }
+  const step = nice((hi - lo) / 4), y0 = Math.floor(lo / step) * step, y1 = Math.ceil(hi / step) * step;
+  const X = d => L + (T.parseIso(d).getTime() - t0) / Math.max(1, t1 - t0) * iw, Y = v => Tp + ih - (v - y0) / Math.max(1e-9, y1 - y0) * ih;
+  for (let v = y0; v <= y1 + 1e-9; v += step) { T.s("line", { x1: L, x2: w - R, y1: Y(v), y2: Y(v), stroke: "var(--line)" }, s); txt(s, L - 6, Y(v) + 4, T.fmt.k(v), { "text-anchor": "end" }); }
+  /* al massimo un punto ogni 2 pixel */
+  const every = Math.max(1, Math.ceil(pts.length / (iw / 2))), draw = pts.filter((p, i) => i % every === 0 || i === pts.length - 1);
+  const line = draw.map(p => X(p.d).toFixed(1) + "," + Y(p.v).toFixed(1)).join(" ");
+  T.s("path", { d: "M" + X(draw[0].d).toFixed(1) + "," + (Tp + ih) + " L" + line.replace(/ /g, " L") + " L" + X(draw[draw.length - 1].d).toFixed(1) + "," + (Tp + ih) + "Z", fill: "var(--fan1)" }, s);
+  T.s("polyline", { points: line, fill: "none", stroke: "var(--brand2)", "stroke-width": 2.2, "stroke-linejoin": "round" }, s);
+  /* etichette dei mesi */
+  const months = []; for (const p of pts) { const mk = p.d.slice(0, 7); if (!months.length || months[months.length - 1].mk !== mk) months.push({ mk, d: mk + "-01" < pts[0].d ? pts[0].d : mk + "-01" }); }
+  const me = Math.max(1, Math.ceil(months.length / 6));
+  months.forEach((m, i) => { if (i % me === 0 && X(m.d) < w - R - 14) txt(s, X(m.d), h - 7, T.fmt.monthShort(m.mk), { "text-anchor": "middle" }); });
+  if (opt.pick) {
+    const p = opt.pick, x = X(p.d), y = Y(p.v);
+    T.s("line", { x1: x, x2: x, y1: Tp, y2: Tp + ih, stroke: "var(--ink)", "stroke-width": 1.2, "stroke-dasharray": "3 3" }, s);
+    T.s("circle", { cx: x, cy: y, r: 5, fill: "var(--brand2)", stroke: "var(--card)", "stroke-width": 2 }, s);
+  }
+  if (opt.onPick) {
+    const hit = T.s("rect", { x: L, y: Tp, width: iw, height: ih, fill: "transparent", style: "cursor:pointer", class: "hit" }, s);
+    hit.addEventListener("click", e => {
+      const r = s.getBoundingClientRect(), vx = (e.clientX - r.left) / Math.max(1, r.width) * w, t = t0 + (vx - L) / iw * (t1 - t0);
+      let best = pts[0], bd = Infinity; for (const p of pts) { const dd = Math.abs(T.parseIso(p.d).getTime() - t); if (dd < bd) { bd = dd; best = p; } }
+      opt.onPick(best);
+    });
+  }
+  return s;
+};
 })();
 
 /* myFinances on FIRE · applicazione: stato, navigazione, Home */
@@ -3926,18 +4383,18 @@ A.render = () => {
   T.$("btnImport").setAttribute("aria-label", T.tr("Importa un estratto conto"));
   if (T.$("btnSync")) T.$("btnSync").setAttribute("aria-label", T.tr("Aggiorna da Revolut"));
   const cov = T.coverage(S);
-  T.$("title").textContent = onb ? T.APP.name : ({ home: T.APP.name, spese: T.tr("Spese"), budget: "Budget", fire: T.tr("Obiettivo FIRE"), altro: T.tr("Altro~menu") })[A.view];
+  T.$("title").textContent = onb ? T.APP.name : ({ home: T.APP.name, spese: T.tr("Spese"), budget: "Budget", fire: T.tr("Obiettivo FIRE"), altro: T.tr("Altro~menu"), portafoglio: T.tr("Portafoglio") })[A.view];
   T.$("subtitle").textContent = onb ? T.tr("Configurazione iniziale") : S.profile.demo ? T.tr("Dati di esempio · ") + (cov ? T.tr("fino al ") + T.fmt.date(cov.to) : "") : T.bankConnected(S) ? (A._syncing ? T.tr("Aggiornamento da Revolut...") : T.tr("Revolut aggiornato ") + A.relTime(S.bank.lastSync)) : cov ? T.tr("Dati fino al ") + T.fmt.date(cov.to) : T.tr("Nessun movimento importato");
   T.$("btnImport").hidden = onb;
   A.renderBar();
   if (onb) return A.renderOnboarding(main);
-  const fn = { home: A.renderHome, spese: A.renderSpese, budget: A.renderBudget, fire: A.renderFire, altro: A.renderAltro }[A.view] || A.renderHome;
+  const fn = { home: A.renderHome, spese: A.renderSpese, budget: A.renderBudget, fire: A.renderFire, altro: A.renderAltro, portafoglio: A.renderPortafoglio }[A.view] || A.renderHome;
   fn(main);
   if (y > 0 && window.scrollTo) window.scrollTo(0, y);
 };
 
 /* ---------- risultati FIRE, calcolati in differita e messi in cache ---------- */
-A.fireKey = (extra) => JSON.stringify([Object.assign({}, A.S.fire, { retireAge: null }), A.S.fixed, A.S.categories.map(c => c.budget), A.S.budget, A.S.profile.incomeMonthly, A.S.txs.length, extra || ""]);
+A.fireKey = (extra) => JSON.stringify([Object.assign({}, A.S.fire, { retireAge: null }), T.investableNow(A.S), A.S.fixed, A.S.categories.map(c => c.budget), A.S.budget, A.S.profile.incomeMonthly, A.S.txs.length, extra || ""]);
 /* la curva (tutte le eta') si calcola in differita una volta; il dettaglio per l'eta' scelta al volo */
 A.fireResult = cb => {
   const key = A.fireKey();
@@ -4055,6 +4512,8 @@ A.renderHome = main => {
           h("span", { style: { color: diff > 0 ? "var(--bad)" : "var(--ok)", fontWeight: 700 } }, diff > 0 ? T.tr("{v} di troppo", { v: A.money(diff) }) : T.tr("{v} ancora disponibili", { v: A.money(-diff) })), ")."); })(),
       h("div.kpis", { style: { marginBlockStart: "12px" } }, T.kpi(T.tr("Costi fissi"), A.money(pic.now.fixed), T.tr("al mese")), T.kpi(T.tr("Tasso di risparmio"), pic.rateNow == null ? "-" : T.fmt.pct(pic.rateNow), pic.income ? T.tr("su ") + A.money(pic.income) + T.tr(" netti") : T.tr("inserisci il reddito")))));
   }
+  /* portafoglio (Interactive Brokers) */
+  A.pfHomeCard(main);
   /* FIRE: tutta la scheda porta al simulatore */
   const goFire = () => A.go("fire");
   const fc = h("div.card.tapcard#fireCard", { role: "button", tabindex: "0", "aria-label": T.tr("Apri il simulatore"), onclick: goFire, onkeydown: e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); goFire(); } } },
@@ -4079,6 +4538,7 @@ A.renderHome = main => {
   else if (T.bankConnected(S) && left != null && left < 14) tips.push(h("div.li.tap", { onclick: () => A.startConnect() }, h("div.grow", h("div.t", T.tr("Rinnova il collegamento Revolut")), h("div.d", T.tr("Scade tra ") + left + T.tr(" giorni, il ") + T.fmt.date(B.validUntil.slice(0, 10)) + T.tr(". Bastano due tocchi nell'app Revolut."))), h("span.pill.warn", T.tr("Presto"))));
   else if (T.bankConnected(S) && B.lastError) tips.push(h("div.li.tap", { onclick: () => A.go("altro", "collega") }, h("div.grow", h("div.t", T.tr("Aggiornamento Revolut non riuscito")), h("div.d", B.lastError))));
   else if (!T.bankConnected(S) && B.url) tips.push(h("div.li.tap", { onclick: () => A.go("altro", "collega") }, h("div.grow", h("div.t", T.tr("Completa il collegamento Revolut")), h("div.d", T.tr("Manca il consenso nell'app Revolut")))));
+  { const P = S.portfolio; if (P && P.tokenUntil) { const dl = T.daysBetween(T.today(), P.tokenUntil); if (dl <= 14) tips.push(h("div.li.tap", { onclick: () => A.go("altro", "ibkr") }, h("div.grow", h("div.t", dl < 0 ? T.tr("Il token di Interactive Brokers e' scaduto") : T.tr("Il token di Interactive Brokers scade tra {n} giorni", { n: dl })), h("div.d", T.tr("Generane uno nuovo e aggiornalo nel ponte (IBKR_TOKEN)"))))); } }
   if (S.family && S.family.gone) tips.push(h("div.li.tap", { onclick: () => A.go("altro", "famiglia") }, h("div.grow", h("div.t", T.tr("La famiglia non e' piu' raggiungibile")), h("div.d", T.tr("Chiedi un QR nuovo oppure esci dalla famiglia")))));
   if (S.txs.length && (!S.meta.lastBackup || T.daysBetween(S.meta.lastBackup.slice(0, 10), T.today()) > 30)) tips.push(h("div.li.tap", { onclick: () => A.exportBackup() }, h("div.grow", h("div.t", T.tr("Fai un backup")), h("div.d", S.meta.lastBackup ? T.tr("Ultimo il ") + T.fmt.date(S.meta.lastBackup.slice(0, 10)) : T.tr("Non ne hai ancora fatto uno. I dati sono solo su questo telefono."))), h("span.pill.warn", T.tr("Consigliato"))));
   if (!pic.income) tips.push(h("div.li.tap", { onclick: () => A.go("altro", "profilo") }, h("div.grow", h("div.t", T.tr("Inserisci il reddito netto mensile")), h("div.d", T.tr("Serve per il tasso di risparmio e per il FIRE")))));
@@ -4518,7 +4978,11 @@ A.renderFire = main => {
   const y0 = new Date().getFullYear();
   box.appendChild(acc(T.tr("Situazione di oggi"), !F.birthYear,
     T.numField(T.tr("Anno di nascita"), F.birthYear, v => set("birthYear", v), { min: 1930, max: y0 - 16, step: 1 }),
-    T.numField(T.tr("Patrimonio investito"), F.investable, v => set("investable", v || 0), { hint: T.tr("Azioni, ETF, fondi. Puoi includere il 3a se e' investito.") }),
+    F.ibkrLink && T.pfHas(S)
+      ? h("div", T.numField(T.tr("Altri investimenti (fuori da Interactive Brokers)"), F.investableOther, v => { set("investableOther", v || 0); T.pfSyncFire(S); }, { hint: T.tr("Per esempio azioni del datore di lavoro, 3a investito, altri conti.") }),
+          h("div.note", { style: { marginBlockEnd: "12px" } }, T.tr("Piu' Interactive Brokers: {i} (dati al {d}). Patrimonio investito totale: {t}.", { i: A.money(T.pfNavApp(S)), d: T.fmt.date(S.portfolio.date), t: A.money(T.investableNow(S)) })))
+      : h("div", T.numField(T.tr("Patrimonio investito"), F.investable, v => set("investable", v || 0), { hint: T.tr("Azioni, ETF, fondi. Puoi includere il 3a se e' investito.") }),
+          T.pfHas(S) && !A.isMember() ? h("button.btn", { type: "button", style: { marginBlockEnd: "12px" }, onclick: () => A.pfLinkFlow() }, T.tr("Aggiorna da solo con Interactive Brokers")) : null),
     T.numField(T.tr("Liquidita' e risparmi"), F.cash, v => set("cash", v || 0), { hint: T.tr("Conti, depositi, fondo emergenze.") }),
     pct(T.tr("Quota in azioni"), "equityShare", T.tr("Il resto rende come la parte prudente."), 5),
     T.selectField(T.tr("Mercato di riferimento"), F.market, Object.entries(T.MARKET_PROFILES).map(([k, p]) => [k, p.label]), v => set("market", v)),
@@ -4698,6 +5162,7 @@ A.renderAltro = main => {
     item(T.tr("Collegamento automatico Revolut"), T.bankConnected(S) ? (T.bankExpired(S) ? T.tr("Consenso scaduto") : T.tr("Collegato \u00b7 aggiornato ") + A.relTime(S.bank.lastSync)) : T.tr("Movimenti aggiornati da soli, in sola lettura"), () => A.go("altro", "collega"), T.bankConnected(S) ? h("span.pill" + (T.bankExpired(S) ? ".warn" : ".ok"), T.bankExpired(S) ? T.tr("Scaduto") : T.tr("Attivo")) : null),
     (() => { const F = S.family; return item(T.tr("Famiglia"), !F ? T.tr("Condividi spese e budget con un altro telefono") : F.gone ? T.tr("Non piu' raggiungibile: serve un QR nuovo") : (F.role === "master" ? T.tr("Attiva") : T.tr("Famiglia di {n}", { n: A.masterName() })) + T.tr(" \u00b7 allineata ") + A.relTime(F.lastSync),
       () => A.go("altro", "famiglia"), F ? h("span.pill" + (F.gone ? ".warn" : ".ok"), F.gone ? T.tr("Da rifare") : T.tr("Attiva")) : null); })(),
+    item(T.tr("Interactive Brokers"), T.pfHas(S) ? T.tr("Portafoglio al {d}", { d: T.fmt.date(S.portfolio.date) }) : T.tr("Posizioni, ripartizione e dividendi, il FIRE si aggiorna da solo"), () => A.go("altro", "ibkr"), T.pfHas(S) ? h("span.pill" + (S.portfolio.lastError ? ".warn" : ".ok"), S.portfolio.lastError ? T.tr("Errore") : T.tr("Attivo")) : null),
     item(T.tr("Importa movimenti"), T.tr("Revolut (Excel o CSV), PDF pagamenti registrati UBS, CSV di qualsiasi banca"), () => A.importFlow()),
     item(T.tr("Storico import"), last ? T.tr("Ultimo: ") + last.source + T.tr(" il ") + T.fmt.date(last.at.slice(0, 10)) : T.tr("Nessun import"), () => A.go("altro", "storico")),
     item("Backup", S.meta.lastBackup ? T.tr("Ultimo il ") + T.fmt.date(S.meta.lastBackup.slice(0, 10)) : T.tr("Mai fatto"), () => A.go("altro", "backup"), S.meta.lastBackup ? null : h("span.pill.warn", T.tr("Da fare"))))));
@@ -4724,6 +5189,8 @@ A.renderSub = (main, sub) => {
     A.renderCollega(card);
   } else if (sub === "famiglia") {
     A.renderFamiglia(card);
+  } else if (sub === "ibkr") {
+    A.renderIbkr(card);
   } else if (sub === "profilo") {
     card.appendChild(h("h2", T.tr("Profilo e reddito")));
     card.appendChild(T.selectField(T.tr("Lingua"), S.profile.lang || "it", T.LANGS, v => A.setLanguage(v)));
@@ -4810,6 +5277,7 @@ A.renderSub = (main, sub) => {
       T.tr("I file degli estratti conto vengono letti sul telefono e non vengono inviati da nessuna parte."),
       T.tr("L'app non usa pubblicita', statistiche d'uso o servizi di terze parti."),
       T.tr("Il backup e' un file che crei tu e che decidi tu dove salvare."),
+      T.tr("Se colleghi Interactive Brokers, il report passa dal tuo ponte senza essere salvato li': in Interactive Brokers resta solo in lettura."),
       T.tr("Se crei una famiglia, una copia dei dati passa dal tuo ponte (sul tuo account Cloudflare), cifrata sul telefono: la chiave e' solo nei telefoni della famiglia."),
       T.tr("Puoi cancellare tutto in qualsiasi momento da Altro > Ricomincia da zero.") ].forEach(t => card.appendChild(h("p.small", "\u2022 " + t)));
     card.appendChild(h("h2", { style: { marginBlockStart: "12px" } }, T.tr("Avvertenza")));
@@ -5005,6 +5473,7 @@ A.renderCollega = card => {
         const line = (okv, txt) => h("div", (okv ? "\u2705 " : "\u274c ") + txt);
         res.appendChild(h("div.note", line(true, T.tr("Ponte raggiungibile e codice corretto")), line(true, T.tr("Applicazione Enable Banking: ") + (d.name || "") + " (" + (d.environment || "") + ")"),
           line(d.environment === "PRODUCTION", T.tr("Ambiente di produzione") + (d.environment === "PRODUCTION" ? "" : T.tr(": registra l'app in PRODUCTION, non in SANDBOX"))),
+          line(!!d.ibkr, d.ibkr ? T.tr("Interactive Brokers configurato") : T.tr("Interactive Brokers non configurato (facoltativo)")),
           line(!!d.family, d.family ? T.tr("Spazio per la famiglia pronto") : T.tr("Spazio per la famiglia assente (serve solo se vuoi condividere con un altro telefono)")),
           line(!!d.active, d.active ? T.tr("Applicazione attiva") : T.tr("Applicazione non ancora attiva: nel Control Panel usa \u00abActivate by linking accounts\u00bb")),
           line(!!d.redirect_ok && d.redirect_url === url, d.redirect_ok && d.redirect_url === url ? T.tr("Indirizzo di ritorno corretto") : T.tr("Indirizzo di ritorno: nel ponte c'e' \u00ab") + (d.redirect_url || "") + T.tr("\u00bb, l'app e' su \u00ab") + url + T.tr("\u00bb e su Enable Banking deve esserci lo stesso indirizzo"))));
@@ -5214,6 +5683,229 @@ A.doReset = async keep => {
 };
 })();
 
+/* myFinances on FIRE · schermata Portafoglio (Interactive Brokers), riquadro in Home, configurazione e legame con il FIRE */
+"use strict";
+(function () {
+const h = T.h, A = T.A;
+const PALETTE = ["#2F5D46", "#C4623F", "#D99A2B", "#8DB596", "#7A4E6D", "#4F7C8A", "#B5739D", "#9C7A4D", "#5C6B8A"];
+/* importi del portafoglio nella valuta dell'app (o in quella del conto se manca il cambio) */
+A.pm = v => { const S = A.S, r = T.pfRate(S); return r ? A.money(v * r) : T.fmt.n0(v) + " " + S.portfolio.base; };
+A.pmK = v => { const S = A.S, r = T.pfRate(S); return r ? T.fmt.k(v * r) + " " + T.fmt.cur : T.fmt.k(v) + " " + S.portfolio.base; };
+const sign = v => (v > 0 ? "+" : v < 0 ? "\u2212" : "") ;
+const pctTxt = v => sign(v) + T.fmt.pct1(Math.abs(v));
+const typeName = k => T.tr(T.PF_TYPES[k] || T.PF_TYPES.OTHER);
+const groupName = (by, g) => by === "tipo" ? typeName(g.k) : g.k === "__cash" ? T.tr("Liquidita'") : by === "valuta" ? g.k : (g.items[0] && g.items[0].sym) || g.k;
+
+/* aggiornamento: manuale o automatico (al massimo ogni 12 ore, i report sono di fine giornata) */
+A.pfSync = async silent => {
+  const S = A.S;
+  if (A._pfBusy) return; A._pfBusy = true; if (!silent) A.render();
+  try {
+    const rep = await T.ibkrSync(S);
+    A.fire.key = ""; await T.save(S, true);
+    if (!silent) T.toast(T.tr("Portafoglio aggiornato: dati al {d}", { d: T.fmt.date(rep.date) }));
+    if (A.inFamily && A.inFamily()) A.famSoon(300);
+  } catch (e) {
+    S.portfolio = S.portfolio || T.pfDefaults(); S.portfolio.lastError = e.message; S.portfolio.lastTry = new Date().toISOString(); A.save();
+    if (!silent) T.sheet(T.tr("Interactive Brokers"), h("p", e.message), [h("button.btn.primary", { type: "button", onclick: () => T.closeSheet() }, "Ok")]);
+  } finally { A._pfBusy = false; if (A.view === "portafoglio" || A.view === "home" || (A.view === "altro" && A.sub === "ibkr")) A.render(); }
+};
+A.pfAutoSync = () => {
+  const S = A.S, P = S && S.portfolio;
+  if (!P || !P.auto || A._pfBusy || !S.bank || !S.bank.url || !S.bank.token) return;
+  const last = Math.max(P.lastSync ? Date.parse(P.lastSync) : 0, P.lastTry ? Date.parse(P.lastTry) : 0);
+  if (last && Date.now() - last < 12 * 3600e3) return;
+  if (!P.lastSync && !P.date) return;   /* prima volta: solo dal pulsante */
+  A.pfSync(true);
+};
+
+/* collega al FIRE: il patrimonio investito diventa "altri investimenti + Interactive Brokers" */
+A.pfLinkFlow = () => {
+  const S = A.S, F = S.fire, nav = T.pfNavApp(S), cur = +F.investable || 0;
+  const done = other => { F.investableOther = Math.max(0, Math.round(other)); F.ibkrLink = true; T.pfSyncFire(S); A.fire.key = ""; A.save(); T.closeSheet(); T.toast(T.tr("Il FIRE usa ora il valore di Interactive Brokers")); A.render(); };
+  if (!cur) return done(0);
+  T.sheet(T.tr("Collega al FIRE"), h("div",
+    h("p", T.tr("Nel FIRE avevi inserito un patrimonio investito di {a}. Interactive Brokers vale oggi {b}.", { a: A.money(cur), b: A.money(nav) })),
+    h("p", h("b", T.tr("Quel valore comprende gia' Interactive Brokers?"))),
+    h("p.small.muted", T.tr("Da ora in poi il FIRE somma da solo il valore aggiornato di Interactive Brokers agli altri investimenti (per esempio azioni del datore di lavoro, 3a investito)."))),
+    [h("button.btn", { type: "button", onclick: () => done(cur) }, T.tr("No, va aggiunto")),
+     h("button.btn.primary", { type: "button", onclick: () => done(cur - nav) }, T.tr("Si', e' gia' compreso"))]);
+};
+A.pfUnlink = () => { const F = A.S.fire; F.investable = Math.round(T.investableNow(A.S)); F.ibkrLink = false; A.fire.key = ""; A.save(); T.toast(T.tr("Il FIRE usa di nuovo il valore inserito a mano")); A.render(); };
+
+/* ---------- riquadro in Home ---------- */
+A.pfHomeCard = main => {
+  const S = A.S, P = S.portfolio; if (!T.pfHas(S)) return;
+  const ch = T.pfChange(P, T.addDays(P.date, -30)), go = () => A.go("portafoglio");
+  const card = h("div.card.tapcard#pfCard", { role: "button", tabindex: "0", "aria-label": T.tr("Apri il portafoglio"), onclick: go, onkeydown: e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } } },
+    h("div.row.between", h("h2", { style: { margin: 0 } }, T.tr("Portafoglio")), h("span.chev", { "aria-hidden": "true" }, "\u203a")),
+    h("div.row.between", { style: { alignItems: "flex-end", marginBlockStart: "6px" } },
+      h("div", h("div.big", A.pm(P.nav)), h("div.small.muted", T.tr("Interactive Brokers, dati al {d}", { d: T.fmt.date(P.date) }))),
+      ch ? h("div", { style: { textAlign: "end" } }, h("div.mid" + (ch.abs >= 0 ? ".ok" : ".bad"), pctTxt(ch.pct)), h("div.small.muted", T.tr("in 30 giorni"))) : null));
+  if (P.lastError) card.appendChild(h("div.small.bad", { style: { marginBlockStart: "6px" } }, P.lastError));
+  main.appendChild(card);
+};
+
+/* ---------- schermata ---------- */
+A.renderPortafoglio = main => {
+  const S = A.S, P = S.portfolio;
+  main.appendChild(h("button.btn.ghost", { type: "button", onclick: () => history.length > 1 ? history.back() : A.go("home") }, T.tr("\u2039 Indietro")));
+  if (!T.pfHas(S)) {
+    main.appendChild(h("div.card", h("h2", T.tr("Portafoglio")), h("p", T.tr("Collega Interactive Brokers per vedere qui posizioni, ripartizione, andamento e dividendi, e per aggiornare da solo il patrimonio del FIRE.")),
+      h("button.btn.primary.block", { type: "button", onclick: () => A.go("altro", "ibkr") }, T.tr("Configura Interactive Brokers"))));
+    return;
+  }
+  const rate = T.pfRate(S);
+  /* valore */
+  const td = T.today(), ch30 = T.pfChange(P, T.addDays(P.date, -30)), chY = T.pfChange(P, td.slice(0, 4) + "-01-01"), ch1 = T.pfChange(P, T.addDays(P.date, -365));
+  const pnl = T.sum(P.positions.map(p => p.pnl)), cost = T.sum(P.positions.map(p => p.cost));
+  const chip = (lbl, c) => c ? h("div.kpi", h("div.l", lbl), h("div.v" + (c.abs >= 0 ? ".ok" : ".bad"), pctTxt(c.pct)), h("div.s", sign(c.abs) + A.pm(Math.abs(c.abs)))) : null;
+  const top = h("div.card#pfValue", h("h2", T.tr("Valore del portafoglio")),
+    h("div.row.between", { style: { alignItems: "flex-end" } }, h("div", h("div.big", A.pm(P.nav)), h("div.small.muted", T.tr("dati al {d} \u00b7 aggiornato {t}", { d: T.fmt.date(P.date), t: A.relTime(P.lastSync) }))),
+      h("button.btn", { type: "button", disabled: !!A._pfBusy, onclick: () => A.pfSync(false) }, A._pfBusy ? T.tr("Aggiornamento...") : T.tr("Aggiorna"))),
+    h("div.kpis.k4", { style: { marginBlockStart: "12px" } }, chip(T.tr("30 giorni"), ch30), chip(T.tr("Da inizio anno"), chY), chip(T.tr("12 mesi"), ch1),
+      h("div.kpi", h("div.l", T.tr("Guadagno non realizzato")), h("div.v" + (pnl >= 0 ? ".ok" : ".bad"), sign(pnl) + A.pm(Math.abs(pnl))), h("div.s", cost ? pctTxt(pnl / cost) + T.tr(" sul costo") : ""))),
+    h("p.small.muted", { style: { marginBlockStart: "8px" } }, T.tr("Le variazioni comprendono versamenti e prelievi. Liquidita' nel conto: {c}.", { c: A.pm(P.cash) })));
+  if (!rate) top.appendChild(h("div.note.warn", T.tr("Manca il cambio {c} in Profilo e reddito: gli importi sono in {c}.", { c: P.base })));
+  if (P.lastError) top.appendChild(h("div.note.warn", { style: { marginBlockStart: "8px" } }, P.lastError));
+  main.appendChild(top);
+
+  /* ripartizione */
+  const by = A.ui.pfBy || "titolo";
+  const groups = T.pfGroups(S, by), tot = T.sum(groups.map(g => g.v)) || 1;
+  const shown = groups.slice(0, 8), rest = groups.slice(8);
+  if (rest.length) shown.push({ k: "__altri", v: T.sum(rest.map(g => g.v)), items: rest.flatMap(g => g.items), rest });
+  const col = i => PALETTE[i % PALETTE.length];
+  const openGroup = g => {
+    if (g.k === "__cash") return A.groupSheet(T.tr("Liquidita'"), [], P.cash);
+    if (by === "titolo" && g.k !== "__altri" && g.items.length === 1) return A.posSheet(g.items[0]);
+    return A.groupSheet(g.k === "__altri" ? T.tr("Altri") : groupName(by, g), g.items, g.cash ? P.cash : 0);
+  };
+  const c1 = h("div.card#pfAlloc", h("h2", T.tr("Ripartizione")),
+    T.seg([["titolo", T.tr("Per titolo")], ["tipo", T.tr("Per tipo")], ["valuta", T.tr("Per valuta")]], by, v => { A.ui.pfBy = v; A.render(); }));
+  c1.appendChild(h("div", { style: { display: "flex", justifyContent: "center", marginBlockStart: "10px" } },
+    T.donut(shown.map((g, i) => ({ v: g.v, c: g.k === "__cash" || g.k === "CASH" ? T.FIXED_COLOR : col(i), n: g.k === "__altri" ? T.tr("Altri") : groupName(by, g), onClick: () => openGroup(g) })), A.pmK(P.nav), T.tr("totale"))));
+  const list = h("div.list");
+  shown.forEach((g, i) => list.appendChild(h("div.li.tap", { onclick: () => openGroup(g) }, h("i.dot", { style: { background: g.k === "__cash" || g.k === "CASH" ? T.FIXED_COLOR : col(i) } }),
+    h("div.grow", h("div.row.between", h("span.t", g.k === "__altri" ? T.tr("Altri") : groupName(by, g)), h("b", T.fmt.pct1(g.v / tot))), T.progress(g.v, tot, g.k === "__cash" || g.k === "CASH" ? T.FIXED_COLOR : col(i)),
+      h("div.d", A.pm(g.v) + (by === "titolo" && g.items[0] && g.k !== "__altri" ? " \u00b7 " + g.items[0].desc : by !== "titolo" ? " \u00b7 " + g.items.length + (g.items.length === 1 ? T.tr(" posizione") : T.tr(" posizioni")) : ""))))));
+  c1.appendChild(list);
+  main.appendChild(c1);
+
+  /* andamento */
+  if (P.history.length > 2) {
+    const c2 = h("div.card#pfTrend", h("h2", T.tr("Andamento")), h("p.sub", T.tr("Valore del conto giorno per giorno, versamenti compresi. Tocca il grafico per leggere un giorno.")));
+    const box = h("div"), read = h("div.readout");
+    const draw = pick => { T.clear(box); box.appendChild(T.valueChart(c2, P.history, { pick, onPick: draw }));
+      T.clear(read); const p = pick || P.history[P.history.length - 1]; T.add(read, [h("b", T.fmt.date(p.d)), " \u00b7 " + A.pm(p.v)]); };
+    c2.appendChild(box); c2.appendChild(read); draw(null);
+    main.appendChild(c2);
+  }
+
+  /* posizioni */
+  const c3 = h("div.card#pfPos", h("h2", T.tr("Posizioni")));
+  const pl = h("div.list");
+  for (const p of P.positions) {
+    const pp = p.cost ? p.pnl / p.cost : null;
+    pl.appendChild(h("div.li.tap", { onclick: () => A.posSheet(p) },
+      h("div.grow", h("div.t", p.sym + " \u00b7 " + p.desc), h("div.d", T.fmt.n2(p.qty).replace(/[.,]00$/, "") + " \u00d7 " + T.fmt.n2(p.price) + " " + p.cur + " \u00b7 " + T.fmt.pct1(p.value / (P.nav || 1)))),
+      h("div", { style: { textAlign: "end" } }, h("div.a", A.pm(p.value)), pp != null ? h("div.small" + (pp >= 0 ? ".ok" : ".bad"), pctTxt(pp)) : null)));
+  }
+  if (!P.positions.length) pl.appendChild(h("div.empty", T.tr("Nessuna posizione aperta")));
+  c3.appendChild(pl); main.appendChild(c3);
+
+  /* dividendi */
+  if ((P.divs || []).length) {
+    const months = T.pfDivMonths(P, td), y12 = T.sum(months.map(m => m.v));
+    const c4 = h("div.card#pfDiv", h("h2", T.tr("Dividendi")), h("p.sub", T.tr("Netti, dopo le ritenute alla fonte. Ultimi 12 mesi: {v}.", { v: A.pm(y12) })));
+    c4.appendChild(T.columns(c4, months.map(m => ({ l: T.fmt.monthShort(m.mk), title: T.fmt.month(m.mk), parts: [{ v: m.v, c: "var(--accent)" }] })), { h: 150 }));
+    const bySym = {}; for (const d of P.divs) if (d.d >= T.addDays(td, -365)) bySym[d.sym || "?"] = (bySym[d.sym || "?"] || 0) + d.amt;
+    c4.appendChild(h("div.list", Object.entries(bySym).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([k, v]) => h("div.li", h("div.grow", h("div.t", k)), h("div.a", A.pm(v))))));
+    main.appendChild(c4);
+  }
+
+  /* nel FIRE */
+  const F = S.fire, member = A.isMember && A.isMember();
+  const c5 = h("div.card#pfFire", h("h2", T.tr("Nel FIRE")));
+  if (F.ibkrLink) {
+    c5.appendChild(h("p", T.tr("Il patrimonio investito del FIRE si aggiorna da solo: {o} di altri investimenti + {i} di Interactive Brokers = {t}.", { o: A.money(+F.investableOther || 0), i: A.money(T.pfNavApp(S)), t: A.money(T.investableNow(S)) })));
+    if (!member) c5.appendChild(h("button.btn", { type: "button", onclick: () => A.pfUnlink() }, T.tr("Scollega dal FIRE")));
+  } else {
+    c5.appendChild(h("p", T.tr("Il FIRE usa ancora il patrimonio inserito a mano ({v}).", { v: A.money(+F.investable || 0) })));
+    if (!member) c5.appendChild(h("button.btn.primary", { type: "button", onclick: () => A.pfLinkFlow() }, T.tr("Collega al FIRE")));
+  }
+  if (member) c5.appendChild(h("p.small.muted", T.tr("Il FIRE lo gestisce {n}.", { n: A.masterName() })));
+  const eq = T.sum(P.positions.filter(p => p.type === "ETF" || p.type === "STK" || p.type === "FUND").map(p => p.value)) / (P.nav || 1);
+  c5.appendChild(h("p.small.muted", T.tr("Azioni, ETF e fondi sono il {p} del conto (nel FIRE la quota in azioni e' {q}). Gli ETF obbligazionari contano qui come ETF.", { p: T.fmt.pct(eq), q: T.fmt.pct(+F.equityShare || 0) })));
+  main.appendChild(c5);
+};
+
+/* foglio di una posizione */
+A.posSheet = p => {
+  const S = A.S, P = S.portfolio, pp = p.cost ? p.pnl / p.cost : null;
+  const row = (l, v) => h("div.row.between", { style: { paddingBlock: "6px", borderBlockEnd: "1px solid var(--line)" } }, h("span.muted", l), h("b", v));
+  T.sheet(p.sym, h("div",
+    h("p.muted", p.desc),
+    h("div.big", A.pm(p.value)), h("div.small.muted", T.fmt.pct1(p.value / (P.nav || 1)) + T.tr(" del portafoglio")),
+    h("div", { style: { marginBlockStart: "12px" } },
+      row(T.tr("Quantita'"), T.fmt.n2(p.qty).replace(/[.,]00$/, "")),
+      row(T.tr("Prezzo"), T.fmt.n2(p.price) + " " + p.cur),
+      row(T.tr("Valore in {c}", { c: p.cur }), T.fmt.n0(p.valueLoc) + " " + p.cur),
+      p.cost ? row(T.tr("Costo di acquisto"), A.pm(p.cost)) : null,
+      p.cost ? row(T.tr("Guadagno non realizzato"), h("span", { class: p.pnl >= 0 ? "ok" : "bad" }, sign(p.pnl) + A.pm(Math.abs(p.pnl)) + (pp != null ? " (" + pctTxt(pp) + ")" : ""))) : null,
+      row(T.tr("Tipo"), typeName(p.type)),
+      p.isin ? row("ISIN", p.isin) : null,
+      p.exch ? row(T.tr("Borsa"), p.exch) : null)),
+    [h("button.btn.primary", { type: "button", onclick: () => T.closeSheet() }, T.tr("Chiudi"))]);
+};
+/* foglio di un gruppo (tipo, valuta, altri) */
+A.groupSheet = (title, items, cash) => {
+  const tot = T.sum(items.map(p => p.value)) + (cash || 0);
+  const body = h("div", h("div.big", A.pm(tot)));
+  const list = h("div.list");
+  items.slice().sort((a, b) => b.value - a.value).forEach(p => list.appendChild(h("div.li.tap", { onclick: () => A.posSheet(p) }, h("div.grow", h("div.t", p.sym + " \u00b7 " + p.desc), h("div.d", T.fmt.pct1(p.value / (tot || 1)))), h("div.a", A.pm(p.value)))));
+  if (cash) list.appendChild(h("div.li", h("div.grow", h("div.t", T.tr("Liquidita'"))), h("div.a", A.pm(cash))));
+  body.appendChild(list);
+  T.sheet(title, body, [h("button.btn.primary", { type: "button", onclick: () => T.closeSheet() }, T.tr("Chiudi"))]);
+};
+
+/* ---------- Altro > Interactive Brokers ---------- */
+A.renderIbkr = card => {
+  const S = A.S, P = S.portfolio, B = S.bank, member = A.isMember && A.isMember();
+  card.appendChild(h("h2", T.tr("Interactive Brokers")));
+  card.appendChild(h("p.sub", T.tr("Posizioni, liquidita', valore nel tempo e dividendi dal report Flex di Interactive Brokers, in sola lettura. Il token resta nel tuo ponte. La guida completa e' nel file GUIDA-INTERACTIVE-BROKERS.md.")));
+  if (T.pfHas(S)) card.appendChild(h("div.note" + (P.lastError ? ".warn" : ""), h("b", T.tr("Collegato")), h("div", T.tr("Dati al {d}, aggiornato {t}", { d: T.fmt.date(P.date), t: A.relTime(P.lastSync) })), P.lastError ? h("div.bad", P.lastError) : null));
+  else if (P && P.lastError) card.appendChild(h("div.note.warn", P.lastError));
+  if (!B.url || !B.token) { card.appendChild(h("div.note.warn", T.tr("Serve il ponte: configuralo prima in Collegamento automatico."))); return; }
+  if (!member) {
+    const steps = [
+      [T.tr("1 \u00b7 Crea la Flex Query"), [T.tr("In Interactive Brokers: Performance & Reports, poi Flex Queries, poi + accanto a Activity Flex Query."),
+        T.tr("Sezioni: Account Information, Open Positions (opzione Summary), Cash Report, Net Asset Value (NAV) in Base, Cash Transactions (Dividends, Withholding Tax, Payment In Lieu Of Dividends). In ciascuna scegli Select All."),
+        T.tr("Formato XML, periodo Last 365 Calendar Days. Salva e annota il numero (Query ID).")]],
+      [T.tr("2 \u00b7 Attiva il Flex Web Service"), [T.tr("Flex Queries, poi Flex Web Service Configuration: attivalo, scegli la scadenza piu' lunga, lascia vuoto il campo IP e genera il token."),
+        T.tr("Il token scade: segna qui sotto la data, l'app ti avvisa 14 giorni prima.")]],
+      [T.tr("3 \u00b7 Inseriscili nel ponte"), [T.tr("In Cloudflare, Worker del ponte, Settings, Variables and Secrets: IBKR_TOKEN (Secret) con il token e IBKR_QUERY_ID (Text) con il numero."),
+        T.tr("Incolla il nuovo ponte/worker.js (versione 1.2.0) e premi Deploy.")]]];
+    for (const [t, lines] of steps) card.appendChild(h("details.acc", { open: T.pfHas(S) ? null : "" }, h("summary", t), h("div.acc-in", lines.map(l => h("p.small", l)))));
+    const tu = h("input", { type: "date", value: (P && P.tokenUntil) || "", "aria-label": T.tr("Il token scade il") });
+    tu.addEventListener("change", () => { S.portfolio = S.portfolio || T.pfDefaults(); S.portfolio.tokenUntil = tu.value || null; A.save(); });
+    card.appendChild(h("div.field", { style: { marginBlockStart: "12px" } }, h("label", T.tr("Il token scade il")), tu));
+  }
+  card.appendChild(h("div.row.wrap", { style: { marginBlockStart: "8px" } },
+    h("button.btn.primary", { type: "button", disabled: !!A._pfBusy, onclick: async () => { S.portfolio = S.portfolio || T.pfDefaults(); await A.pfSync(false); } }, A._pfBusy ? T.tr("Scarico il report...") : T.pfHas(S) ? T.tr("Aggiorna ora") : T.tr("Scarica il portafoglio")),
+    T.pfHas(S) ? h("button.btn", { type: "button", onclick: () => A.go("portafoglio") }, T.tr("Apri il portafoglio")) : null));
+  if (A._pfBusy) card.appendChild(h("p.small.muted", T.tr("Interactive Brokers prepara il report: di solito servono da 5 a 20 secondi.")));
+  if (P) {
+    card.appendChild(h("label.row", { style: { marginBlock: "12px 4px" } }, h("input", { type: "checkbox", checked: P.auto !== false, onchange: e => { P.auto = e.target.checked; A.save(); } }), T.tr("Aggiorna da solo all'apertura (al massimo ogni 12 ore)")));
+    if (!member && T.pfHas(S)) card.appendChild(h("button.btn.danger", { type: "button", style: { marginBlockStart: "8px" }, onclick: async () => {
+      if (!(await T.confirm(T.tr("Togliere il portafoglio?"), T.tr("Posizioni e storico vengono cancellati dall'app. Il FIRE torna al valore inserito a mano. Il token resta nel ponte finche' non lo togli tu."), T.tr("Togli"), true))) return;
+      if (S.fire.ibkrLink) { S.fire.investable = Math.round(T.investableNow(S)); S.fire.ibkrLink = false; }
+      S.portfolio = null; A.fire.key = ""; A.save(); A.render();
+    } }, T.tr("Togli il portafoglio")));
+  }
+};
+})();
+
 /* myFinances on FIRE · avvio, installazione e funzionamento offline */
 "use strict";
 (function () {
@@ -5231,7 +5923,7 @@ async function start() {
     if (document.visibilityState !== "visible") return;
     try { const s = await T.load(); if (s && s.meta.lastSaved && (!A.S.meta.lastSaved || s.meta.lastSaved > A.S.meta.lastSaved)) { A.S = s; A.fire.key = ""; A.render(); } } catch (e) { }
     /* famiglia: prima si allinea (cosi' si sa se l'altro telefono ha gia' scaricato da Revolut), poi Revolut */
-    if (A.inFamily()) A.famSync(true).then(() => A.autoSync()); else A.autoSync();
+    if (A.inFamily()) A.famSync(true).then(() => { A.autoSync(); A.pfAutoSync(); }); else { A.autoSync(); A.pfAutoSync(); }
   });
   T.$("sheet").addEventListener("click", e => { if (e.target === T.$("sheet")) T.closeSheet(); });
   document.addEventListener("keydown", e => { if (e.key === "Escape") T.closeSheet(); });
@@ -5255,8 +5947,8 @@ async function start() {
   let qs = null; try { qs = new URLSearchParams(location.search); } catch (e) { }
   if (qs && (qs.has("code") || qs.has("error"))) { try { history.replaceState(null, "", location.pathname); } catch (e) { } await A.finishConnect(qs); }
   else if (A.checkJoinLink()) { /* ingresso nella famiglia dal QR */ }
-  else if (A.inFamily()) A.famSync(true).then(() => A.autoSync());
-  else A.autoSync();
+  else if (A.inFamily()) A.famSync(true).then(() => { A.autoSync(); A.pfAutoSync(); });
+  else { A.autoSync(); A.pfAutoSync(); }
   /* con l'app aperta, ogni 3 minuti guarda se ci sono modifiche dagli altri telefoni */
   const iv = setInterval(() => { if (A.inFamily() && document.visibilityState === "visible") A.famSync(true); }, 180000);
   if (iv && iv.unref) iv.unref();
