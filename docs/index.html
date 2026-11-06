@@ -191,6 +191,14 @@ ol.steps li{margin-block:3px}
 .seg.g2{display:grid;grid-template-columns:1fr 1fr;border-radius:18px}
 .seg.g2 button{border-radius:14px}
 input[type=date]{inline-size:100%;min-block-size:44px;border:1px solid var(--line);border-radius:14px;background:var(--card);padding:8px 12px}
+/* 1.8: portafoglio nel tempo */
+.seg.mini{flex:none}
+.seg.mini button{min-block-size:34px;padding-inline:12px;font-size:13px;flex:none}
+.pf-ret{display:flex;align-items:center;gap:10px;margin-block:10px 4px}
+.pf-ret .arrow{font-size:30px;line-height:1;font-weight:700}
+.chips.hz{justify-content:center;margin-block-start:8px}
+.chips.hz .chip{min-inline-size:44px;text-align:center;padding-inline:10px}
+.readout .ok,.readout .bad{font-weight:700}
 
 </style>
 </head>
@@ -211,7 +219,7 @@ input[type=date]{inline-size:100%;min-block-size:44px;border:1px solid var(--lin
 /* myFinances on FIRE · utilita' comuni (nessuna dipendenza esterna) */
 "use strict";
 const T = (typeof globalThis !== "undefined" ? globalThis : window).T = {};
-T.APP = { name: "myFinances on FIRE", id: "myfinances-on-fire", version: "1.7.0", schema: 1 };
+T.APP = { name: "myFinances on FIRE", id: "myfinances-on-fire", version: "1.8.0", schema: 1 };
 
 /* ---------- numeri e date ---------- */
 T.round2 = v => Math.round(v * 100) / 100;
@@ -1300,7 +1308,30 @@ T.DICT = {
 "Cripto": "Crypto",
 "Materie prime": "Commodities",
 "Warrant": "Warrants",
-"Altro~tipo": "Other"
+"Altro~tipo": "Other",
+"Servono almeno due giorni di dati": "At least two days of data are needed",
+"Simulatore": "Simulator",
+"in 1 mese": "in 1 month",
+"Valore": "Value",
+"Rendimento": "Return",
+" di valore": " in value",
+"Variazione del valore": "Change in value",
+"Portafoglio nel tempo": "Portfolio over time",
+" dal {d}": " since {d}",
+"Orizzonte": "Horizon",
+"Il rendimento e' ponderato nel tempo (TWR): versamenti e prelievi non contano come guadagni o perdite.": "The return is time-weighted (TWR): deposits and withdrawals do not count as gains or losses.",
+"Il rendimento e' calcolato sul valore del conto: se nel periodo hai versato o prelevato, aggiungi Deposits & Withdrawals alla Flex Query per toglierli.": "The return is based on the account value: if you deposited or withdrew money in the period, add Deposits & Withdrawals to the Flex Query to exclude them.",
+"netti, ultimi 12 mesi": "net, last 12 months",
+"titoli aperti": "open holdings",
+"1G~orizzonte": "1D",
+"1S~orizzonte": "1W",
+"1M~orizzonte": "1M",
+"3M~orizzonte": "3M",
+"6M~orizzonte": "6M",
+"Da inizio anno~orizzonte": "YTD",
+"1A~orizzonte": "1Y",
+"Tutto~orizzonte": "All",
+"Sezioni: Account Information, Open Positions (opzione Summary), Cash Report, Net Asset Value (NAV) in Base, Cash Transactions (Dividends, Withholding Tax, Payment In Lieu Of Dividends, Deposits & Withdrawals). In ciascuna scegli Select All.": "Sections: Account Information, Open Positions (Summary option), Cash Report, Net Asset Value (NAV) in Base, Cash Transactions (Dividends, Withholding Tax, Payment In Lieu Of Dividends, Deposits & Withdrawals). In each one choose Select All."
 },
 "de": {
 "Annulla": "Abbrechen",
@@ -2245,7 +2276,30 @@ T.DICT = {
 "Cripto": "Krypto",
 "Materie prime": "Rohstoffe",
 "Warrant": "Optionsscheine",
-"Altro~tipo": "Andere"
+"Altro~tipo": "Andere",
+"Servono almeno due giorni di dati": "Es braucht mindestens zwei Tage mit Daten",
+"Simulatore": "Simulator",
+"in 1 mese": "in 1 Monat",
+"Valore": "Wert",
+"Rendimento": "Rendite",
+" di valore": " Wert",
+"Variazione del valore": "Wertveränderung",
+"Portafoglio nel tempo": "Portfolio im Zeitverlauf",
+" dal {d}": " seit {d}",
+"Orizzonte": "Zeitraum",
+"Il rendimento e' ponderato nel tempo (TWR): versamenti e prelievi non contano come guadagni o perdite.": "Die Rendite ist zeitgewichtet (TWR): Einzahlungen und Abhebungen zählen nicht als Gewinne oder Verluste.",
+"Il rendimento e' calcolato sul valore del conto: se nel periodo hai versato o prelevato, aggiungi Deposits & Withdrawals alla Flex Query per toglierli.": "Die Rendite beruht auf dem Kontowert: Wenn du im Zeitraum ein- oder ausgezahlt hast, füge der Flex Query Deposits & Withdrawals hinzu, um sie herauszurechnen.",
+"netti, ultimi 12 mesi": "netto, letzte 12 Monate",
+"titoli aperti": "offene Titel",
+"1G~orizzonte": "1T",
+"1S~orizzonte": "1W",
+"1M~orizzonte": "1M",
+"3M~orizzonte": "3M",
+"6M~orizzonte": "6M",
+"Da inizio anno~orizzonte": "YTD",
+"1A~orizzonte": "1J",
+"Tutto~orizzonte": "Max",
+"Sezioni: Account Information, Open Positions (opzione Summary), Cash Report, Net Asset Value (NAV) in Base, Cash Transactions (Dividends, Withholding Tax, Payment In Lieu Of Dividends, Deposits & Withdrawals). In ciascuna scegli Select All.": "Abschnitte: Account Information, Open Positions (Option Summary), Cash Report, Net Asset Value (NAV) in Base, Cash Transactions (Dividends, Withholding Tax, Payment In Lieu Of Dividends, Deposits & Withdrawals). Wähle jeweils Select All."
 }
 };
 
@@ -3467,6 +3521,8 @@ function mergePf(l, r) {
   const res = Object.assign({}, newer), h = {}, dv = {};
   for (const x of (older.history || []).concat(newer.history || [])) h[x.d] = x.v;
   for (const x of (older.divs || []).concat(newer.divs || [])) dv[x.key] = x;
+  const fl = {}; for (const x of (older.flows || []).concat(newer.flows || [])) fl[x.key] = x;
+  res.flows = Object.values(fl).sort((a, b) => a.d < b.d ? -1 : 1); res.hasFlows = !!(older.hasFlows || newer.hasFlows);
   res.history = Object.keys(h).sort().map(d => ({ d, v: h[d] }));
   res.divs = Object.values(dv).sort((a, b) => a.d < b.d ? -1 : 1);
   if (res.tokenUntil == null && older.tokenUntil) res.tokenUntil = older.tokenUntil;
@@ -3815,7 +3871,7 @@ T.parseFlex = xml => {
   for (const s of stmts) { const acc = s.a.accountId || "?", to = T.flexDate(s.a.toDate) || ""; if (!lastByAcc[acc] || to >= lastByAcc[acc].to) lastByAcc[acc] = { s, to }; }
   const accounts = Object.keys(lastByAcc);
   let base = "", date = "", cash = 0;
-  const positions = [], hist = {}, divs = [], seenDiv = new Set();
+  const positions = [], hist = {}, divs = [], flows = [], seenDiv = new Set();
   for (const acc of accounts) {
     const body = lastByAcc[acc].s.body, info = tags(body, "AccountInformation")[0] || {};
     base = base || info.currency || "";
@@ -3841,8 +3897,14 @@ T.parseFlex = xml => {
   const byDay = {}; for (const k in hist) byDay[hist[k].d] = (byDay[hist[k].d] || 0) + hist[k].v;
   /* dividendi netti: dividendi, sostitutivi e ritenute alla fonte */
   for (const s of stmts) for (const c of tags(s.body, "CashTransaction")) {
-    if (!/dividend|withholding|in lieu/i.test(c.type || "")) continue;
     const d = T.flexDate(c.dateTime || c.settleDate || c.reportDate); if (!d) continue;
+    /* versamenti e prelievi: servono per il rendimento ponderato nel tempo */
+    if (/deposit|withdraw/i.test(c.type || "")) {
+      const amt = num(c.amount) * (num(c.fxRateToBase) || 1), key = [s.a.accountId, d, c.type, c.amount, c.transactionID || "", c.description || ""].join("|");
+      if (!seenDiv.has(key)) { seenDiv.add(key); flows.push({ d, amt, key: T.hash(key) }); }
+      continue;
+    }
+    if (!/dividend|withholding|in lieu/i.test(c.type || "")) continue;
     const amt = num(c.amount) * (num(c.fxRateToBase) || 1), key = [s.a.accountId, d, c.symbol, c.type, c.amount, c.transactionID || ""].join("|");
     if (seenDiv.has(key)) continue; seenDiv.add(key);
     divs.push({ d, sym: c.symbol || "", amt, tax: /withholding/i.test(c.type || ""), key: T.hash(key) });
@@ -3853,7 +3915,9 @@ T.parseFlex = xml => {
   /* il valore piu' recente: posizioni + liquidita' (se c'e' il riepilogo del giorno usa quello) */
   const navNow = positions.length || cash ? invested + cash : (history.length ? history[history.length - 1].v : 0);
   if (!history.length || history[history.length - 1].d < date) history.push({ d: date, v: T.round2(navNow) });
-  return { base: base || "CHF", accounts: accounts.map(a => a === "?" ? "" : a), date, positions: positions.sort((a, b) => b.value - a.value), cash: T.round2(cash), invested: T.round2(invested), nav: T.round2(navNow), history, divs };
+  /* se il report contiene versamenti o prelievi, la sezione Deposits & Withdrawals e' attiva: il rendimento li toglie */
+  const hasFlows = flows.length > 0;
+  return { base: base || "CHF", accounts: accounts.map(a => a === "?" ? "" : a), date, positions: positions.sort((a, b) => b.value - a.value), cash: T.round2(cash), invested: T.round2(invested), nav: T.round2(navNow), history, divs, flows, hasFlows };
 };
 
 /* errori di Interactive Brokers in parole semplici */
@@ -3871,7 +3935,7 @@ T.ibkrErrorText = (code, msg) => {
 };
 
 /* stato del portafoglio */
-T.pfDefaults = () => ({ lastSync: null, lastError: null, auto: true, base: "", accounts: [], date: null, nav: 0, cash: 0, invested: 0, positions: [], history: [], divs: [], tokenUntil: null });
+T.pfDefaults = () => ({ lastSync: null, lastError: null, auto: true, base: "", accounts: [], date: null, nav: 0, cash: 0, invested: 0, positions: [], history: [], divs: [], flows: [], hasFlows: false, tokenUntil: null });
 T.pfHas = st => !!(st.portfolio && st.portfolio.date);
 /* cambio dalla valuta del conto alla valuta dell'app (null se manca) */
 T.pfRate = st => { const P = st.portfolio || {}, cur = (st.profile && st.profile.currency) || "CHF"; if (!P.base || P.base === cur) return 1; const r = st.profile.fx && +st.profile.fx[P.base]; return r > 0 ? r : null; };
@@ -3883,8 +3947,10 @@ T.pfMerge = (old, rep) => {
   const P = Object.assign(T.pfDefaults(), old || {});
   const h = {}; for (const x of P.history || []) h[x.d] = x.v; for (const x of rep.history) h[x.d] = x.v;
   const dv = {}; for (const x of P.divs || []) dv[x.key] = x; for (const x of rep.divs) dv[x.key] = x;
+  const fl = {}; for (const x of P.flows || []) fl[x.key] = x; for (const x of rep.flows || []) fl[x.key] = x;
   Object.assign(P, { base: rep.base, accounts: rep.accounts, date: rep.date, nav: rep.nav, cash: rep.cash, invested: rep.invested, positions: rep.positions,
-    history: Object.keys(h).sort().map(d => ({ d, v: h[d] })), divs: Object.values(dv).sort((a, b) => a.d < b.d ? -1 : 1) });
+    history: Object.keys(h).sort().map(d => ({ d, v: h[d] })), divs: Object.values(dv).sort((a, b) => a.d < b.d ? -1 : 1),
+    flows: Object.values(fl).sort((a, b) => a.d < b.d ? -1 : 1), hasFlows: !!(P.hasFlows || rep.hasFlows) });
   return P;
 };
 
@@ -3920,6 +3986,36 @@ T.pfGroups = (st, by) => {
   for (const p of P.positions) { const k = by === "tipo" ? p.type : by === "valuta" ? p.cur : p.sym; (g[k] = g[k] || { k, v: 0, items: [] }).v += p.value; g[k].items.push(p); }
   if (P.cash > 0) { const k = by === "tipo" ? "CASH" : by === "valuta" ? P.base : "__cash"; (g[k] = g[k] || { k, v: 0, items: [] }).v += P.cash; g[k].cash = true; }
   return Object.values(g).sort((a, b) => b.v - a.v);
+};
+/* orizzonti del grafico: data da cui si misura (la chiusura precedente all'inizio del periodo) */
+T.PF_HORIZONS = [["1G", "1G~orizzonte"], ["1S", "1S~orizzonte"], ["1M", "1M~orizzonte"], ["3M", "3M~orizzonte"], ["6M", "6M~orizzonte"], ["YTD", "Da inizio anno~orizzonte"], ["1A", "1A~orizzonte"], ["ALL", "Tutto~orizzonte"]];
+T.pfFrom = (P, hz) => {
+  const h = P.history || [], last = h.length ? h[h.length - 1].d : T.today();
+  const back = (m, y) => { const d = T.parseIso(last); if (y) d.setFullYear(d.getFullYear() - y); if (m) d.setMonth(d.getMonth() - m); return T.iso(d); };
+  switch (hz) {
+    case "1G": return h.length > 1 ? h[h.length - 2].d : last;
+    case "1S": return T.addDays(last, -7);
+    case "1M": return back(1); case "3M": return back(3); case "6M": return back(6);
+    case "YTD": return (+last.slice(0, 4) - 1) + "-12-31";
+    case "1A": return back(0, 1);
+    default: return h.length ? h[0].d : last;
+  }
+};
+/* serie del periodo: valore e rendimento ponderato nel tempo (versamenti e prelievi tolti giorno per giorno) */
+T.pfSeries = (P, hz) => {
+  const h = P.history || []; if (!h.length) return { pts: [], twr: false };
+  const from = T.pfFrom(P, hz);
+  let i0 = 0; for (let i = 0; i < h.length; i++) { if (h[i].d <= from) i0 = i; else break; }
+  const flows = (P.flows || []), twr = !!P.hasFlows;
+  const pts = [{ d: h[i0].d, v: h[i0].v, r: 0 }]; let g = 1, fi = 0;
+  while (fi < flows.length && flows[fi].d <= h[i0].d) fi++;
+  for (let i = i0 + 1; i < h.length; i++) {
+    let f = 0; while (fi < flows.length && flows[fi].d <= h[i].d) { f += flows[fi].amt; fi++; }
+    const prev = h[i - 1].v, ret = prev > 0 ? (h[i].v - (twr ? f : 0)) / prev - 1 : 0;
+    g *= 1 + ret; pts.push({ d: h[i].d, v: h[i].v, r: g - 1 });
+  }
+  const a = pts[0], b = pts[pts.length - 1];
+  return { pts, twr, from: a.d, to: b.d, abs: b.v - a.v, ret: b.r, flows: T.sum(flows.filter(x => x.d > a.d && x.d <= b.d).map(x => x.amt)) };
 };
 /* variazione del valore da una data (compresi versamenti e prelievi) */
 T.pfChange = (P, fromIso) => {
@@ -4301,31 +4397,56 @@ T.dayChart = (host, days, opt) => {
   if (opt.cap) { const y = Y(opt.cap); T.s("line", { x1: L, x2: w - R, y1: y, y2: y, stroke: "var(--accent2)", "stroke-dasharray": "5 4", "stroke-width": 1.5 }, s); }
   return s;
 };
-/* valore nel tempo (portafoglio): linea con area, tocca per leggere il valore di un giorno */
-T.valueChart = (host, pts, opt) => {
+/* portafoglio nel tempo: valore o rendimento %, verde sopra la partenza e rosso sotto; tocca per leggere un giorno */
+T.perfChart = (host, pts, opt) => {
   opt = opt || {};
-  const w = W(host), h = opt.h || 190, L = 48, R = 10, Tp = 12, B = 24, iw = w - L - R, ih = h - Tp - B;
+  const pctMode = opt.mode === "rend";
+  const w = W(host), h = opt.h || 210, L = pctMode ? 46 : 50, R = 10, Tp = 12, B = 24, iw = w - L - R, ih = h - Tp - B;
   const s = svgBox(w, h, opt.label || T.tr("valore nel tempo"));
-  if (!pts.length) return s;
-  const t0 = T.parseIso(pts[0].d).getTime(), t1 = T.parseIso(pts[pts.length - 1].d).getTime() || t0 + 1;
-  let lo = Math.min(...pts.map(p => p.v)), hi = Math.max(...pts.map(p => p.v));
-  if (hi - lo < hi * 0.02) { lo -= hi * 0.02; hi += hi * 0.02; }
+  if (pts.length < 2) { txt(s, w / 2, h / 2, T.tr("Servono almeno due giorni di dati"), { "text-anchor": "middle" }); return s; }
+  const val = p => pctMode ? p.r * 100 : p.v, base = pctMode ? 0 : pts[0].v;
+  const t0 = T.parseIso(pts[0].d).getTime(), t1 = T.parseIso(pts[pts.length - 1].d).getTime();
+  let lo = Math.min(base, ...pts.map(val)), hi = Math.max(base, ...pts.map(val));
+  const pad = hi - lo > 0 ? (hi - lo) * 0.06 : Math.max(Math.abs(hi) * 0.001, pctMode ? 0.1 : 1); lo -= pad; hi += pad;
   const step = nice((hi - lo) / 4), y0 = Math.floor(lo / step) * step, y1 = Math.ceil(hi / step) * step;
   const X = d => L + (T.parseIso(d).getTime() - t0) / Math.max(1, t1 - t0) * iw, Y = v => Tp + ih - (v - y0) / Math.max(1e-9, y1 - y0) * ih;
-  for (let v = y0; v <= y1 + 1e-9; v += step) { T.s("line", { x1: L, x2: w - R, y1: Y(v), y2: Y(v), stroke: "var(--line)" }, s); txt(s, L - 6, Y(v) + 4, T.fmt.k(v), { "text-anchor": "end" }); }
+  const fine = pctMode ? step < 1 : step < 10000;
+  const lab = v => pctMode ? (v > 0 ? "+" : v < 0 ? "\u2212" : "") + (fine ? T.fmt.n1(Math.abs(v)) : T.fmt.n0(Math.abs(v))) + "%" : fine ? T.fmt.n0(v) : T.fmt.k(v);
+  for (let v = y0; v <= y1 + 1e-9; v += step) { T.s("line", { x1: L, x2: w - R, y1: Y(v), y2: Y(v), stroke: "var(--line)", "stroke-dasharray": "2 3" }, s); txt(s, L - 6, Y(v) + 4, lab(Math.abs(v) < step / 1e6 ? 0 : v), { "text-anchor": "end" }); }
+  /* linea di partenza (0% o valore iniziale) */
+  T.s("line", { x1: L, x2: w - R, y1: Y(base), y2: Y(base), stroke: "var(--muted)", "stroke-width": 1, opacity: 0.6 }, s);
   /* al massimo un punto ogni 2 pixel */
   const every = Math.max(1, Math.ceil(pts.length / (iw / 2))), draw = pts.filter((p, i) => i % every === 0 || i === pts.length - 1);
-  const line = draw.map(p => X(p.d).toFixed(1) + "," + Y(p.v).toFixed(1)).join(" ");
-  T.s("path", { d: "M" + X(draw[0].d).toFixed(1) + "," + (Tp + ih) + " L" + line.replace(/ /g, " L") + " L" + X(draw[draw.length - 1].d).toFixed(1) + "," + (Tp + ih) + "Z", fill: "var(--fan1)" }, s);
-  T.s("polyline", { points: line, fill: "none", stroke: "var(--brand2)", "stroke-width": 2.2, "stroke-linejoin": "round" }, s);
-  /* etichette dei mesi */
-  const months = []; for (const p of pts) { const mk = p.d.slice(0, 7); if (!months.length || months[months.length - 1].mk !== mk) months.push({ mk, d: mk + "-01" < pts[0].d ? pts[0].d : mk + "-01" }); }
-  const me = Math.max(1, Math.ceil(months.length / 6));
-  months.forEach((m, i) => { if (i % me === 0 && X(m.d) < w - R - 14) txt(s, X(m.d), h - 7, T.fmt.monthShort(m.mk), { "text-anchor": "middle" }); });
+  /* tratti verdi sopra la partenza, rossi sotto (con il punto d'incrocio), ognuno con la sua area */
+  let seg = [], segUp = null; const segs = [];
+  const flush = () => { if (seg.length > 1) segs.push({ up: segUp, pts: seg }); };
+  for (let i = 0; i < draw.length; i++) {
+    const p = draw[i], x = X(p.d), y = Y(val(p)), u = val(p) >= base;
+    if (segUp === null) { segUp = u; seg = [[x, y]]; continue; }
+    if (u !== segUp) {
+      const q = draw[i - 1], v0 = val(q), v1 = val(p), k = (base - v0) / ((v1 - v0) || 1e-9), xc = X(q.d) + (x - X(q.d)) * k, yc = Y(base);
+      seg.push([xc, yc]); flush(); seg = [[xc, yc], [x, y]]; segUp = u;
+    } else seg.push([x, y]);
+  }
+  flush();
+  const yb = Y(base).toFixed(1), P2 = q => q[0].toFixed(1) + "," + q[1].toFixed(1);
+  for (const g of segs) T.s("path", { d: "M" + g.pts[0][0].toFixed(1) + "," + yb + " L" + g.pts.map(P2).join(" L") + " L" + g.pts[g.pts.length - 1][0].toFixed(1) + "," + yb + "Z", fill: g.up ? "var(--fan1)" : "rgba(185,83,47,.13)" }, s);
+  for (const g of segs) T.s("polyline", { points: g.pts.map(P2).join(" "), fill: "none", stroke: g.up ? "var(--ok)" : "var(--bad)", "stroke-width": 2.2, "stroke-linejoin": "round", "stroke-linecap": "round" }, s);
+  if (pts.length <= 12) for (const p of pts) T.s("circle", { cx: X(p.d).toFixed(1), cy: Y(val(p)).toFixed(1), r: 3, fill: val(p) >= base ? "var(--ok)" : "var(--bad)" }, s);
+  /* etichette dell'asse del tempo secondo la durata */
+  const span = (t1 - t0) / 864e5, ticks = [];
+  if (span <= 10) pts.forEach(p => ticks.push({ d: p.d, l: T.fmt.dateShort(p.d) }));
+  else if (span <= 100) { for (let d = pts[0].d; d <= pts[pts.length - 1].d; d = T.addDays(d, Math.max(7, Math.round(span / 5)))) ticks.push({ d, l: T.fmt.dateShort(d) }); }
+  else if (span <= 800) { let mk = null; for (const p of pts) if (p.d.slice(0, 7) !== mk) { mk = p.d.slice(0, 7); ticks.push({ d: p.d, l: T.fmt.monthShort(mk) }); } }
+  else { let yk = null; for (const p of pts) if (p.d.slice(0, 4) !== yk) { yk = p.d.slice(0, 4); ticks.push({ d: p.d, l: yk }); } }
+  const te = Math.max(1, Math.ceil(ticks.length / 6));
+  ticks.forEach((t, i) => { const x = X(t.d); if (i % te !== 0) return;
+    if (span <= 10) txt(s, x, h - 7, t.l, { "text-anchor": x < L + 24 ? "start" : x > w - R - 24 ? "end" : "middle" });
+    else if (x > L + 8 && x < w - R - 14) txt(s, x, h - 7, t.l, { "text-anchor": "middle" }); });
   if (opt.pick) {
-    const p = opt.pick, x = X(p.d), y = Y(p.v);
+    const p = opt.pick, x = X(p.d), y = Y(val(p));
     T.s("line", { x1: x, x2: x, y1: Tp, y2: Tp + ih, stroke: "var(--ink)", "stroke-width": 1.2, "stroke-dasharray": "3 3" }, s);
-    T.s("circle", { cx: x, cy: y, r: 5, fill: "var(--brand2)", stroke: "var(--card)", "stroke-width": 2 }, s);
+    T.s("circle", { cx: x, cy: y, r: 5, fill: val(p) >= base ? "var(--ok)" : "var(--bad)", stroke: "var(--card)", "stroke-width": 2 }, s);
   }
   if (opt.onPick) {
     const hit = T.s("rect", { x: L, y: Tp, width: iw, height: ih, fill: "transparent", style: "cursor:pointer", class: "hit" }, s);
@@ -4337,6 +4458,7 @@ T.valueChart = (host, pts, opt) => {
   }
   return s;
 };
+
 })();
 
 /* myFinances on FIRE · applicazione: stato, navigazione, Home */
@@ -4388,7 +4510,7 @@ A.render = () => {
   T.$("btnImport").hidden = onb;
   A.renderBar();
   if (onb) return A.renderOnboarding(main);
-  const fn = { home: A.renderHome, spese: A.renderSpese, budget: A.renderBudget, fire: A.renderFire, altro: A.renderAltro, portafoglio: A.renderPortafoglio }[A.view] || A.renderHome;
+  const fn = { home: A.renderHome, spese: A.renderSpese, budget: A.renderBudget, fire: A.renderFire, altro: A.renderAltro, portafoglio: m => { A.view = "fire"; A.ui.fireTab = "portafoglio"; A.renderBar(); A.renderFire(m); } }[A.view] || A.renderHome;
   fn(main);
   if (y > 0 && window.scrollTo) window.scrollTo(0, y);
 };
@@ -4874,6 +4996,12 @@ const h = T.h, A = T.A;
 
 A.renderFire = main => {
   const S = A.S, F = S.fire;
+  /* in cima: simulatore o portafoglio */
+  const tab = A.ui.fireTab || "sim";
+  const tabs = T.seg([["sim", T.tr("Simulatore")], ["portafoglio", T.tr("Portafoglio")]], tab, v => { A.ui.fireTab = v; A._toTop = true; A.render(); });
+  tabs.id = "fireTabs"; tabs.style.marginBlockEnd = "12px";
+  main.appendChild(tabs);
+  if (tab === "portafoglio") return A.renderPortafoglio(main, true);
   const out = h("div"); main.appendChild(out);
   const yearNow = new Date().getFullYear();
   let pick = null;   /* eta' letta sul grafico del patrimonio */
@@ -5692,7 +5820,7 @@ const PALETTE = ["#2F5D46", "#C4623F", "#D99A2B", "#8DB596", "#7A4E6D", "#4F7C8A
 A.pm = v => { const S = A.S, r = T.pfRate(S); return r ? A.money(v * r) : T.fmt.n0(v) + " " + S.portfolio.base; };
 A.pmK = v => { const S = A.S, r = T.pfRate(S); return r ? T.fmt.k(v * r) + " " + T.fmt.cur : T.fmt.k(v) + " " + S.portfolio.base; };
 const sign = v => (v > 0 ? "+" : v < 0 ? "\u2212" : "") ;
-const pctTxt = v => sign(v) + T.fmt.pct1(Math.abs(v));
+const pctTxt = v => sign(v) + (Math.abs(v) < 0.01 ? T.fmt.n2(Math.abs(v) * 100) + "%" : T.fmt.pct1(Math.abs(v)));
 const typeName = k => T.tr(T.PF_TYPES[k] || T.PF_TYPES.OTHER);
 const groupName = (by, g) => by === "tipo" ? typeName(g.k) : g.k === "__cash" ? T.tr("Liquidita'") : by === "valuta" ? g.k : (g.items[0] && g.items[0].sym) || g.k;
 
@@ -5708,7 +5836,7 @@ A.pfSync = async silent => {
   } catch (e) {
     S.portfolio = S.portfolio || T.pfDefaults(); S.portfolio.lastError = e.message; S.portfolio.lastTry = new Date().toISOString(); A.save();
     if (!silent) T.sheet(T.tr("Interactive Brokers"), h("p", e.message), [h("button.btn.primary", { type: "button", onclick: () => T.closeSheet() }, "Ok")]);
-  } finally { A._pfBusy = false; if (A.view === "portafoglio" || A.view === "home" || (A.view === "altro" && A.sub === "ibkr")) A.render(); }
+  } finally { A._pfBusy = false; if (A.view === "fire" || A.view === "portafoglio" || A.view === "home" || (A.view === "altro" && A.sub === "ibkr")) A.render(); }
 };
 A.pfAutoSync = () => {
   const S = A.S, P = S && S.portfolio;
@@ -5733,40 +5861,76 @@ A.pfLinkFlow = () => {
 };
 A.pfUnlink = () => { const F = A.S.fire; F.investable = Math.round(T.investableNow(A.S)); F.ibkrLink = false; A.fire.key = ""; A.save(); T.toast(T.tr("Il FIRE usa di nuovo il valore inserito a mano")); A.render(); };
 
+/* il portafoglio sta dentro la voce FIRE */
+A.openPf = () => { A.ui.fireTab = "portafoglio"; A.go("fire"); };
+
 /* ---------- riquadro in Home ---------- */
 A.pfHomeCard = main => {
   const S = A.S, P = S.portfolio; if (!T.pfHas(S)) return;
-  const ch = T.pfChange(P, T.addDays(P.date, -30)), go = () => A.go("portafoglio");
+  const se = T.pfSeries(P, "1M"), go = () => A.openPf();
   const card = h("div.card.tapcard#pfCard", { role: "button", tabindex: "0", "aria-label": T.tr("Apri il portafoglio"), onclick: go, onkeydown: e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } } },
     h("div.row.between", h("h2", { style: { margin: 0 } }, T.tr("Portafoglio")), h("span.chev", { "aria-hidden": "true" }, "\u203a")),
     h("div.row.between", { style: { alignItems: "flex-end", marginBlockStart: "6px" } },
       h("div", h("div.big", A.pm(P.nav)), h("div.small.muted", T.tr("Interactive Brokers, dati al {d}", { d: T.fmt.date(P.date) }))),
-      ch ? h("div", { style: { textAlign: "end" } }, h("div.mid" + (ch.abs >= 0 ? ".ok" : ".bad"), pctTxt(ch.pct)), h("div.small.muted", T.tr("in 30 giorni"))) : null));
+      se.pts.length > 1 ? h("div", { style: { textAlign: "end" } }, h("div.mid" + (se.ret >= 0 ? ".ok" : ".bad"), pctTxt(se.ret)), h("div.small.muted", T.tr("in 1 mese"))) : null));
   if (P.lastError) card.appendChild(h("div.small.bad", { style: { marginBlockStart: "6px" } }, P.lastError));
   main.appendChild(card);
 };
 
+/* ---------- grafico Valore / Rendimento con gli orizzonti ---------- */
+A.pfPerfCard = main => {
+  const S = A.S, P = S.portfolio, ui = A.ui;
+  const mode = ui.pfMode || "valore", hz = ui.pfHz || "1A";
+  const se = T.pfSeries(P, hz), up = (mode === "rend" ? se.ret : se.abs) >= 0;
+  const hzName = T.tr((T.PF_HORIZONS.find(x => x[0] === hz) || T.PF_HORIZONS[6])[1]);
+  const acc = (P.accounts || []).filter(Boolean).map(a => a.length > 4 ? "\u2022\u2022\u2022" + a.slice(-4) : a).join(", ");
+  const card = h("div.card#pfPerf");
+  card.appendChild(h("div.row.between", { style: { alignItems: "flex-start", gap: "10px" } },
+    h("div", h("div.small.muted", "Interactive Brokers" + (acc ? " \u00b7 " + acc : "")), h("div.big", A.pm(P.nav)), h("div.small.muted", T.tr("dati al {d} \u00b7 aggiornato {t}", { d: T.fmt.date(P.date), t: A.relTime(P.lastSync) }))),
+    h("div.seg.mini", { role: "group" }, [["valore", T.tr("Valore")], ["rend", T.tr("Rendimento")]].map(([k, l]) => h("button", { type: "button", class: k === mode ? "on" : "", "aria-pressed": k === mode ? "true" : "false", onclick: () => { ui.pfMode = k; A.render(); } }, l)))));
+  if (se.pts.length > 1) {
+    const big = mode === "rend" ? pctTxt(se.ret) : sign(se.abs) + A.pm(Math.abs(se.abs));
+    const small = mode === "rend" ? sign(se.abs) + A.pm(Math.abs(se.abs)) + T.tr(" di valore") : pctTxt(se.abs / (se.pts[0].v || 1));
+    card.appendChild(h("div.pf-ret", h("span.arrow" + (up ? ".ok" : ".bad"), { "aria-hidden": "true" }, up ? "\u2191" : "\u2193"),
+      h("div", h("div.small.muted", (mode === "rend" ? T.tr("Rendimento") : T.tr("Variazione del valore")) + " (" + hzName + ")"), h("div.mid" + (up ? ".ok" : ".bad"), big, h("span.small.muted", { style: { fontWeight: 400, marginInlineStart: "8px" } }, small)))));
+  }
+  const box = h("div"), read = h("div.readout");
+  const draw = pick => {
+    T.clear(box); box.appendChild(T.perfChart(card, se.pts, { mode, pick, onPick: draw, label: T.tr("Portafoglio nel tempo") }));
+    T.clear(read); if (!se.pts.length) return;
+    const p = pick || se.pts[se.pts.length - 1];
+    T.add(read, [h("b", T.fmt.date(p.d)), " \u00b7 " + A.pm(p.v) + " \u00b7 ", h("span", { class: p.r >= 0 ? "ok" : "bad" }, pctTxt(p.r)), T.tr(" dal {d}", { d: T.fmt.date(se.from) })]);
+  };
+  card.appendChild(box); card.appendChild(read); draw(null);
+  card.appendChild(h("div.chips.hz", { role: "group", "aria-label": T.tr("Orizzonte") }, T.PF_HORIZONS.map(([k, l]) => h("button.chip" + (k === hz ? ".on" : ""), { type: "button", onclick: () => { ui.pfHz = k; A.render(); } }, T.tr(l)))));
+  card.appendChild(h("p.small.muted", { style: { margin: "8px 0 0" } }, se.twr
+    ? T.tr("Il rendimento e' ponderato nel tempo (TWR): versamenti e prelievi non contano come guadagni o perdite.")
+    : T.tr("Il rendimento e' calcolato sul valore del conto: se nel periodo hai versato o prelevato, aggiungi Deposits & Withdrawals alla Flex Query per toglierli.")));
+  main.appendChild(card);
+};
+
 /* ---------- schermata ---------- */
-A.renderPortafoglio = main => {
+A.renderPortafoglio = (main, embedded) => {
   const S = A.S, P = S.portfolio;
-  main.appendChild(h("button.btn.ghost", { type: "button", onclick: () => history.length > 1 ? history.back() : A.go("home") }, T.tr("\u2039 Indietro")));
+  if (!embedded) main.appendChild(h("button.btn.ghost", { type: "button", onclick: () => history.length > 1 ? history.back() : A.go("home") }, T.tr("\u2039 Indietro")));
   if (!T.pfHas(S)) {
     main.appendChild(h("div.card", h("h2", T.tr("Portafoglio")), h("p", T.tr("Collega Interactive Brokers per vedere qui posizioni, ripartizione, andamento e dividendi, e per aggiornare da solo il patrimonio del FIRE.")),
       h("button.btn.primary.block", { type: "button", onclick: () => A.go("altro", "ibkr") }, T.tr("Configura Interactive Brokers"))));
     return;
   }
-  const rate = T.pfRate(S);
-  /* valore */
-  const td = T.today(), ch30 = T.pfChange(P, T.addDays(P.date, -30)), chY = T.pfChange(P, td.slice(0, 4) + "-01-01"), ch1 = T.pfChange(P, T.addDays(P.date, -365));
+  const rate = T.pfRate(S), td = T.today();
+  /* valore e rendimento nel tempo */
+  A.pfPerfCard(main);
+  /* numeri chiave */
   const pnl = T.sum(P.positions.map(p => p.pnl)), cost = T.sum(P.positions.map(p => p.cost));
-  const chip = (lbl, c) => c ? h("div.kpi", h("div.l", lbl), h("div.v" + (c.abs >= 0 ? ".ok" : ".bad"), pctTxt(c.pct)), h("div.s", sign(c.abs) + A.pm(Math.abs(c.abs)))) : null;
-  const top = h("div.card#pfValue", h("h2", T.tr("Valore del portafoglio")),
-    h("div.row.between", { style: { alignItems: "flex-end" } }, h("div", h("div.big", A.pm(P.nav)), h("div.small.muted", T.tr("dati al {d} \u00b7 aggiornato {t}", { d: T.fmt.date(P.date), t: A.relTime(P.lastSync) }))),
-      h("button.btn", { type: "button", disabled: !!A._pfBusy, onclick: () => A.pfSync(false) }, A._pfBusy ? T.tr("Aggiornamento...") : T.tr("Aggiorna"))),
-    h("div.kpis.k4", { style: { marginBlockStart: "12px" } }, chip(T.tr("30 giorni"), ch30), chip(T.tr("Da inizio anno"), chY), chip(T.tr("12 mesi"), ch1),
-      h("div.kpi", h("div.l", T.tr("Guadagno non realizzato")), h("div.v" + (pnl >= 0 ? ".ok" : ".bad"), sign(pnl) + A.pm(Math.abs(pnl))), h("div.s", cost ? pctTxt(pnl / cost) + T.tr(" sul costo") : ""))),
-    h("p.small.muted", { style: { marginBlockStart: "8px" } }, T.tr("Le variazioni comprendono versamenti e prelievi. Liquidita' nel conto: {c}.", { c: A.pm(P.cash) })));
-  if (!rate) top.appendChild(h("div.note.warn", T.tr("Manca il cambio {c} in Profilo e reddito: gli importi sono in {c}.", { c: P.base })));
+  const div12 = T.sum(T.pfDivMonths(P, td).map(m => m.v));
+  const top = h("div.card#pfValue",
+    h("div.kpis.k4", h("div.kpi", h("div.l", T.tr("Guadagno non realizzato")), h("div.v" + (pnl >= 0 ? ".ok" : ".bad"), sign(pnl) + A.pm(Math.abs(pnl))), h("div.s", cost ? pctTxt(pnl / cost) + T.tr(" sul costo") : "")),
+      h("div.kpi", h("div.l", T.tr("Liquidita'")), h("div.v", A.pm(P.cash)), h("div.s", T.fmt.pct1(P.cash / (P.nav || 1)) + T.tr(" del portafoglio"))),
+      h("div.kpi", h("div.l", T.tr("Dividendi")), h("div.v", A.pm(div12)), h("div.s", T.tr("netti, ultimi 12 mesi"))),
+      h("div.kpi", h("div.l", T.tr("Posizioni")), h("div.v", String(P.positions.length)), h("div.s", T.tr("titoli aperti")))),
+    h("div.row.wrap", { style: { marginBlockStart: "10px" } }, h("button.btn", { type: "button", disabled: !!A._pfBusy, onclick: () => A.pfSync(false) }, A._pfBusy ? T.tr("Aggiornamento...") : T.tr("Aggiorna"))));
+  if (!rate) top.appendChild(h("div.note.warn", { style: { marginBlockStart: "8px" } }, T.tr("Manca il cambio {c} in Profilo e reddito: gli importi sono in {c}.", { c: P.base })));
   if (P.lastError) top.appendChild(h("div.note.warn", { style: { marginBlockStart: "8px" } }, P.lastError));
   main.appendChild(top);
 
@@ -5791,16 +5955,6 @@ A.renderPortafoglio = main => {
       h("div.d", A.pm(g.v) + (by === "titolo" && g.items[0] && g.k !== "__altri" ? " \u00b7 " + g.items[0].desc : by !== "titolo" ? " \u00b7 " + g.items.length + (g.items.length === 1 ? T.tr(" posizione") : T.tr(" posizioni")) : ""))))));
   c1.appendChild(list);
   main.appendChild(c1);
-
-  /* andamento */
-  if (P.history.length > 2) {
-    const c2 = h("div.card#pfTrend", h("h2", T.tr("Andamento")), h("p.sub", T.tr("Valore del conto giorno per giorno, versamenti compresi. Tocca il grafico per leggere un giorno.")));
-    const box = h("div"), read = h("div.readout");
-    const draw = pick => { T.clear(box); box.appendChild(T.valueChart(c2, P.history, { pick, onPick: draw }));
-      T.clear(read); const p = pick || P.history[P.history.length - 1]; T.add(read, [h("b", T.fmt.date(p.d)), " \u00b7 " + A.pm(p.v)]); };
-    c2.appendChild(box); c2.appendChild(read); draw(null);
-    main.appendChild(c2);
-  }
 
   /* posizioni */
   const c3 = h("div.card#pfPos", h("h2", T.tr("Posizioni")));
@@ -5880,7 +6034,7 @@ A.renderIbkr = card => {
   if (!member) {
     const steps = [
       [T.tr("1 \u00b7 Crea la Flex Query"), [T.tr("In Interactive Brokers: Performance & Reports, poi Flex Queries, poi + accanto a Activity Flex Query."),
-        T.tr("Sezioni: Account Information, Open Positions (opzione Summary), Cash Report, Net Asset Value (NAV) in Base, Cash Transactions (Dividends, Withholding Tax, Payment In Lieu Of Dividends). In ciascuna scegli Select All."),
+        T.tr("Sezioni: Account Information, Open Positions (opzione Summary), Cash Report, Net Asset Value (NAV) in Base, Cash Transactions (Dividends, Withholding Tax, Payment In Lieu Of Dividends, Deposits & Withdrawals). In ciascuna scegli Select All."),
         T.tr("Formato XML, periodo Last 365 Calendar Days. Salva e annota il numero (Query ID).")]],
       [T.tr("2 \u00b7 Attiva il Flex Web Service"), [T.tr("Flex Queries, poi Flex Web Service Configuration: attivalo, scegli la scadenza piu' lunga, lascia vuoto il campo IP e genera il token."),
         T.tr("Il token scade: segna qui sotto la data, l'app ti avvisa 14 giorni prima.")]],
@@ -5893,7 +6047,7 @@ A.renderIbkr = card => {
   }
   card.appendChild(h("div.row.wrap", { style: { marginBlockStart: "8px" } },
     h("button.btn.primary", { type: "button", disabled: !!A._pfBusy, onclick: async () => { S.portfolio = S.portfolio || T.pfDefaults(); await A.pfSync(false); } }, A._pfBusy ? T.tr("Scarico il report...") : T.pfHas(S) ? T.tr("Aggiorna ora") : T.tr("Scarica il portafoglio")),
-    T.pfHas(S) ? h("button.btn", { type: "button", onclick: () => A.go("portafoglio") }, T.tr("Apri il portafoglio")) : null));
+    T.pfHas(S) ? h("button.btn", { type: "button", onclick: () => A.openPf() }, T.tr("Apri il portafoglio")) : null));
   if (A._pfBusy) card.appendChild(h("p.small.muted", T.tr("Interactive Brokers prepara il report: di solito servono da 5 a 20 secondi.")));
   if (P) {
     card.appendChild(h("label.row", { style: { marginBlock: "12px 4px" } }, h("input", { type: "checkbox", checked: P.auto !== false, onchange: e => { P.auto = e.target.checked; A.save(); } }), T.tr("Aggiorna da solo all'apertura (al massimo ogni 12 ore)")));
