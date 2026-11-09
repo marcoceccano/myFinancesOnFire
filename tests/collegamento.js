@@ -6,7 +6,7 @@ const stub = require("./dom-stub.js");
 const [, , htmlPath, backupPath] = process.argv;
 let fails = 0; const ok = (c, m) => { console.log((c ? "OK   " : "FAIL ") + m); if (!c) fails++; };
 (async () => {
-  const worker = (await import(path.resolve(__dirname, "../ponte/worker.js"))).default;
+  const worker = (await import(require("url").pathToFileURL(path.resolve(__dirname, "../ponte/worker.js")).href)).default;
   const { privateKey } = generateKeyPairSync("rsa", { modulusLength: 2048, publicKeyEncoding: { type: "spki", format: "pem" }, privateKeyEncoding: { type: "pkcs8", format: "pem" } });
   const APP = "https://utente.github.io/myFinancesOnFire/", ORIGIN = "https://utente.github.io", TOKEN = "k".repeat(43);
   const env = { EB_APP_ID: "11111111-2222-3333-4444-555555555555", EB_PRIVATE_KEY: privateKey, APP_TOKEN: TOKEN, ALLOWED_ORIGIN: ORIGIN, REDIRECT_URL: APP };

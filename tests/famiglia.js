@@ -6,7 +6,7 @@ const [, , htmlPath, backupPath] = process.argv;
 let fails = 0; const ok = (c, m) => { console.log((c ? "OK   " : "FAIL ") + m); if (!c) fails++; };
 const wait = ms => new Promise(r => setTimeout(r, ms || 60));
 (async () => {
-  const worker = (await import(path.resolve(__dirname, "../ponte/worker.js"))).default;
+  const worker = (await import(require("url").pathToFileURL(path.resolve(__dirname, "../ponte/worker.js")).href)).default;
   const { privateKey } = generateKeyPairSync("rsa", { modulusLength: 2048, publicKeyEncoding: { type: "spki", format: "pem" }, privateKeyEncoding: { type: "pkcs8", format: "pem" } });
   const ORIGIN = "https://utente.github.io", APP = ORIGIN + "/myFinancesOnFire/", BRIDGE = "https://myfinances-ponte.utente.workers.dev", TOKEN = "k".repeat(43);
   const kv = new Map(), writes = { n: 0 };

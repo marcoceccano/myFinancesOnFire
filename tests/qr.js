@@ -78,6 +78,6 @@ for (const s of samples) {
   catch (e) { ok(false, "QR " + s.slice(0, 20) + ": " + e.message); }
 }
 for (let m = 0; m < 8; m++) { const s = "https://example.org/#" + "k".repeat(200); try { ok(decode(T.qr(s, { mask: m })).text === s, "maschera " + m + " leggibile"); } catch (e) { ok(false, "maschera " + m + ": " + e.message); } }
-fs.writeFileSync(process.env.QR_OUT || "/tmp/qr-sample.json", JSON.stringify({ text: samples[2], m: T.qr(samples[2]).modules.map(r => r.map(v => v ? 1 : 0).join("")) }));
+fs.writeFileSync(process.env.QR_OUT || require("path").join(require("os").tmpdir(), "qr-sample.json"), JSON.stringify({ text: samples[2], m: T.qr(samples[2]).modules.map(r => r.map(v => v ? 1 : 0).join("")) }));
 console.log(fails ? fails + " test falliti" : "Tutti i test del QR passati");
 process.exitCode = fails ? 1 : 0;
