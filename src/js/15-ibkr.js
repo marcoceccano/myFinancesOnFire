@@ -101,7 +101,9 @@ T.parseFlex = (xml, today) => {
   if (!history.length || history[history.length - 1].d < date) history.push({ d: date, v: T.round2(navNow) });
   /* se il report contiene versamenti o prelievi, la sezione Deposits & Withdrawals e' attiva: il rendimento li toglie */
   const hasFlows = flows.length > 0;
-  return { base: base || "CHF", accounts: accounts.map(a => a === "?" ? "" : a), date, positions: positions.sort((a, b) => b.value - a.value), cash: T.round2(cash), invested: T.round2(invested), nav: T.round2(navNow), history, divs, flows, hasFlows };
+  /* inizio del periodo coperto dal report: da qui in avanti i dati del report sostituiscono quelli salvati */
+  const from = stmts.map(s => fd(s.a.fromDate)).concat(history.length ? [history[0].d] : []).filter(Boolean).sort()[0] || date || null;
+  return { base: base || "CHF", accounts: accounts.map(a => a === "?" ? "" : a), date, from, positions: positions.sort((a, b) => b.value - a.value), cash: T.round2(cash), invested: T.round2(invested), nav: T.round2(navNow), history, divs, flows, hasFlows };
 };
 
 /* errori di Interactive Brokers in parole semplici */
@@ -119,26 +121,39 @@ T.ibkrErrorText = (code, msg) => {
 };
 
 /* stato del portafoglio */
-T.pfDefaults = () => ({ lastSync: null, lastError: null, auto: true, base: "", accounts: [], date: null, nav: 0, cash: 0, invested: 0, positions: [], history: [], divs: [], flows: [], hasFlows: false, tokenUntil: null });
+T.pfDefaults = () => ({ lastSync: null, lastError: null, auto: true, base: "", accounts: [], date: null, from: null, nav: 0, cash: 0, invested: 0, positions: [], history: [], divs: [], flows: [], hasFlows: false, tokenUntil: null });
 T.pfHas = st => !!(st.portfolio && st.portfolio.date);
 /* cambio dalla valuta del conto alla valuta dell'app (null se manca) */
 T.pfRate = st => { const P = st.portfolio || {}, cur = (st.profile && st.profile.currency) || "CHF"; if (!P.base || P.base === cur) return 1; const r = st.profile.fx && +st.profile.fx[P.base]; return r > 0 ? r : null; };
 T.pfToApp = (st, v) => v * (T.pfRate(st) || 1);
 T.pfNavApp = st => T.pfHas(st) ? T.pfToApp(st, st.portfolio.nav) : 0;
 
+/* 1.9.1: sigillo sui dati del portafoglio che si accumulano (storico, dividendi, versamenti).
+   Le versioni fino alla 1.8 leggevano le date europee (giorno/mese) come americane: giorno e mese scambiati,
+   grafico a denti di sega, dividendi e versamenti doppi. Quei dati non hanno il sigillo e non si uniscono piu':
+   li ricostruisce il report successivo. Ogni modifica a history, divs o flows deve finire con T.pfSeal. */
+T.PF_FMT = 2;
+const pfSig = P => T.hash(JSON.stringify([(P.history || []).map(x => [x.d, x.v]), (P.divs || []).map(x => [x.key, x.d, x.amt]), (P.flows || []).map(x => [x.key, x.d, x.amt])]));
+T.pfSeal = P => { P.fmt = T.PF_FMT; P.sig = pfSig(P); return P; };
+T.pfTrusted = P => !P || (!(P.history || []).length && !(P.divs || []).length && !(P.flows || []).length) || ((P.fmt || 0) >= T.PF_FMT && P.sig === pfSig(P));
+/* unisce due copie: la piu' recente vale per tutto il periodo del suo report, della piu' vecchia resta solo cio' che viene prima */
+T.pfJoin = (older, newer) => {
+  const w0 = newer.from || ((newer.history || [])[0] || {}).d || "9999", lim = T.addDays(T.today(), 1);
+  const keep = list => (list || []).filter(x => T.isoOk(x.d) && x.d < w0 && x.d <= lim);
+  const h = {}; for (const x of keep(older.history).concat(newer.history || [])) h[x.d] = x.v;
+  const dv = {}; for (const x of keep(older.divs).concat(newer.divs || [])) dv[x.key] = x;
+  const fl = {}; for (const x of keep(older.flows).concat(newer.flows || [])) fl[x.key] = x;
+  const byDate = (a, b) => a.d < b.d ? -1 : a.d > b.d ? 1 : a.key < b.key ? -1 : a.key > b.key ? 1 : 0;
+  return { history: Object.keys(h).sort().map(d => ({ d, v: h[d] })), divs: Object.values(dv).sort(byDate), flows: Object.values(fl).sort(byDate) };
+};
 /* unisce il report nuovo a quello salvato: storico e dividendi si accumulano oltre l'anno del report */
 T.pfMerge = (old, rep) => {
-  const P = Object.assign(T.pfDefaults(), old || {});
-  /* lo storico salvato resta solo prima dell'inizio del report: nel periodo del report valgono i dati nuovi
-     (cosi' si ripuliscono anche date lette male dalle versioni precedenti) */
-  const r0 = rep.history.length ? rep.history[0].d : "9999", lim = T.addDays(T.today(), 1);
-  const h = {}; for (const x of P.history || []) if (T.isoOk(x.d) && x.d < r0 && x.d <= lim) h[x.d] = x.v; for (const x of rep.history) h[x.d] = x.v;
-  const dv = {}; for (const x of P.divs || []) dv[x.key] = x; for (const x of rep.divs) dv[x.key] = x;
-  const fl = {}; for (const x of P.flows || []) fl[x.key] = x; for (const x of rep.flows || []) fl[x.key] = x;
-  Object.assign(P, { base: rep.base, accounts: rep.accounts, date: rep.date, nav: rep.nav, cash: rep.cash, invested: rep.invested, positions: rep.positions,
-    history: Object.keys(h).sort().map(d => ({ d, v: h[d] })), divs: Object.values(dv).sort((a, b) => a.d < b.d ? -1 : 1),
-    flows: Object.values(fl).sort((a, b) => a.d < b.d ? -1 : 1), hasFlows: !!(P.hasFlows || rep.hasFlows) });
-  return P;
+  const P = Object.assign(T.pfDefaults(), old || {}), trusted = T.pfTrusted(old);
+  const prev = trusted ? P : T.pfDefaults();
+  const j = T.pfJoin(prev, { from: rep.from, history: rep.history, divs: rep.divs, flows: rep.flows || [] });
+  Object.assign(P, { base: rep.base, accounts: rep.accounts, date: rep.date, from: rep.from || null, nav: rep.nav, cash: rep.cash, invested: rep.invested, positions: rep.positions,
+    history: j.history, divs: j.divs, flows: j.flows, hasFlows: !!((trusted && P.hasFlows) || rep.hasFlows) });
+  return T.pfSeal(P);
 };
 
 /* scarica dal ponte, legge e salva; aggiorna il patrimonio del FIRE se collegato */
@@ -174,8 +189,10 @@ T.pfGroups = (st, by) => {
   if (P.cash > 0) { const k = by === "tipo" ? "CASH" : by === "valuta" ? P.base : "__cash"; (g[k] = g[k] || { k, v: 0, items: [] }).v += P.cash; g[k].cash = true; }
   return Object.values(g).sort((a, b) => b.v - a.v);
 };
-/* orizzonti del grafico: data da cui si misura (la chiusura precedente all'inizio del periodo) */
-T.PF_HORIZONS = [["1G", "1G~orizzonte"], ["1S", "1S~orizzonte"], ["1M", "1M~orizzonte"], ["3M", "3M~orizzonte"], ["6M", "6M~orizzonte"], ["YTD", "Da inizio anno~orizzonte"], ["1A", "1A~orizzonte"], ["ALL", "Tutto~orizzonte"]];
+/* orizzonti del grafico: chiave, etichetta corta del pulsante, nome per esteso (riassunto e lettori di schermo) */
+T.PF_HORIZONS = [["1G", "1G~orizzonte", "1 giorno~orizzonte"], ["1S", "1S~orizzonte", "1 settimana~orizzonte"], ["1M", "1M~orizzonte", "1 mese~orizzonte"], ["3M", "3M~orizzonte", "3 mesi~orizzonte"],
+  ["6M", "6M~orizzonte", "6 mesi~orizzonte"], ["YTD", "YTD~orizzonte", "da inizio anno~orizzonte"], ["1A", "1A~orizzonte", "1 anno~orizzonte"], ["ALL", "Tutto~orizzonte", "tutto lo storico~orizzonte"]];
+/* data da cui si misura ogni orizzonte (la chiusura precedente all'inizio del periodo) */
 T.pfFrom = (P, hz) => {
   const h = T.pfHistory(P), last = h.length ? h[h.length - 1].d : T.today();
   const back = (m, y) => { const d = T.parseIso(last); if (y) d.setFullYear(d.getFullYear() - y); if (m) d.setMonth(d.getMonth() - m); return T.iso(d); };

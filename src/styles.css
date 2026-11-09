@@ -191,6 +191,8 @@ input[type=date]{inline-size:100%;min-block-size:44px;border:1px solid var(--lin
 .seg.mini button{min-block-size:34px;padding-inline:12px;font-size:13px;flex:none}
 .pf-ret{display:flex;align-items:center;gap:10px;margin-block:10px 4px}
 .pf-ret .arrow{font-size:30px;line-height:1;font-weight:700}
-.chips.hz{justify-content:center;margin-block-start:8px}
-.chips.hz .chip{min-inline-size:44px;text-align:center;padding-inline:10px}
+/* 1.9.1: orizzonti del portafoglio, 8 pulsanti uguali sempre in una riga (prima uscivano dai bordi sul telefono) */
+.hzbar{display:flex;background:var(--soft);border-radius:999px;padding:3px;margin-block-start:10px}
+.hzbar button{flex:1 1 auto;min-inline-size:0;border:0;background:none;border-radius:999px;min-block-size:34px;padding-inline:4px;cursor:pointer;color:var(--muted);font-size:clamp(11px,3.3vw,13.5px);font-weight:560;white-space:nowrap;text-align:center}
+.hzbar button.on{background:var(--card);color:var(--brand);font-weight:700;box-shadow:var(--shadow)}
 .readout .ok,.readout .bad{font-weight:700}

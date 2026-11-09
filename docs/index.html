@@ -205,8 +205,10 @@ input[type=date]{inline-size:100%;min-block-size:44px;border:1px solid var(--lin
 .seg.mini button{min-block-size:34px;padding-inline:12px;font-size:13px;flex:none}
 .pf-ret{display:flex;align-items:center;gap:10px;margin-block:10px 4px}
 .pf-ret .arrow{font-size:30px;line-height:1;font-weight:700}
-.chips.hz{justify-content:center;margin-block-start:8px}
-.chips.hz .chip{min-inline-size:44px;text-align:center;padding-inline:10px}
+/* 1.9.1: orizzonti del portafoglio, 8 pulsanti uguali sempre in una riga (prima uscivano dai bordi sul telefono) */
+.hzbar{display:flex;background:var(--soft);border-radius:999px;padding:3px;margin-block-start:10px}
+.hzbar button{flex:1 1 auto;min-inline-size:0;border:0;background:none;border-radius:999px;min-block-size:34px;padding-inline:4px;cursor:pointer;color:var(--muted);font-size:clamp(11px,3.3vw,13.5px);font-weight:560;white-space:nowrap;text-align:center}
+.hzbar button.on{background:var(--card);color:var(--brand);font-weight:700;box-shadow:var(--shadow)}
 .readout .ok,.readout .bad{font-weight:700}
 
 </style>
@@ -228,7 +230,7 @@ input[type=date]{inline-size:100%;min-block-size:44px;border:1px solid var(--lin
 /* myFinances on FIRE · utilita' comuni (nessuna dipendenza esterna) */
 "use strict";
 const T = (typeof globalThis !== "undefined" ? globalThis : window).T = {};
-T.APP = { name: "myFinances on FIRE", id: "myfinances-on-fire", version: "1.9.0", schema: 1 };
+T.APP = { name: "myFinances on FIRE", id: "myfinances-on-fire", version: "1.9.1", schema: 1 };
 
 /* ---------- numeri e date ---------- */
 T.round2 = v => Math.round(v * 100) / 100;
@@ -1336,7 +1338,6 @@ T.DICT = {
 "1M~orizzonte": "1M",
 "3M~orizzonte": "3M",
 "6M~orizzonte": "6M",
-"Da inizio anno~orizzonte": "YTD",
 "1A~orizzonte": "1Y",
 "Tutto~orizzonte": "All",
 "Sezioni: Account Information, Open Positions (opzione Summary), Cash Report, Net Asset Value (NAV) in Base, Cash Transactions (Dividends, Withholding Tax, Payment In Lieu Of Dividends, Deposits & Withdrawals). In ciascuna scegli Select All.": "Sections: Account Information, Open Positions (Summary option), Cash Report, Net Asset Value (NAV) in Base, Cash Transactions (Dividends, Withholding Tax, Payment In Lieu Of Dividends, Deposits & Withdrawals). In each one choose Select All.",
@@ -1353,7 +1354,18 @@ T.DICT = {
 "Versione del ponte: {v}. Aggiorna alla {n}: in Cloudflare incolla il nuovo ponte/worker.js e premi Deploy.": "Bridge version: {v}. Update to {n}: in Cloudflare paste the new ponte/worker.js and press Deploy.",
 "Storico: 1 giorno ({d}).": "History: 1 day ({d}).",
 "Storico: {n} giorni, dal {a} al {b}.": "History: {n} days, from {a} to {b}.",
-"Il report di Interactive Brokers contiene pochi giorni. Nella Flex Query imposta Period su Last 365 Calendar Days e includi la sezione Net Asset Value (NAV) in Base, poi premi Aggiorna. Lo storico cresce comunque da solo a ogni aggiornamento.": "The Interactive Brokers report contains only a few days. In the Flex Query set Period to Last 365 Calendar Days and include the Net Asset Value (NAV) in Base section, then press Refresh. The history also grows by itself with every update."
+"Il report di Interactive Brokers contiene pochi giorni. Nella Flex Query imposta Period su Last 365 Calendar Days e includi la sezione Net Asset Value (NAV) in Base, poi premi Aggiorna. Lo storico cresce comunque da solo a ogni aggiornamento.": "The Interactive Brokers report contains only a few days. In the Flex Query set Period to Last 365 Calendar Days and include the Net Asset Value (NAV) in Base section, then press Refresh. The history also grows by itself with every update.",
+"YTD~orizzonte": "YTD",
+"1 giorno~orizzonte": "1 day",
+"1 settimana~orizzonte": "1 week",
+"1 mese~orizzonte": "1 month",
+"3 mesi~orizzonte": "3 months",
+"6 mesi~orizzonte": "6 months",
+"da inizio anno~orizzonte": "year to date",
+"1 anno~orizzonte": "1 year",
+"tutto lo storico~orizzonte": "all history",
+"Sto scaricando lo storico da Interactive Brokers...": "Downloading the history from Interactive Brokers...",
+"Lo storico non c'e' ancora: premi Aggiorna per scaricarlo da Interactive Brokers.": "No history yet: tap Refresh to download it from Interactive Brokers."
 },
 "de": {
 "Annulla": "Abbrechen",
@@ -2317,7 +2329,6 @@ T.DICT = {
 "1M~orizzonte": "1M",
 "3M~orizzonte": "3M",
 "6M~orizzonte": "6M",
-"Da inizio anno~orizzonte": "YTD",
 "1A~orizzonte": "1J",
 "Tutto~orizzonte": "Max",
 "Sezioni: Account Information, Open Positions (opzione Summary), Cash Report, Net Asset Value (NAV) in Base, Cash Transactions (Dividends, Withholding Tax, Payment In Lieu Of Dividends, Deposits & Withdrawals). In ciascuna scegli Select All.": "Abschnitte: Account Information, Open Positions (Option Summary), Cash Report, Net Asset Value (NAV) in Base, Cash Transactions (Dividends, Withholding Tax, Payment In Lieu Of Dividends, Deposits & Withdrawals). Wähle jeweils Select All.",
@@ -2334,7 +2345,18 @@ T.DICT = {
 "Versione del ponte: {v}. Aggiorna alla {n}: in Cloudflare incolla il nuovo ponte/worker.js e premi Deploy.": "Brücken-Version: {v}. Auf {n} aktualisieren: in Cloudflare das neue ponte/worker.js einfügen und Deploy drücken.",
 "Storico: 1 giorno ({d}).": "Verlauf: 1 Tag ({d}).",
 "Storico: {n} giorni, dal {a} al {b}.": "Verlauf: {n} Tage, vom {a} bis {b}.",
-"Il report di Interactive Brokers contiene pochi giorni. Nella Flex Query imposta Period su Last 365 Calendar Days e includi la sezione Net Asset Value (NAV) in Base, poi premi Aggiorna. Lo storico cresce comunque da solo a ogni aggiornamento.": "Der Bericht von Interactive Brokers enthält nur wenige Tage. Stelle in der Flex Query Period auf Last 365 Calendar Days und nimm den Abschnitt Net Asset Value (NAV) in Base auf, dann drücke Aktualisieren. Der Verlauf wächst ausserdem mit jeder Aktualisierung von selbst."
+"Il report di Interactive Brokers contiene pochi giorni. Nella Flex Query imposta Period su Last 365 Calendar Days e includi la sezione Net Asset Value (NAV) in Base, poi premi Aggiorna. Lo storico cresce comunque da solo a ogni aggiornamento.": "Der Bericht von Interactive Brokers enthält nur wenige Tage. Stelle in der Flex Query Period auf Last 365 Calendar Days und nimm den Abschnitt Net Asset Value (NAV) in Base auf, dann drücke Aktualisieren. Der Verlauf wächst ausserdem mit jeder Aktualisierung von selbst.",
+"YTD~orizzonte": "YTD",
+"1 giorno~orizzonte": "1 Tag",
+"1 settimana~orizzonte": "1 Woche",
+"1 mese~orizzonte": "1 Monat",
+"3 mesi~orizzonte": "3 Monate",
+"6 mesi~orizzonte": "6 Monate",
+"da inizio anno~orizzonte": "seit Jahresbeginn",
+"1 anno~orizzonte": "1 Jahr",
+"tutto lo storico~orizzonte": "gesamter Verlauf",
+"Sto scaricando lo storico da Interactive Brokers...": "Verlauf wird von Interactive Brokers geladen...",
+"Lo storico non c'e' ancora: premi Aggiorna per scaricarlo da Interactive Brokers.": "Noch kein Verlauf: Tippe auf Aktualisieren, um ihn von Interactive Brokers zu laden."
 }
 };
 
@@ -2474,6 +2496,13 @@ T.migrate = st => {
   if (!st.meta.v19) {
     for (const f of st.fixed || []) if (/^affitto casa\b/i.test(String(f.name || ""))) f.name = "Affitto";
     st.meta.v19 = true;
+  }
+  /* 1.9.1: portafoglio salvato dalle versioni precedenti (con le date europee giorno e mese erano scambiati,
+     da qui il grafico a denti di sega): storico, dividendi e versamenti si ricostruiscono dal report,
+     che si scarica subito all'avvio. Posizioni e valore restano. */
+  if (st.portfolio && T.pfTrusted && !T.pfTrusted(st.portfolio)) {
+    Object.assign(st.portfolio, { history: [], divs: [], flows: [], hasFlows: false, lastSync: null, lastTry: null });
+    T.pfSeal(st.portfolio);
   }
   st.schema = T.APP.schema;
   return st;
@@ -3557,20 +3586,21 @@ function mergeBank(l, r, role) {
   res.cursors = cur;
   return res;
 }
-/* portafoglio: vince l'ultimo scaricato; storico e dividendi si uniscono */
+/* portafoglio: vince l'ultimo scaricato; storico e dividendi si uniscono.
+   Una copia senza sigillo (dati di una versione precedente, anche unita da un telefono non ancora aggiornato)
+   non si unisce: vale quella col sigillo, che poi si aggiorna dal report. */
 function mergePf(l, r) {
   if (!l || !r) return l || r || null;
+  const tl = T.pfTrusted(l), tr = T.pfTrusted(r);
+  if (tl !== tr) return Object.assign({}, tl ? l : r);
   const newer = (l.lastSync || "") >= (r.lastSync || "") ? l : r, older = newer === l ? r : l;
-  const res = Object.assign({}, newer), h = {}, dv = {};
-  for (const x of (older.history || []).concat(newer.history || [])) h[x.d] = x.v;
-  for (const x of (older.divs || []).concat(newer.divs || [])) dv[x.key] = x;
-  const fl = {}; for (const x of (older.flows || []).concat(newer.flows || [])) fl[x.key] = x;
-  res.flows = Object.values(fl).sort((a, b) => a.d < b.d ? -1 : 1); res.hasFlows = !!(older.hasFlows || newer.hasFlows);
-  res.history = Object.keys(h).sort().map(d => ({ d, v: h[d] }));
-  res.divs = Object.values(dv).sort((a, b) => a.d < b.d ? -1 : 1);
+  if (!tl) return T.pfSeal(Object.assign({}, newer, { history: [], divs: [], flows: [], hasFlows: false, lastSync: null, lastTry: null }));
+  const res = Object.assign({}, newer, T.pfJoin(older, newer));
+  res.hasFlows = !!(older.hasFlows || newer.hasFlows);
   if (res.tokenUntil == null && older.tokenUntil) res.tokenUntil = older.tokenUntil;
-  return res;
+  return T.pfSeal(res);
 }
+T.pfMergeCopies = mergePf;
 T.famMerge = (base, loc, rem, role) => {
   const out = { v: 1 };
   for (const k in LISTS) out[k] = mergeList(base && base[k], loc[k], rem[k], LISTS[k]);
@@ -3979,7 +4009,9 @@ T.parseFlex = (xml, today) => {
   if (!history.length || history[history.length - 1].d < date) history.push({ d: date, v: T.round2(navNow) });
   /* se il report contiene versamenti o prelievi, la sezione Deposits & Withdrawals e' attiva: il rendimento li toglie */
   const hasFlows = flows.length > 0;
-  return { base: base || "CHF", accounts: accounts.map(a => a === "?" ? "" : a), date, positions: positions.sort((a, b) => b.value - a.value), cash: T.round2(cash), invested: T.round2(invested), nav: T.round2(navNow), history, divs, flows, hasFlows };
+  /* inizio del periodo coperto dal report: da qui in avanti i dati del report sostituiscono quelli salvati */
+  const from = stmts.map(s => fd(s.a.fromDate)).concat(history.length ? [history[0].d] : []).filter(Boolean).sort()[0] || date || null;
+  return { base: base || "CHF", accounts: accounts.map(a => a === "?" ? "" : a), date, from, positions: positions.sort((a, b) => b.value - a.value), cash: T.round2(cash), invested: T.round2(invested), nav: T.round2(navNow), history, divs, flows, hasFlows };
 };
 
 /* errori di Interactive Brokers in parole semplici */
@@ -3997,26 +4029,39 @@ T.ibkrErrorText = (code, msg) => {
 };
 
 /* stato del portafoglio */
-T.pfDefaults = () => ({ lastSync: null, lastError: null, auto: true, base: "", accounts: [], date: null, nav: 0, cash: 0, invested: 0, positions: [], history: [], divs: [], flows: [], hasFlows: false, tokenUntil: null });
+T.pfDefaults = () => ({ lastSync: null, lastError: null, auto: true, base: "", accounts: [], date: null, from: null, nav: 0, cash: 0, invested: 0, positions: [], history: [], divs: [], flows: [], hasFlows: false, tokenUntil: null });
 T.pfHas = st => !!(st.portfolio && st.portfolio.date);
 /* cambio dalla valuta del conto alla valuta dell'app (null se manca) */
 T.pfRate = st => { const P = st.portfolio || {}, cur = (st.profile && st.profile.currency) || "CHF"; if (!P.base || P.base === cur) return 1; const r = st.profile.fx && +st.profile.fx[P.base]; return r > 0 ? r : null; };
 T.pfToApp = (st, v) => v * (T.pfRate(st) || 1);
 T.pfNavApp = st => T.pfHas(st) ? T.pfToApp(st, st.portfolio.nav) : 0;
 
+/* 1.9.1: sigillo sui dati del portafoglio che si accumulano (storico, dividendi, versamenti).
+   Le versioni fino alla 1.8 leggevano le date europee (giorno/mese) come americane: giorno e mese scambiati,
+   grafico a denti di sega, dividendi e versamenti doppi. Quei dati non hanno il sigillo e non si uniscono piu':
+   li ricostruisce il report successivo. Ogni modifica a history, divs o flows deve finire con T.pfSeal. */
+T.PF_FMT = 2;
+const pfSig = P => T.hash(JSON.stringify([(P.history || []).map(x => [x.d, x.v]), (P.divs || []).map(x => [x.key, x.d, x.amt]), (P.flows || []).map(x => [x.key, x.d, x.amt])]));
+T.pfSeal = P => { P.fmt = T.PF_FMT; P.sig = pfSig(P); return P; };
+T.pfTrusted = P => !P || (!(P.history || []).length && !(P.divs || []).length && !(P.flows || []).length) || ((P.fmt || 0) >= T.PF_FMT && P.sig === pfSig(P));
+/* unisce due copie: la piu' recente vale per tutto il periodo del suo report, della piu' vecchia resta solo cio' che viene prima */
+T.pfJoin = (older, newer) => {
+  const w0 = newer.from || ((newer.history || [])[0] || {}).d || "9999", lim = T.addDays(T.today(), 1);
+  const keep = list => (list || []).filter(x => T.isoOk(x.d) && x.d < w0 && x.d <= lim);
+  const h = {}; for (const x of keep(older.history).concat(newer.history || [])) h[x.d] = x.v;
+  const dv = {}; for (const x of keep(older.divs).concat(newer.divs || [])) dv[x.key] = x;
+  const fl = {}; for (const x of keep(older.flows).concat(newer.flows || [])) fl[x.key] = x;
+  const byDate = (a, b) => a.d < b.d ? -1 : a.d > b.d ? 1 : a.key < b.key ? -1 : a.key > b.key ? 1 : 0;
+  return { history: Object.keys(h).sort().map(d => ({ d, v: h[d] })), divs: Object.values(dv).sort(byDate), flows: Object.values(fl).sort(byDate) };
+};
 /* unisce il report nuovo a quello salvato: storico e dividendi si accumulano oltre l'anno del report */
 T.pfMerge = (old, rep) => {
-  const P = Object.assign(T.pfDefaults(), old || {});
-  /* lo storico salvato resta solo prima dell'inizio del report: nel periodo del report valgono i dati nuovi
-     (cosi' si ripuliscono anche date lette male dalle versioni precedenti) */
-  const r0 = rep.history.length ? rep.history[0].d : "9999", lim = T.addDays(T.today(), 1);
-  const h = {}; for (const x of P.history || []) if (T.isoOk(x.d) && x.d < r0 && x.d <= lim) h[x.d] = x.v; for (const x of rep.history) h[x.d] = x.v;
-  const dv = {}; for (const x of P.divs || []) dv[x.key] = x; for (const x of rep.divs) dv[x.key] = x;
-  const fl = {}; for (const x of P.flows || []) fl[x.key] = x; for (const x of rep.flows || []) fl[x.key] = x;
-  Object.assign(P, { base: rep.base, accounts: rep.accounts, date: rep.date, nav: rep.nav, cash: rep.cash, invested: rep.invested, positions: rep.positions,
-    history: Object.keys(h).sort().map(d => ({ d, v: h[d] })), divs: Object.values(dv).sort((a, b) => a.d < b.d ? -1 : 1),
-    flows: Object.values(fl).sort((a, b) => a.d < b.d ? -1 : 1), hasFlows: !!(P.hasFlows || rep.hasFlows) });
-  return P;
+  const P = Object.assign(T.pfDefaults(), old || {}), trusted = T.pfTrusted(old);
+  const prev = trusted ? P : T.pfDefaults();
+  const j = T.pfJoin(prev, { from: rep.from, history: rep.history, divs: rep.divs, flows: rep.flows || [] });
+  Object.assign(P, { base: rep.base, accounts: rep.accounts, date: rep.date, from: rep.from || null, nav: rep.nav, cash: rep.cash, invested: rep.invested, positions: rep.positions,
+    history: j.history, divs: j.divs, flows: j.flows, hasFlows: !!((trusted && P.hasFlows) || rep.hasFlows) });
+  return T.pfSeal(P);
 };
 
 /* scarica dal ponte, legge e salva; aggiorna il patrimonio del FIRE se collegato */
@@ -4052,8 +4097,10 @@ T.pfGroups = (st, by) => {
   if (P.cash > 0) { const k = by === "tipo" ? "CASH" : by === "valuta" ? P.base : "__cash"; (g[k] = g[k] || { k, v: 0, items: [] }).v += P.cash; g[k].cash = true; }
   return Object.values(g).sort((a, b) => b.v - a.v);
 };
-/* orizzonti del grafico: data da cui si misura (la chiusura precedente all'inizio del periodo) */
-T.PF_HORIZONS = [["1G", "1G~orizzonte"], ["1S", "1S~orizzonte"], ["1M", "1M~orizzonte"], ["3M", "3M~orizzonte"], ["6M", "6M~orizzonte"], ["YTD", "Da inizio anno~orizzonte"], ["1A", "1A~orizzonte"], ["ALL", "Tutto~orizzonte"]];
+/* orizzonti del grafico: chiave, etichetta corta del pulsante, nome per esteso (riassunto e lettori di schermo) */
+T.PF_HORIZONS = [["1G", "1G~orizzonte", "1 giorno~orizzonte"], ["1S", "1S~orizzonte", "1 settimana~orizzonte"], ["1M", "1M~orizzonte", "1 mese~orizzonte"], ["3M", "3M~orizzonte", "3 mesi~orizzonte"],
+  ["6M", "6M~orizzonte", "6 mesi~orizzonte"], ["YTD", "YTD~orizzonte", "da inizio anno~orizzonte"], ["1A", "1A~orizzonte", "1 anno~orizzonte"], ["ALL", "Tutto~orizzonte", "tutto lo storico~orizzonte"]];
+/* data da cui si misura ogni orizzonte (la chiusura precedente all'inizio del periodo) */
 T.pfFrom = (P, hz) => {
   const h = T.pfHistory(P), last = h.length ? h[h.length - 1].d : T.today();
   const back = (m, y) => { const d = T.parseIso(last); if (y) d.setFullYear(d.getFullYear() - y); if (m) d.setMonth(d.getMonth() - m); return T.iso(d); };
@@ -4166,7 +4213,8 @@ T.demoPortfolio = () => {
   for (let i = 0; i < n; i++) { const d = T.addDays(P.date, i - n + 1), wd = T.parseIso(d).getDay(); if (wd === 0 || wd === 6) continue; P.history.push({ d, v: T.round2(vals[i] * k * (0.82 + 0.18 * i / n)) }); }
   P.history[P.history.length - 1] = { d: P.date, v: P.nav };
   for (let m = 1; m <= 12; m += 3) { const d = T.addDays(td, -m * 30); P.divs.push({ d, sym: "CHSPI", amt: 95, tax: false, key: "demo" + m }); }
-  return P;
+  P.divs.sort((a, b) => a.d < b.d ? -1 : 1); P.from = P.history[0].d;
+  return T.pfSeal(P);
 };
 })();
 
@@ -5965,7 +6013,7 @@ A.pfPerfCard = main => {
   const S = A.S, P = S.portfolio, ui = A.ui;
   const mode = ui.pfMode || "valore", hz = ui.pfHz || "1A";
   const se = T.pfSeries(P, hz), up = (mode === "rend" ? se.ret : se.abs) >= 0;
-  const hzName = T.tr((T.PF_HORIZONS.find(x => x[0] === hz) || T.PF_HORIZONS[6])[1]);
+  const hzName = T.tr((T.PF_HORIZONS.find(x => x[0] === hz) || T.PF_HORIZONS[6])[2]);
   const acc = (P.accounts || []).filter(Boolean).map(a => a.length > 4 ? "\u2022\u2022\u2022" + a.slice(-4) : a).join(", ");
   const card = h("div.card#pfPerf");
   card.appendChild(h("div.row.between", { style: { alignItems: "flex-start", gap: "10px" } },
@@ -5977,6 +6025,14 @@ A.pfPerfCard = main => {
     card.appendChild(h("div.pf-ret", h("span.arrow" + (up ? ".ok" : ".bad"), { "aria-hidden": "true" }, up ? "\u2191" : "\u2193"),
       h("div", h("div.small.muted", (mode === "rend" ? T.tr("Rendimento") : T.tr("Variazione del valore")) + " (" + hzName + ")"), h("div.mid" + (up ? ".ok" : ".bad"), big, h("span.small.muted", { style: { fontWeight: 400, marginInlineStart: "8px" } }, small)))));
   }
+  /* storico vuoto (per esempio appena ripulito dalla 1.9.1): si ricostruisce dal report */
+  if (!se.n) {
+    card.appendChild(h("div.note#pfRebuild", { style: { marginBlockStart: "10px" } }, A._pfBusy
+      ? T.tr("Sto scaricando lo storico da Interactive Brokers...")
+      : T.tr("Lo storico non c'e' ancora: premi Aggiorna per scaricarlo da Interactive Brokers.")));
+    main.appendChild(card);
+    return;
+  }
   const box = h("div"), read = h("div.readout");
   const draw = pick => {
     T.clear(box); box.appendChild(T.perfChart(card, se.pts, { mode, pick, onPick: draw, label: T.tr("Portafoglio nel tempo") }));
@@ -5985,7 +6041,9 @@ A.pfPerfCard = main => {
     T.add(read, [h("b", T.fmt.date(p.d)), " \u00b7 " + A.pm(p.v) + " \u00b7 ", h("span", { class: p.r >= 0 ? "ok" : "bad" }, pctTxt(p.r)), T.tr(" dal {d}", { d: T.fmt.date(se.from) })]);
   };
   card.appendChild(box); card.appendChild(read); draw(null);
-  card.appendChild(h("div.chips.hz", { role: "group", "aria-label": T.tr("Orizzonte") }, T.PF_HORIZONS.map(([k, l]) => h("button.chip" + (k === hz ? ".on" : ""), { type: "button", onclick: () => { ui.pfHz = k; A.render(); } }, T.tr(l)))));
+  /* orizzonti: una barra sola a tutta larghezza, 8 pulsanti uguali che stanno sempre in una riga */
+  card.appendChild(h("div.hzbar", { role: "group", "aria-label": T.tr("Orizzonte") }, T.PF_HORIZONS.map(([k, l, long]) => h("button", { type: "button", class: k === hz ? "on" : "",
+    "aria-pressed": k === hz ? "true" : "false", "aria-label": T.tr(long), title: T.tr(long), onclick: () => { ui.pfHz = k; A.render(); } }, T.tr(l)))));
   /* quanto storico c'e': aiuta a capire se la Flex Query manda tutti i giorni */
   if (se.n) card.appendChild(h("p.small.muted#pfHist", { style: { margin: "8px 0 0" } }, se.n === 1
     ? T.tr("Storico: 1 giorno ({d}).", { d: T.fmt.date(se.first) })

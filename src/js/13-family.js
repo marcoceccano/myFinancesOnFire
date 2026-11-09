@@ -65,20 +65,21 @@ function mergeBank(l, r, role) {
   res.cursors = cur;
   return res;
 }
-/* portafoglio: vince l'ultimo scaricato; storico e dividendi si uniscono */
+/* portafoglio: vince l'ultimo scaricato; storico e dividendi si uniscono.
+   Una copia senza sigillo (dati di una versione precedente, anche unita da un telefono non ancora aggiornato)
+   non si unisce: vale quella col sigillo, che poi si aggiorna dal report. */
 function mergePf(l, r) {
   if (!l || !r) return l || r || null;
+  const tl = T.pfTrusted(l), tr = T.pfTrusted(r);
+  if (tl !== tr) return Object.assign({}, tl ? l : r);
   const newer = (l.lastSync || "") >= (r.lastSync || "") ? l : r, older = newer === l ? r : l;
-  const res = Object.assign({}, newer), h = {}, dv = {};
-  for (const x of (older.history || []).concat(newer.history || [])) h[x.d] = x.v;
-  for (const x of (older.divs || []).concat(newer.divs || [])) dv[x.key] = x;
-  const fl = {}; for (const x of (older.flows || []).concat(newer.flows || [])) fl[x.key] = x;
-  res.flows = Object.values(fl).sort((a, b) => a.d < b.d ? -1 : 1); res.hasFlows = !!(older.hasFlows || newer.hasFlows);
-  res.history = Object.keys(h).sort().map(d => ({ d, v: h[d] }));
-  res.divs = Object.values(dv).sort((a, b) => a.d < b.d ? -1 : 1);
+  if (!tl) return T.pfSeal(Object.assign({}, newer, { history: [], divs: [], flows: [], hasFlows: false, lastSync: null, lastTry: null }));
+  const res = Object.assign({}, newer, T.pfJoin(older, newer));
+  res.hasFlows = !!(older.hasFlows || newer.hasFlows);
   if (res.tokenUntil == null && older.tokenUntil) res.tokenUntil = older.tokenUntil;
-  return res;
+  return T.pfSeal(res);
 }
+T.pfMergeCopies = mergePf;
 T.famMerge = (base, loc, rem, role) => {
   const out = { v: 1 };
   for (const k in LISTS) out[k] = mergeList(base && base[k], loc[k], rem[k], LISTS[k]);

@@ -963,7 +963,6 @@ T.DICT = {
 "1M~orizzonte": "1M",
 "3M~orizzonte": "3M",
 "6M~orizzonte": "6M",
-"Da inizio anno~orizzonte": "YTD",
 "1A~orizzonte": "1Y",
 "Tutto~orizzonte": "All",
 "Sezioni: Account Information, Open Positions (opzione Summary), Cash Report, Net Asset Value (NAV) in Base, Cash Transactions (Dividends, Withholding Tax, Payment In Lieu Of Dividends, Deposits & Withdrawals). In ciascuna scegli Select All.": "Sections: Account Information, Open Positions (Summary option), Cash Report, Net Asset Value (NAV) in Base, Cash Transactions (Dividends, Withholding Tax, Payment In Lieu Of Dividends, Deposits & Withdrawals). In each one choose Select All.",
@@ -980,7 +979,18 @@ T.DICT = {
 "Versione del ponte: {v}. Aggiorna alla {n}: in Cloudflare incolla il nuovo ponte/worker.js e premi Deploy.": "Bridge version: {v}. Update to {n}: in Cloudflare paste the new ponte/worker.js and press Deploy.",
 "Storico: 1 giorno ({d}).": "History: 1 day ({d}).",
 "Storico: {n} giorni, dal {a} al {b}.": "History: {n} days, from {a} to {b}.",
-"Il report di Interactive Brokers contiene pochi giorni. Nella Flex Query imposta Period su Last 365 Calendar Days e includi la sezione Net Asset Value (NAV) in Base, poi premi Aggiorna. Lo storico cresce comunque da solo a ogni aggiornamento.": "The Interactive Brokers report contains only a few days. In the Flex Query set Period to Last 365 Calendar Days and include the Net Asset Value (NAV) in Base section, then press Refresh. The history also grows by itself with every update."
+"Il report di Interactive Brokers contiene pochi giorni. Nella Flex Query imposta Period su Last 365 Calendar Days e includi la sezione Net Asset Value (NAV) in Base, poi premi Aggiorna. Lo storico cresce comunque da solo a ogni aggiornamento.": "The Interactive Brokers report contains only a few days. In the Flex Query set Period to Last 365 Calendar Days and include the Net Asset Value (NAV) in Base section, then press Refresh. The history also grows by itself with every update.",
+"YTD~orizzonte": "YTD",
+"1 giorno~orizzonte": "1 day",
+"1 settimana~orizzonte": "1 week",
+"1 mese~orizzonte": "1 month",
+"3 mesi~orizzonte": "3 months",
+"6 mesi~orizzonte": "6 months",
+"da inizio anno~orizzonte": "year to date",
+"1 anno~orizzonte": "1 year",
+"tutto lo storico~orizzonte": "all history",
+"Sto scaricando lo storico da Interactive Brokers...": "Downloading the history from Interactive Brokers...",
+"Lo storico non c'e' ancora: premi Aggiorna per scaricarlo da Interactive Brokers.": "No history yet: tap Refresh to download it from Interactive Brokers."
 },
 "de": {
 "Annulla": "Abbrechen",
@@ -1944,7 +1954,6 @@ T.DICT = {
 "1M~orizzonte": "1M",
 "3M~orizzonte": "3M",
 "6M~orizzonte": "6M",
-"Da inizio anno~orizzonte": "YTD",
 "1A~orizzonte": "1J",
 "Tutto~orizzonte": "Max",
 "Sezioni: Account Information, Open Positions (opzione Summary), Cash Report, Net Asset Value (NAV) in Base, Cash Transactions (Dividends, Withholding Tax, Payment In Lieu Of Dividends, Deposits & Withdrawals). In ciascuna scegli Select All.": "Abschnitte: Account Information, Open Positions (Option Summary), Cash Report, Net Asset Value (NAV) in Base, Cash Transactions (Dividends, Withholding Tax, Payment In Lieu Of Dividends, Deposits & Withdrawals). Wähle jeweils Select All.",
@@ -1961,6 +1970,17 @@ T.DICT = {
 "Versione del ponte: {v}. Aggiorna alla {n}: in Cloudflare incolla il nuovo ponte/worker.js e premi Deploy.": "Brücken-Version: {v}. Auf {n} aktualisieren: in Cloudflare das neue ponte/worker.js einfügen und Deploy drücken.",
 "Storico: 1 giorno ({d}).": "Verlauf: 1 Tag ({d}).",
 "Storico: {n} giorni, dal {a} al {b}.": "Verlauf: {n} Tage, vom {a} bis {b}.",
-"Il report di Interactive Brokers contiene pochi giorni. Nella Flex Query imposta Period su Last 365 Calendar Days e includi la sezione Net Asset Value (NAV) in Base, poi premi Aggiorna. Lo storico cresce comunque da solo a ogni aggiornamento.": "Der Bericht von Interactive Brokers enthält nur wenige Tage. Stelle in der Flex Query Period auf Last 365 Calendar Days und nimm den Abschnitt Net Asset Value (NAV) in Base auf, dann drücke Aktualisieren. Der Verlauf wächst ausserdem mit jeder Aktualisierung von selbst."
+"Il report di Interactive Brokers contiene pochi giorni. Nella Flex Query imposta Period su Last 365 Calendar Days e includi la sezione Net Asset Value (NAV) in Base, poi premi Aggiorna. Lo storico cresce comunque da solo a ogni aggiornamento.": "Der Bericht von Interactive Brokers enthält nur wenige Tage. Stelle in der Flex Query Period auf Last 365 Calendar Days und nimm den Abschnitt Net Asset Value (NAV) in Base auf, dann drücke Aktualisieren. Der Verlauf wächst ausserdem mit jeder Aktualisierung von selbst.",
+"YTD~orizzonte": "YTD",
+"1 giorno~orizzonte": "1 Tag",
+"1 settimana~orizzonte": "1 Woche",
+"1 mese~orizzonte": "1 Monat",
+"3 mesi~orizzonte": "3 Monate",
+"6 mesi~orizzonte": "6 Monate",
+"da inizio anno~orizzonte": "seit Jahresbeginn",
+"1 anno~orizzonte": "1 Jahr",
+"tutto lo storico~orizzonte": "gesamter Verlauf",
+"Sto scaricando lo storico da Interactive Brokers...": "Verlauf wird von Interactive Brokers geladen...",
+"Lo storico non c'e' ancora: premi Aggiorna per scaricarlo da Interactive Brokers.": "Noch kein Verlauf: Tippe auf Aktualisieren, um ihn von Interactive Brokers zu laden."
 }
 };

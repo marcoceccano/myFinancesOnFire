@@ -69,7 +69,7 @@ A.pfPerfCard = main => {
   const S = A.S, P = S.portfolio, ui = A.ui;
   const mode = ui.pfMode || "valore", hz = ui.pfHz || "1A";
   const se = T.pfSeries(P, hz), up = (mode === "rend" ? se.ret : se.abs) >= 0;
-  const hzName = T.tr((T.PF_HORIZONS.find(x => x[0] === hz) || T.PF_HORIZONS[6])[1]);
+  const hzName = T.tr((T.PF_HORIZONS.find(x => x[0] === hz) || T.PF_HORIZONS[6])[2]);
   const acc = (P.accounts || []).filter(Boolean).map(a => a.length > 4 ? "\u2022\u2022\u2022" + a.slice(-4) : a).join(", ");
   const card = h("div.card#pfPerf");
   card.appendChild(h("div.row.between", { style: { alignItems: "flex-start", gap: "10px" } },
@@ -81,6 +81,14 @@ A.pfPerfCard = main => {
     card.appendChild(h("div.pf-ret", h("span.arrow" + (up ? ".ok" : ".bad"), { "aria-hidden": "true" }, up ? "\u2191" : "\u2193"),
       h("div", h("div.small.muted", (mode === "rend" ? T.tr("Rendimento") : T.tr("Variazione del valore")) + " (" + hzName + ")"), h("div.mid" + (up ? ".ok" : ".bad"), big, h("span.small.muted", { style: { fontWeight: 400, marginInlineStart: "8px" } }, small)))));
   }
+  /* storico vuoto (per esempio appena ripulito dalla 1.9.1): si ricostruisce dal report */
+  if (!se.n) {
+    card.appendChild(h("div.note#pfRebuild", { style: { marginBlockStart: "10px" } }, A._pfBusy
+      ? T.tr("Sto scaricando lo storico da Interactive Brokers...")
+      : T.tr("Lo storico non c'e' ancora: premi Aggiorna per scaricarlo da Interactive Brokers.")));
+    main.appendChild(card);
+    return;
+  }
   const box = h("div"), read = h("div.readout");
   const draw = pick => {
     T.clear(box); box.appendChild(T.perfChart(card, se.pts, { mode, pick, onPick: draw, label: T.tr("Portafoglio nel tempo") }));
@@ -89,7 +97,9 @@ A.pfPerfCard = main => {
     T.add(read, [h("b", T.fmt.date(p.d)), " \u00b7 " + A.pm(p.v) + " \u00b7 ", h("span", { class: p.r >= 0 ? "ok" : "bad" }, pctTxt(p.r)), T.tr(" dal {d}", { d: T.fmt.date(se.from) })]);
   };
   card.appendChild(box); card.appendChild(read); draw(null);
-  card.appendChild(h("div.chips.hz", { role: "group", "aria-label": T.tr("Orizzonte") }, T.PF_HORIZONS.map(([k, l]) => h("button.chip" + (k === hz ? ".on" : ""), { type: "button", onclick: () => { ui.pfHz = k; A.render(); } }, T.tr(l)))));
+  /* orizzonti: una barra sola a tutta larghezza, 8 pulsanti uguali che stanno sempre in una riga */
+  card.appendChild(h("div.hzbar", { role: "group", "aria-label": T.tr("Orizzonte") }, T.PF_HORIZONS.map(([k, l, long]) => h("button", { type: "button", class: k === hz ? "on" : "",
+    "aria-pressed": k === hz ? "true" : "false", "aria-label": T.tr(long), title: T.tr(long), onclick: () => { ui.pfHz = k; A.render(); } }, T.tr(l)))));
   /* quanto storico c'e': aiuta a capire se la Flex Query manda tutti i giorni */
   if (se.n) card.appendChild(h("p.small.muted#pfHist", { style: { margin: "8px 0 0" } }, se.n === 1
     ? T.tr("Storico: 1 giorno ({d}).", { d: T.fmt.date(se.first) })

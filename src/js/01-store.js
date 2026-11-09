@@ -40,6 +40,13 @@ T.migrate = st => {
     for (const f of st.fixed || []) if (/^affitto casa\b/i.test(String(f.name || ""))) f.name = "Affitto";
     st.meta.v19 = true;
   }
+  /* 1.9.1: portafoglio salvato dalle versioni precedenti (con le date europee giorno e mese erano scambiati,
+     da qui il grafico a denti di sega): storico, dividendi e versamenti si ricostruiscono dal report,
+     che si scarica subito all'avvio. Posizioni e valore restano. */
+  if (st.portfolio && T.pfTrusted && !T.pfTrusted(st.portfolio)) {
+    Object.assign(st.portfolio, { history: [], divs: [], flows: [], hasFlows: false, lastSync: null, lastTry: null });
+    T.pfSeal(st.portfolio);
+  }
   st.schema = T.APP.schema;
   return st;
 };

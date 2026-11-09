@@ -69,14 +69,16 @@ const wait = ms => new Promise(r => setTimeout(r, ms || 60));
   ok(A.view === "fire" && A.ui.fireTab === "portafoglio" && $("fireTabs") && $("pfPerf") && $("pfValue") && $("pfAlloc") && $("pfPos") && $("pfDiv") && $("pfFire"), "il riquadro della Home apre il portafoglio dentro la voce FIRE");
   ok(/Guadagno non realizzato/.test(txt($("pfValue"))) && /Dividendi/.test(txt($("pfValue"))) && /Liquidit/.test(txt($("pfValue"))), "numeri chiave: guadagno, liquidita', dividendi, posizioni");
   /* grafico Valore / Rendimento con gli orizzonti */
-  ok(/Variazione del valore \(1A\)/.test(txt($("pfPerf"))) && $("pfPerf").querySelectorAll("polyline").length >= 1 && $("pfPerf").querySelectorAll("button.chip").length === 8, "grafico: valore a 1 anno, 8 orizzonti");
+  const hzb = () => $("pfPerf").querySelector("div.hzbar").querySelectorAll("button");
+  ok(/Variazione del valore \(1 anno\)/.test(txt($("pfPerf"))) && $("pfPerf").querySelectorAll("polyline").length >= 1 && hzb().length === 8 && !$("pfPerf").querySelectorAll("button.chip").length, "grafico: valore a 1 anno, 8 orizzonti in una barra");
+  ok(hzb().map(txt).join(" ") === "1G 1S 1M 3M 6M YTD 1A Tutto" && hzb()[6].className === "on" && hzb()[6].getAttribute("aria-label") === "1 anno", "orizzonti: etichette corte con YTD, nome per esteso per i lettori di schermo");
   btn($("pfPerf"), "Rendimento").click(); await wait(50);
-  ok(A.ui.pfMode === "rend" && /Rendimento \(1A\)/.test(txt($("pfPerf"))) && /TWR/.test(txt($("pfPerf"))) && /[+−]\d/.test(txt($("pfPerf"))), "grafico: rendimento % ponderato nel tempo");
-  for (const [k, l] of [["1G", "1G"], ["1S", "1S"], ["1M", "1M"], ["3M", "3M"], ["6M", "6M"], ["YTD", "Da inizio anno"], ["1A", "1A"], ["ALL", "Tutto"]]) {
-    $("pfPerf").querySelectorAll("button.chip").find(b => txt(b) === l).click(); await wait(30);
+  ok(A.ui.pfMode === "rend" && /Rendimento \(1 anno\)/.test(txt($("pfPerf"))) && /TWR/.test(txt($("pfPerf"))) && /[+−]\d/.test(txt($("pfPerf"))), "grafico: rendimento % ponderato nel tempo");
+  for (const [k, l] of [["1G", "1G"], ["1S", "1S"], ["1M", "1M"], ["3M", "3M"], ["6M", "6M"], ["YTD", "YTD"], ["1A", "1A"], ["ALL", "Tutto"]]) {
+    hzb().find(b => txt(b) === l).click(); await wait(30);
     if (A.ui.pfHz !== k || !$("pfPerf").querySelectorAll("polyline").length) { ok(false, "orizzonte " + l); break; }
   }
-  ok(A.ui.pfHz === "ALL" && /\(Tutto\)/.test(txt($("pfPerf"))), "grafico: tutti gli orizzonti, da 1G a Tutto");
+  ok(A.ui.pfHz === "ALL" && /\(tutto lo storico\)/.test(txt($("pfPerf"))), "grafico: tutti gli orizzonti, da 1G a Tutto");
   ok(/Storico: \d{3} giorni, dal 06\.11\.2025 al 05\.11\.2026/.test(txt($("pfPerf"))) && !$("pfHistHint"), "sotto il grafico: quanti giorni di storico ci sono");
   ok($("pfPerf").querySelectorAll("polyline").length === 1, "grafico: una linea sola");
   const read0 = txt($("pfPerf").querySelector("div.readout"));
@@ -138,6 +140,22 @@ const wait = ms => new Promise(r => setTimeout(r, ms || 60));
   A.S.portfolio = T.pfMerge(null, T.parseFlex(XML.replace(/currency="CHF"/g, 'currency="USD"'))); A.S.portfolio.lastSync = new Date().toISOString(); A.S.profile.fx = { EUR: 0.93 };
   A.go("portafoglio"); await wait(50);
   ok(/Manca il cambio USD/.test(txt($("view"))) && /USD/.test(txt($("pfValue"))), "conto in USD senza cambio: avviso e importi in USD");
+  /* 1.9.1: dati salvati dalla 1.8 con un report a date europee (giorno e mese scambiati, grafico a denti di sega) */
+  { const EU = XML.replace(/(Date|date|dateTime)="(\d{4})(\d{2})(\d{2})/g, (x, k, y, mo, d) => k + '="' + d + "/" + mo + "/" + y);
+    const good = T.parseFlex(EU), swap = d => { const [y, mo, dd] = d.split("-"); return +dd <= 12 ? y + "-" + dd + "-" + mo : y + "-" + mo + "-" + dd; };
+    A.S.profile.fx = {}; A.S.fire.ibkrLink = false;
+    A.S.portfolio = Object.assign(T.pfDefaults(), { base: "CHF", accounts: good.accounts, date: swap(good.date), nav: good.nav, cash: good.cash, invested: good.invested, positions: good.positions, lastSync: new Date().toISOString(),
+      history: good.history.map(x => ({ d: swap(x.d), v: x.v })).sort((a, b) => a.d < b.d ? -1 : 1), divs: good.divs.map(x => Object.assign({}, x, { d: swap(x.d), key: "v18" + x.key })), flows: good.flows.map(x => Object.assign({}, x, { d: swap(x.d), key: "v18" + x.key })), hasFlows: true });
+    delete A.S.portfolio.fmt; delete A.S.portfolio.sig;
+    await T.save(A.S, true); A.S = await T.load(); await wait(20);
+    A.go("portafoglio"); await wait(50);
+    ok(!A.S.portfolio.history.length && !A.S.portfolio.divs.length && A.S.portfolio.lastSync === null && $("pfRebuild") && /premi Aggiorna/.test(txt($("pfRebuild"))) && !$("pfPerf").querySelector("div.hzbar"), "1.9.1: dati della 1.8 tolti all'avvio, al posto del grafico l'avviso");
+    global.fetch = (f => async (url, opt) => /GetStatement/.test(String(url)) ? new Response(EU, { status: 200 }) : f(url, opt))(global.fetch);
+    A.pfAutoSync(); await wait(400);
+    const P2 = A.S.portfolio, s1 = T.pfSeries(P2, "1A").pts; let jumps = 0; for (let i = 1; i < s1.length; i++) if (Math.abs(s1[i].v / s1[i - 1].v - 1) > 0.08) jumps++;
+    ok(P2.history.length === good.history.length && P2.divs.length === good.divs.length && P2.flows.length === good.flows.length && !jumps && P2.date === "2026-11-05" && T.pfTrusted(P2), "1.9.1: storico riscaricato da solo, senza salti (" + P2.history.length + " giorni) e senza doppioni");
+    ok($("pfPerf").querySelectorAll("polyline").length === 1 && !$("pfRebuild") && /dal 06\.11\.2025 al 05\.11\.2026/.test(txt($("pfPerf"))), "1.9.1: grafico di nuovo al suo posto");
+  }
   console.log("errori JS:", stub.errors.length); stub.errors.slice(0, 3).forEach(e => console.log(e));
   if (stub.errors.length) fails++;
   console.log(fails ? fails + " test falliti" : "Prova del portafoglio superata");

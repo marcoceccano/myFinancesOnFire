@@ -28,6 +28,7 @@ applyTo: "src/js/**"
 - Dopo una modifica che cambia i conti, usa `A.changed()`, che svuota la cache del FIRE e ridisegna.
 - I campi nuovi vanno in `T.newState()` o `T.FIRE_DEFAULTS`, i dati vecchi si convertono in `T.migrate()`.
 - Se il campo va condiviso in famiglia, aggiornalo anche in `13-family.js` (`T.famShared`, `T.famMerge`, `T.famApply`).
+- Portafoglio: `history`, `divs` e `flows` si cambiano solo con `T.pfMerge` o `T.pfJoin` e si chiudono sempre con `T.pfSeal`. Dati senza sigillo valido non si uniscono (vedi `conoscenza/04-trappole.md`).
 
 **Date e importi**
 - Le date sono stringhe locali `YYYY-MM-DD`. Usa `T.today()`, `T.addDays()`, `T.daysBetween()`, `T.weekStart()` (la settimana parte da lunedì).

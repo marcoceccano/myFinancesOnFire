@@ -1,7 +1,7 @@
 /* Test dei moduli di calcolo, senza interfaccia. Uso: node tests/unit.js */
 "use strict";
 const fs = require("fs"), path = require("path"), D = path.join(__dirname, "..", "src", "js");
-for (const f of ["00-util", "03-dict", "03-i18n", "08-market", "01-store", "02-files", "04-importers", "05-categorize", "06-stats", "07-fire", "12-bank", "15-ibkr", "09-demo"]) require(path.join(D, f + ".js"));
+for (const f of ["00-util", "03-dict", "03-i18n", "08-market", "01-store", "02-files", "04-importers", "05-categorize", "06-stats", "07-fire", "12-bank", "13-family", "15-ibkr", "09-demo"]) require(path.join(D, f + ".js"));
 let fails = 0; const eq = (a, b, m) => { const ok = JSON.stringify(a) === JSON.stringify(b); console.log((ok ? "OK   " : "FAIL ") + m + (ok ? "" : " -> " + JSON.stringify(a) + " invece di " + JSON.stringify(b))); if (!ok) fails++; };
 const fx = p => fs.readFileSync(path.join(__dirname, "fixtures", p), "utf8");
 eq(["1 gen 2026", "31.12.2025", "2026-03-04 10:22:11", "Jan 5, 2026", "15 ott 2026"].map(s => T.parseDate(s)), ["2026-01-01", "2025-12-31", "2026-03-04", "2026-01-05", "2026-10-15"], "date in vari formati");
@@ -79,15 +79,38 @@ process.exitCode = fails ? 1 : 0;
   eq([re.date, re.history.length, re.history[0].d, re.divs.length], [r.date, r.history.length, r.history[0].d, r.divs.length], "Flex: report con date europee letto come quello standard");
   const S1 = T.pfSeries(re, "1M"), S2 = T.pfSeries(r, "1M");
   eq([S1.pts.length > 15, S1.pts.length === S2.pts.length, S1.n === r.history.length], [true, true, true], "Flex: ogni orizzonte ha i suoi giorni anche con le date europee");
-  /* storico salvato con date lette male da una versione precedente: il report nuovo lo ripulisce */
-  const bad = T.pfMerge({ history: [{ d: "2026-05-11", v: 1 }, { d: "2026-13-11", v: 2 }, { d: "2025-01-02", v: 3 }] }, r);
-  eq([bad.history.some(x => x.d === "2026-05-11" && x.v === 1), bad.history.some(x => x.d === "2026-13-11"), bad.history[0].d], [false, false, "2025-01-02"], "Flex: date sbagliate tolte, storico vecchio tenuto");
+  /* storico salvato da una versione precedente (senza sigillo): non si unisce, vale solo il report */
+  const bad = T.pfMerge({ history: [{ d: "2026-05-11", v: 1 }, { d: "2026-13-11", v: 2 }, { d: "2025-01-02", v: 3 }], divs: [{ key: "x", d: "2025-12-11", amt: 50 }] }, r);
+  eq([bad.history.length, bad.history[0].d, bad.divs.length, T.pfTrusted(bad)], [r.history.length, r.history[0].d, r.divs.length, true], "Flex: dati senza sigillo scartati, il report li sostituisce");
+  /* 1.9.1, il caso vero: report con date giorno/mese salvato dalla 1.8, che scambiava giorno e mese (grafico a denti di sega) */
+  { const swap = d => { const [y, mo, dd] = d.split("-"); return +dd <= 12 ? y + "-" + dd + "-" + mo : y + "-" + mo + "-" + dd; };
+    const old18 = { date: swap(re.date), nav: re.nav, positions: re.positions, history: re.history.map(x => ({ d: swap(x.d), v: x.v })).sort((a, b) => a.d < b.d ? -1 : 1),
+      divs: re.divs.map(x => Object.assign({}, x, { d: swap(x.d), key: x.key + "18" })), flows: re.flows.map(x => Object.assign({}, x, { d: swap(x.d), key: x.key + "18" })), hasFlows: true, lastSync: "2026-11-09T08:00:00.000Z" };
+    const jumps = P => { const s = T.pfSeries(P, "1A").pts; let n = 0; for (let i = 1; i < s.length; i++) if (Math.abs(s[i].v / s[i - 1].v - 1) > 0.08) n++; return n; };
+    eq(jumps(old18) > 10, true, "1.8: con le date scambiate il grafico a 1 anno salta su e giu' (" + jumps(old18) + " salti oltre l'8%)");
+    const st18 = T.newState(); st18.portfolio = JSON.parse(JSON.stringify(old18)); T.migrate(st18);
+    const P0 = st18.portfolio;
+    eq([P0.history.length, P0.divs.length, P0.flows.length, P0.lastSync, P0.positions.length, P0.nav, T.pfTrusted(P0)], [0, 0, 0, null, re.positions.length, re.nav, true], "1.9.1: all'avvio storico, dividendi e versamenti vecchi tolti, posizioni e valore restano");
+    const P1 = T.pfMerge(P0, re);
+    eq([P1.history.length, P1.history[0].d, P1.divs.length, P1.flows.length, jumps(P1)], [re.history.length, re.history[0].d, re.divs.length, re.flows.length, 0], "1.9.1: dopo il report lo storico e' giusto, senza salti e senza dividendi o versamenti doppi");
+    /* famiglia: un telefono non ancora aggiornato unisce i dati vecchi a quelli nuovi; la copia unita non ha piu' il sigillo giusto */
+    const mixed = Object.assign({}, P1, { history: P1.history.concat(old18.history.filter(x => x.d < P1.history[0].d)).sort((a, b) => a.d < b.d ? -1 : 1), divs: P1.divs.concat(old18.divs) });
+    eq(T.pfTrusted(mixed), false, "famiglia: copia unita da una versione vecchia riconosciuta");
+    const fm = T.pfMergeCopies(P1, mixed), fm2 = T.pfMergeCopies(mixed, P1);
+    eq([fm.history.length, fm.divs.length, fm2.history.length, fm2.divs.length], [P1.history.length, P1.divs.length, P1.history.length, P1.divs.length], "famiglia: la copia vecchia non sporca quella buona");
+    const bothOld = T.pfMergeCopies(old18, Object.assign({}, old18, { lastSync: "2026-11-08T08:00:00.000Z" }));
+    eq([bothOld.history.length, bothOld.lastSync, T.pfTrusted(bothOld)], [0, null, true], "famiglia: due copie vecchie, storico da riscaricare");
+    /* due copie buone: la piu' recente vale nel suo periodo, della vecchia resta cio' che viene prima */
+    const olderOk = T.pfSeal(Object.assign({}, P1, { lastSync: "2026-11-01T08:00:00.000Z", history: [{ d: "2024-06-03", v: 100000 }].concat(P1.history.map(x => ({ d: x.d, v: x.v + 1 }))) }));
+    const j = T.pfMergeCopies(olderOk, Object.assign({}, P1, { lastSync: "2026-11-09T08:00:00.000Z" }));
+    eq([j.history.length, j.history[0].d, j.history[1].v === P1.history[0].v, j.divs.length, T.pfTrusted(j)], [P1.history.length + 1, "2024-06-03", true, P1.divs.length, true], "famiglia: due copie buone si uniscono senza doppioni");
+  }
   eq(T.pfSeries({ history: [{ d: "2026-13-11", v: 5 }, { d: "2026-11-01", v: 10 }, { d: "2026-11-02", v: 11 }] }, "1S").pts.length, 2, "Flex: date impossibili ignorate nel grafico");
   let err = ""; try { T.parseFlex("<FlexStatementResponse><Status>Fail</Status><ErrorCode>1012</ErrorCode></FlexStatementResponse>"); } catch (e) { err = e.message; }
   eq(/scaduto/.test(err), true, "Flex: errore di token scaduto spiegato");
   const lots = xml.replace(/levelOfDetail="SUMMARY" \/>/, 'levelOfDetail="SUMMARY" />\n<OpenPosition symbol="VWRA" currency="USD" fxRateToBase="0.7985" position="10" markPrice="145.2" positionValue="1452" levelOfDetail="LOT" />');
   eq(T.parseFlex(lots).positions.length, 6, "Flex: con i lotti conta solo il riepilogo");
-  const m = T.pfMerge({ history: [{ d: "2025-01-02", v: 1 }], divs: [{ key: "old", d: "2025-01-05", amt: 3 }] }, r);
+  const m = T.pfMerge(T.pfSeal({ history: [{ d: "2025-01-02", v: 1 }], divs: [{ key: "old", d: "2025-01-05", amt: 3 }] }), r);
   eq(m.history[0].d === "2025-01-02" && m.history.length === r.history.length + 1 && m.divs.length === r.divs.length + 1, true, "Flex: storico e dividendi si accumulano oltre l'anno");
   const Q = { history: [{ d: "2026-01-02", v: 100 }, { d: "2026-01-05", v: 110 }, { d: "2026-01-07", v: 210 }], flows: [{ d: "2026-01-06", amt: 100, key: "a" }], hasFlows: true };
   eq(T.round2(T.pfSeries(Q, "ALL").ret * 100), 10, "rendimento ponderato nel tempo: un versamento non e' un guadagno");

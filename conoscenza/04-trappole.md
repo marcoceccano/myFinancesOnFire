@@ -8,6 +8,9 @@ Problemi reali visti durante lo sviluppo, con la soluzione adottata. Prima di to
   - Causa: aprendosi, la tastiera fa scattare `resize`, e l'app ridisegnava tutto, perdendo il campo attivo.
   - Soluzione: ridisegnare solo se cambia la **larghezza**, e mai se c'è un campo con il fuoco (vedi `30-main.js`).
   - Lo stesso principio vale per gli aggiornamenti in sottofondo (famiglia, Revolut): mentre l'utente scrive o un foglio è aperto, si aspetta (`A.softRender`, l'attesa in `A.famSync`).
+- **Pulsanti dei periodi del portafoglio fuori dai bordi** (1.9.1).
+  - Causa: una fila di `.chips` che scorre, ma centrata (`justify-content:center`). Quando non ci sta, esce da tutti e due i lati: "1G" spariva a sinistra e "Da inizio anno" finiva sotto "1A".
+  - Soluzione: barra `.hzbar` a tutta larghezza, con pulsanti che si dividono lo spazio (`flex:1 1 auto`) ed etichette corte (YTD). Mai centrare un contenitore che scorre.
 - **Ogni tocco riportava in cima alla schermata** (1.6).
   - Causa: `A.render()` svuotava la vista e la pagina tornava in alto.
   - Soluzione: `A.render()` salva e ripristina `scrollY`. Solo `A.go()` (cambio schermata) imposta `A._toTop`.
@@ -50,6 +53,9 @@ Problemi reali visti durante lo sviluppo, con la soluzione adottata. Prima di to
   - Il token con restrizione IP non funziona, perché gli indirizzi di Cloudflare cambiano.
   - Il report del mattino può essere "in preparazione" (1019).
   - Non superare le 10 richieste al minuto.
+  - **Le date del report Flex seguono il formato scelto nella Flex Query** (yyyyMMdd, dd/MM/yyyy, MM/dd/yyyy, ...). La 1.8 leggeva dd/MM/yyyy come mese/giorno: storico con giorno e mese scambiati e grafico a **denti di sega** (un dente al mese), dividendi e versamenti doppi dopo l'aggiornamento (1.9.1).
+    - Soluzione: `T.flexDateOrder` riconosce l'ordine; i dati accumulati (`history`, `divs`, `flows`) hanno un sigillo (`T.pfSeal`, `T.pfTrusted`). Quelli senza sigillo non si uniscono mai: `T.migrate` li toglie e il report li ricostruisce.
+    - Nel periodo coperto dal report (`from`) valgono solo i dati del report (`T.pfJoin`), anche nelle unioni della famiglia.
 - **Cloudflare dalla pagina web.** L'editor ("Edit code") sostituisce tutto il codice: va incollato il file intero e poi premuto **Deploy**. Le variabili restano.
 
 ## Test

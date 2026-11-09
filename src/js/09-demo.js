@@ -65,6 +65,7 @@ T.demoPortfolio = () => {
   for (let i = 0; i < n; i++) { const d = T.addDays(P.date, i - n + 1), wd = T.parseIso(d).getDay(); if (wd === 0 || wd === 6) continue; P.history.push({ d, v: T.round2(vals[i] * k * (0.82 + 0.18 * i / n)) }); }
   P.history[P.history.length - 1] = { d: P.date, v: P.nav };
   for (let m = 1; m <= 12; m += 3) { const d = T.addDays(td, -m * 30); P.divs.push({ d, sym: "CHSPI", amt: 95, tax: false, key: "demo" + m }); }
-  return P;
+  P.divs.sort((a, b) => a.d < b.d ? -1 : 1); P.from = P.history[0].d;
+  return T.pfSeal(P);
 };
 })();
