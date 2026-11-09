@@ -1,11 +1,12 @@
 {
   "name": "myfinances-on-fire",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "private": true,
   "description": "Budget settimanale, spese, portafoglio e simulatore FIRE. PWA senza dipendenze: i dati restano sul telefono.",
   "scripts": {
     "build": "node -e \"require('child_process').execFileSync(process.platform==='win32'?'python':'python3',['build.py'],{stdio:'inherit'})\"",
     "test": "node tests/tutti.js",
+    "test:personale": "node tests/tutti.js --personale",
     "traduzioni": "node tests/traduzioni-mancanti.js",
     "serve": "node -e \"require('child_process').execFileSync(process.platform==='win32'?'python':'python3',['-m','http.server','8080','--directory','docs'],{stdio:'inherit'})\""
   },

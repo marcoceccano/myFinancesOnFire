@@ -11,8 +11,9 @@ __FONTS__
   --font:"MF Rubik",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --safe-b:env(safe-area-inset-bottom,0px); --safe-t:env(safe-area-inset-top,0px);
 }
+/* scuro: automatico se il telefono e' scuro (a meno che si scelga Chiaro), oppure scelto a mano */
 @media (prefers-color-scheme: dark){
-  :root{ color-scheme: dark;
+  :root:not([data-theme=light]){ color-scheme: dark;
     --bg:#121815; --card:#1A221D; --ink:#ECE6DA; --muted:#A3AD9F; --line:#2B362F; --soft:#222C26;
     --brand:#8DC4A2; --brand2:#7DB592; --on-brand:#10201A; --ok:#8DC4A2; --warn:#E3B04F; --bad:#E58A68; --accent:#E3B04F; --accent2:#E58A68;
     --bar:#1B3328; --bar-ink:#ECE6DA;
@@ -20,6 +21,14 @@ __FONTS__
     --fan1:rgba(125,181,146,.14); --fan2:rgba(125,181,146,.28);
     --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.25); }
 }
+:root[data-theme=dark]{ color-scheme: dark;
+    --bg:#121815; --card:#1A221D; --ink:#ECE6DA; --muted:#A3AD9F; --line:#2B362F; --soft:#222C26;
+    --brand:#8DC4A2; --brand2:#7DB592; --on-brand:#10201A; --ok:#8DC4A2; --warn:#E3B04F; --bad:#E58A68; --accent:#E3B04F; --accent2:#E58A68;
+    --bar:#1B3328; --bar-ink:#ECE6DA;
+    --z1:#D9714C; --z2:#E0A63A; --z3:#CFC98A; --z4:#93C29E; --z5:#4E8F6C;
+    --fan1:rgba(125,181,146,.14); --fan2:rgba(125,181,146,.28);
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.25); }
+
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink)}
 body{font-family:var(--font);font-variant-numeric:tabular-nums;font-size:15px;line-height:1.45;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}

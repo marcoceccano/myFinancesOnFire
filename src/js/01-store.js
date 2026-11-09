@@ -17,7 +17,7 @@ T.newState = () => ({
   rules: [], txs: [], vacations: [], fixed: [],
   budget: { preset: "attuale", vacationYear: 0, investMonthly: 0 },
   fire: clone(T.FIRE_DEFAULTS),
-  csvProfiles: [], imports: [], meta: { lastBackup: null, lastSaved: null, v14: true }, bank: T.bankDefaults(), family: null, portfolio: null
+  csvProfiles: [], imports: [], meta: { lastBackup: null, lastSaved: null, v14: true, v19: true }, bank: T.bankDefaults(), family: null, portfolio: null
 });
 
 /* migrazioni future: ogni versione dello schema aggiunge un passo */
@@ -34,6 +34,11 @@ T.migrate = st => {
     if (st.fire.confidence === 0.85) st.fire.confidence = 0.9;
     for (const c of st.categories || []) { const i = T.PALETTE_OLD.indexOf(String(c.color || "").toUpperCase()); if (i >= 0) c.color = T.PALETTE[i]; }
     st.meta.v14 = true;
+  }
+  /* 1.9: nomi dei costi fissi senza il luogo (per esempio "Affitto casa ..." diventa "Affitto") */
+  if (!st.meta.v19) {
+    for (const f of st.fixed || []) if (/^affitto casa\b/i.test(String(f.name || ""))) f.name = "Affitto";
+    st.meta.v19 = true;
   }
   st.schema = T.APP.schema;
   return st;

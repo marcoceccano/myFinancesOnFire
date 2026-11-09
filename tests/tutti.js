@@ -1,5 +1,7 @@
 /* Esegue il build e tutti i test, poi stampa un riepilogo. Nessuna dipendenza: serve solo Node 20+ e Python 3.
-   Uso:  node tests/tutti.js
+   Uso:  node tests/tutti.js                (dati inventati)
+         node tests/tutti.js --personale    (usa il backup piu' recente nella cartella "Dati personali - NON pubblicare",
+                                             accanto al repository oppure dentro, se c'e')
    Facoltativo (dati reali, MAI nel repository):
      MFOF_BACKUP=percorso/backup.json      backup personale per collegamento, lingue, famiglia, portafoglio
      MFOF_REVOLUT=percorso/estratto.xlsx   estratto Revolut per il test di fumo
@@ -8,7 +10,17 @@
 const { spawnSync } = require("child_process"), path = require("path"), fs = require("fs");
 const ROOT = path.join(__dirname, ".."), HTML = path.join(ROOT, "docs", "index.html");
 const opt = p => p && fs.existsSync(p) ? [p] : [];
-const BK = opt(process.env.MFOF_BACKUP), REV = opt(process.env.MFOF_REVOLUT), UBS = opt(process.env.MFOF_UBS);
+/* cartella dei dati personali: accanto al repository (consigliato) oppure dentro (ignorata da git) */
+const personalBackup = () => {
+  for (const dir of [path.join(ROOT, "..", "Dati personali - NON pubblicare"), path.join(ROOT, "Dati personali - NON pubblicare")]) {
+    if (!fs.existsSync(dir)) continue;
+    const js = fs.readdirSync(dir).filter(f => /backup.*\.json$/i.test(f)).sort();
+    if (js.length) return path.join(dir, js[js.length - 1]);
+  }
+  return null;
+};
+const wantPersonal = process.argv.includes("--personale");
+const BK = opt(process.env.MFOF_BACKUP || (wantPersonal ? personalBackup() : null)), REV = opt(process.env.MFOF_REVOLUT), UBS = opt(process.env.MFOF_UBS);
 const py = process.platform === "win32" ? "python" : "python3";
 const steps = [
   ["build", py, ["build.py"]],
@@ -22,6 +34,7 @@ const steps = [
   ["famiglia", "node", ["tests/famiglia.js", HTML, ...BK]],
   ["portafoglio", "node", ["tests/portafoglio.js", HTML, ...BK]]
 ];
+if (wantPersonal && !BK.length) console.log("Nessun backup trovato nella cartella \"Dati personali - NON pubblicare\": uso i dati inventati.\n");
 const res = [];
 for (const [name, cmd, args] of steps) {
   const t0 = Date.now(), r = spawnSync(cmd, args, { cwd: ROOT, encoding: "utf8", timeout: 15 * 60 * 1000 });

@@ -119,6 +119,8 @@ A.renderCollega = card => {
         const line = (okv, txt) => h("div", (okv ? "\u2705 " : "\u274c ") + txt);
         res.appendChild(h("div.note", line(true, T.tr("Ponte raggiungibile e codice corretto")), line(true, T.tr("Applicazione Enable Banking: ") + (d.name || "") + " (" + (d.environment || "") + ")"),
           line(d.environment === "PRODUCTION", T.tr("Ambiente di produzione") + (d.environment === "PRODUCTION" ? "" : T.tr(": registra l'app in PRODUCTION, non in SANDBOX"))),
+          (() => { const v = d.version || "", okv = !!v && T.verCmp(v, T.BRIDGE_VERSION) >= 0;
+            return line(okv, okv ? T.tr("Versione del ponte: {v} (aggiornata)", { v }) : T.tr("Versione del ponte: {v}. Aggiorna alla {n}: in Cloudflare incolla il nuovo ponte/worker.js e premi Deploy.", { v: v || "?", n: T.BRIDGE_VERSION })); })(),
           line(!!d.ibkr, d.ibkr ? T.tr("Interactive Brokers configurato") : T.tr("Interactive Brokers non configurato (facoltativo)")),
           line(!!d.family, d.family ? T.tr("Spazio per la famiglia pronto") : T.tr("Spazio per la famiglia assente (serve solo se vuoi condividere con un altro telefono)")),
           line(!!d.active, d.active ? T.tr("Applicazione attiva") : T.tr("Applicazione non ancora attiva: nel Control Panel usa \u00abActivate by linking accounts\u00bb")),

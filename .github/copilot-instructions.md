@@ -35,7 +35,7 @@ Versione attuale: **1.8.0**. Il prossimo obiettivo è trasformarla in **app nati
 - **Nessun dato personale nel repository**, che è pubblico.
   - Niente backup, estratti, importi reali, token, chiavi o nomi di conti.
   - Le fixture dei test sono inventate.
-  - I dati personali stanno nella cartella "Dati personali - NON pubblicare", dentro la cartella di lavoro ma esclusa da git (`.gitignore`). Puoi leggerla per capire il contesto. Non copiarne mai il contenuto nel codice, nei test o nei documenti.
+  - I dati personali stanno nella cartella "Dati personali - NON pubblicare", accanto alla cartella del repository (`../Dati personali - NON pubblicare`). Se per sbaglio è dentro, git la ignora comunque (`.gitignore`). Puoi leggerla per capire il contesto. Non copiarne mai il contenuto nel codice, nei test o nei documenti.
 - **Ogni testo visibile passa da `T.tr("testo italiano")`** e ha la traduzione EN e DE in `src/js/03-dict.js`.
   - Usa i segnaposto `{x}` (es. `T.tr("Ancora {n} anni", { n })`) invece di concatenare pezzi di frase.
   - `node tests/traduzioni-mancanti.js` deve stampare `[]`.

@@ -17,4 +17,4 @@ Documenti tecnici già presenti nel repository:
 - [README.md](../README.md): novità di ogni versione e struttura delle cartelle.
 - Guide per l'utente: [GUIDA-COLLEGAMENTO-REVOLUT.md](../GUIDA-COLLEGAMENTO-REVOLUT.md), [GUIDA-FAMIGLIA.md](../GUIDA-FAMIGLIA.md), [GUIDA-INTERACTIVE-BROKERS.md](../GUIDA-INTERACTIVE-BROKERS.md).
 
-I dati personali di Marco (cifre reali, parametri FIRE, backup) **non** stanno qui. Sono in `CONTESTO-PERSONALE.md`, nella cartella "Dati personali - NON pubblicare": si trova nella cartella di lavoro, ma git la ignora e non arriva mai su GitHub.
+I dati personali di Marco (cifre reali, parametri FIRE, backup) **non** stanno qui. Sono in `CONTESTO-PERSONALE.md`, nella cartella "Dati personali - NON pubblicare": si trova accanto alla cartella del repository (`../`), quindi non arriva mai su GitHub.

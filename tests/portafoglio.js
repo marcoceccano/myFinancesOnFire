@@ -77,6 +77,8 @@ const wait = ms => new Promise(r => setTimeout(r, ms || 60));
     if (A.ui.pfHz !== k || !$("pfPerf").querySelectorAll("polyline").length) { ok(false, "orizzonte " + l); break; }
   }
   ok(A.ui.pfHz === "ALL" && /\(Tutto\)/.test(txt($("pfPerf"))), "grafico: tutti gli orizzonti, da 1G a Tutto");
+  ok(/Storico: \d{3} giorni, dal 06\.11\.2025 al 05\.11\.2026/.test(txt($("pfPerf"))) && !$("pfHistHint"), "sotto il grafico: quanti giorni di storico ci sono");
+  ok($("pfPerf").querySelectorAll("polyline").length === 1, "grafico: una linea sola");
   const read0 = txt($("pfPerf").querySelector("div.readout"));
   $("pfPerf").querySelector("rect.hit").dispatch("click", { clientX: 120 }); await wait(50);
   ok(txt($("pfPerf").querySelector("div.readout")) !== read0 && /dal/.test(txt($("pfPerf").querySelector("div.readout"))), "grafico: tocco legge un giorno con il rendimento dall'inizio del periodo");

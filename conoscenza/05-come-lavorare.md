@@ -19,13 +19,13 @@ npm run serve         # app su http://localhost:8080
 
 Su Windows usa `python` al posto di `python3`. `tests/tutti.js` lo fa da solo.
 
-**Test con i dati veri di Marco.** I file personali non entrano mai nel repository: si passano con variabili d'ambiente.
+**Test con i dati veri di Marco.** I file personali non entrano mai nel repository. `npm run test:personale` trova da solo il backup; per l'estratto Revolut e il PDF UBS si usano le variabili d'ambiente `MFOF_REVOLUT` e `MFOF_UBS`.
 
 ```bash
-MFOF_BACKUP="Dati personali - NON pubblicare/myfinances-backup-marco-2026-11-09.json" node tests/tutti.js
+npm run test:personale    # cerca da solo il backup in "../Dati personali - NON pubblicare"
 ```
 
-Su Windows PowerShell: `$env:MFOF_BACKUP="..."; node tests/tutti.js`
+Su Windows PowerShell, per un file preciso: `$env:MFOF_BACKUP="..\Dati personali - NON pubblicare\nome.json"; npm test`
 
 ## Provare l'app
 

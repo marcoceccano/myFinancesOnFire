@@ -116,6 +116,14 @@ A.renderAltro = main => {
   if (A.sub) return A.renderSub(main, A.sub);
   const S = A.S, item = (t, d, fn, pill) => h("div.li.tap", { onclick: fn, role: "button", tabindex: "0" }, h("div.grow", h("div.t", t), d ? h("div.d", d) : null), pill || h("span.muted", "\u203a"));
   const last = S.imports[0];
+  /* lingua e tema si cambiano al volo, qui in cima */
+  const lang = S.profile.lang || "it", th = A.getTheme();
+  main.appendChild(h("div.card#look", h("h2", T.tr("Lingua e aspetto")),
+    h("div.small.muted", { style: { marginBlockEnd: "6px" } }, T.tr("Lingua")),
+    h("div.seg#langSeg", { role: "group", "aria-label": T.tr("Lingua") }, T.LANGS.map(([c, n]) => h("button", { type: "button", lang: c, class: c === lang ? "on" : "", "aria-pressed": c === lang ? "true" : "false", onclick: () => A.setLanguage(c) }, n))),
+    h("div.small.muted", { style: { margin: "14px 0 6px" } }, T.tr("Tema")),
+    h("div.seg#themeSeg", { role: "group", "aria-label": T.tr("Tema") }, [["auto", T.tr("Automatico~tema")], ["light", T.tr("Chiaro~tema")], ["dark", T.tr("Scuro~tema")]].map(([k, l]) => h("button", { type: "button", class: k === th ? "on" : "", "aria-pressed": k === th ? "true" : "false", onclick: () => A.setTheme(k) }, l))),
+    h("p.small.muted", { style: { margin: "8px 0 0" } }, th === "auto" ? T.tr("Automatico segue il tema chiaro o scuro del telefono.") : T.tr("Il tema vale solo per questo telefono."))));
   main.appendChild(h("div.card", h("h2", T.tr("Dati")), h("div.list",
     item(T.tr("Collegamento automatico Revolut"), T.bankConnected(S) ? (T.bankExpired(S) ? T.tr("Consenso scaduto") : T.tr("Collegato \u00b7 aggiornato ") + A.relTime(S.bank.lastSync)) : T.tr("Movimenti aggiornati da soli, in sola lettura"), () => A.go("altro", "collega"), T.bankConnected(S) ? h("span.pill" + (T.bankExpired(S) ? ".warn" : ".ok"), T.bankExpired(S) ? T.tr("Scaduto") : T.tr("Attivo")) : null),
     (() => { const F = S.family; return item(T.tr("Famiglia"), !F ? T.tr("Condividi spese e budget con un altro telefono") : F.gone ? T.tr("Non piu' raggiungibile: serve un QR nuovo") : (F.role === "master" ? T.tr("Attiva") : T.tr("Famiglia di {n}", { n: A.masterName() })) + T.tr(" \u00b7 allineata ") + A.relTime(F.lastSync),
@@ -151,7 +159,7 @@ A.renderSub = (main, sub) => {
     A.renderIbkr(card);
   } else if (sub === "profilo") {
     card.appendChild(h("h2", T.tr("Profilo e reddito")));
-    card.appendChild(T.selectField(T.tr("Lingua"), S.profile.lang || "it", T.LANGS, v => A.setLanguage(v)));
+    /* la lingua si cambia in Altro, in "Lingua e aspetto" */
     /* nella famiglia nome, valuta, reddito e cambi li gestisce chi l'ha creata */
     const pf = h("fieldset.plain", { disabled: A.isMember() || null });
     if (A.isMember()) card.appendChild(h("div.note", { style: { marginBlockEnd: "10px" } }, T.tr("Reddito, valuta e cambi li gestisce {n}: qui li vedi ma non li cambi.", { n: A.masterName() })));
@@ -243,6 +251,23 @@ A.renderSub = (main, sub) => {
     card.appendChild(h("p.small.muted", T.tr("Spazio usato: ") + (JSON.stringify(S).length / 1024).toFixed(0) + T.tr(" KB \u00b7 ") + S.txs.length + T.tr(" movimenti")));
   }
 };
+
+/* ---------- tema: automatico (come il telefono), chiaro o scuro; vale solo per questo telefono ---------- */
+const THEME_KEY = "myfinances-on-fire:tema";
+A.getTheme = () => { try { const v = localStorage.getItem(THEME_KEY); return v === "light" || v === "dark" ? v : "auto"; } catch (e) { return "auto"; } };
+A.applyTheme = v => {
+  v = v || A.getTheme();
+  const r = document.documentElement;
+  try { if (v === "auto") r.removeAttribute("data-theme"); else r.setAttribute("data-theme", v); } catch (e) { }
+  let dark = v === "dark";
+  try { if (v === "auto" && typeof window !== "undefined" && window.matchMedia) dark = window.matchMedia("(prefers-color-scheme: dark)").matches; } catch (e) { }
+  try { const m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute("content", dark ? "#1B3328" : "#2F5D46"); } catch (e) { }
+};
+A.setTheme = v => {
+  try { if (v === "auto") localStorage.removeItem(THEME_KEY); else localStorage.setItem(THEME_KEY, v); } catch (e) { }
+  A.applyTheme(v); A.render();
+};
+A.clearTheme = () => { try { localStorage.removeItem(THEME_KEY); } catch (e) { } A.applyTheme("auto"); };
 
 /* ---------- lingua ---------- */
 A.setLanguage = v => {

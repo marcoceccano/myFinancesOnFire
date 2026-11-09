@@ -2,6 +2,9 @@
    L'app parla solo con il ponte dell'utente (ponte/worker.js); il ponte parla con Enable Banking. */
 "use strict";
 (function () {
+/* versione del ponte che questa app si aspetta (ponte/worker.js) */
+T.BRIDGE_VERSION = "1.2.0";
+T.verCmp = (a, b) => { const x = String(a).split(".").map(Number), y = String(b).split(".").map(Number); for (let i = 0; i < 3; i++) { const d = (x[i] || 0) - (y[i] || 0); if (d) return d > 0 ? 1 : -1; } return 0; };
 T.BANK_DEFAULTS = { url: "", token: "", country: "LT", aspsp: "Revolut", session: null, validUntil: null, accounts: [],
   lastSync: null, lastResult: null, lastError: null, auto: true, pendingState: null, cursors: {} };
 T.bankDefaults = () => JSON.parse(JSON.stringify(T.BANK_DEFAULTS));

@@ -1,7 +1,7 @@
 /* myFinances on FIRE · utilita' comuni (nessuna dipendenza esterna) */
 "use strict";
 const T = (typeof globalThis !== "undefined" ? globalThis : window).T = {};
-T.APP = { name: "myFinances on FIRE", id: "myfinances-on-fire", version: "1.8.0", schema: 1 };
+T.APP = { name: "myFinances on FIRE", id: "myfinances-on-fire", version: "1.9.0", schema: 1 };
 
 /* ---------- numeri e date ---------- */
 T.round2 = v => Math.round(v * 100) / 100;

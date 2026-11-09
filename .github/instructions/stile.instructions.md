@@ -31,7 +31,7 @@ Le 5 zone della probabilità FIRE: `#C4623F`, `#D99A2B`, `#C8C27A`, `#8DB596`, `
 
 **Regole**
 - Sempre le variabili CSS (`var(--brand)`, ecc.), mai colori fissi nei componenti. Fanno eccezione le tavolozze delle categorie e dei grafici, in `05-categorize.js` e `27-portafoglio.js`.
-- Il tema scuro sta in `@media (prefers-color-scheme: dark)` (verde scuro e antracite). Ogni variabile nuova va definita in tutti e due i temi.
+- Il tema scuro (verde scuro e antracite) è scritto due volte in `styles.css`: in `@media (prefers-color-scheme: dark)` con `:root:not([data-theme=light])` (automatico) e in `:root[data-theme=dark]` (scelto a mano). Ogni variabile nuova va definita nel tema chiaro e in **tutti e due** i blocchi scuri. La scelta Automatico / Chiaro / Scuro sta in `localStorage` (`A.getTheme`, `A.setTheme` in `24-altro.js`) e vale solo per quel telefono.
 - Proprietà logiche (`inline-size`, `margin-block-start`, `inset-inline-start`).
 - Aree toccabili di almeno 44 px.
 - Se cambiano i colori del brand, aggiorna anche `theme-color` in `index.template.html`, il manifest, le icone in `src/static/icons` e le pagine `privacy.html` e `terms.html`.

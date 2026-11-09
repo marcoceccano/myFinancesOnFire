@@ -8,13 +8,31 @@ const unesc = s => String(s).replace(/&(#x[0-9a-f]+|#\d+|\w+);/gi, (m, e) => e[0
 const attrs = s => { const o = {}; s.replace(/([\w:.-]+)\s*=\s*"([^"]*)"/g, (m, k, v) => { o[k] = unesc(v); return m; }); return o; };
 const tags = (xml, name) => { const out = [], re = new RegExp("<" + name + "\\b([^>]*?)\\/?>", "g"); let m; while ((m = re.exec(xml))) out.push(attrs(m[1])); return out; };
 const num = v => { const x = parseFloat(String(v == null ? "" : v).replace(/,/g, "")); return isFinite(x) ? x : 0; };
-/* date Flex: 20261105, 2026-11-05, 20261105;061502, 11/05/2026 */
-T.flexDate = v => {
+/* date Flex in tutti i formati che Interactive Brokers permette di scegliere:
+   20261105, 2026-11-05, 20261105;061502, 11/05/2026, 05/11/2026, 11/05/26, 05-Nov-26.
+   ord dice come leggere le date con la barra: "mdy" (americano, predefinito) o "dmy" (europeo). */
+const MON = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12 };
+const okIso = (y, mo, d) => { y = +y; mo = +mo; d = +d; if (y < 100) y += 2000; if (!(mo >= 1 && mo <= 12 && d >= 1 && d <= 31 && y > 1990 && y < 2200)) return null; return y + "-" + T.pad(mo) + "-" + T.pad(d); };
+T.flexDate = (v, ord) => {
   const s = String(v || "").trim(); let m;
-  if ((m = s.match(/^(\d{4})-?(\d{2})-?(\d{2})/))) return m[1] + "-" + m[2] + "-" + m[3];
-  if ((m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})/))) return m[3] + "-" + m[1] + "-" + m[2];
+  if ((m = s.match(/^(\d{4})-?(\d{2})-?(\d{2})/))) return okIso(m[1], m[2], m[3]);
+  if ((m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})/))) return ord === "dmy" ? okIso(m[3], m[2], m[1]) : okIso(m[3], m[1], m[2]);
+  if ((m = s.match(/^(\d{1,2})[- ]([A-Za-z]{3})[a-z]*[- ,]+(\d{2,4})/))) return MON[m[2].toLowerCase()] ? okIso(m[3], MON[m[2].toLowerCase()], m[1]) : null;
+  if ((m = s.match(/^([A-Za-z]{3})[a-z]* (\d{1,2}),? (\d{4})/))) return MON[m[1].toLowerCase()] ? okIso(m[3], MON[m[1].toLowerCase()], m[2]) : null;
   return null;
 };
+/* il report usa date con la barra? capisce se sono giorno/mese o mese/giorno */
+T.flexDateOrder = (xml, today) => {
+  const all = []; String(xml || "").replace(/"(\d{1,2})\/(\d{1,2})\/(\d{2,4})/g, (x, a, b, y) => { all.push([+a, +b, y]); return x; });
+  if (!all.length) return "mdy";
+  if (all.some(x => x[0] > 12)) return "dmy";
+  if (all.some(x => x[1] > 12)) return "mdy";
+  /* tutte ambigue: vale l'ordine che non porta date nel futuro e arriva piu' vicino a oggi */
+  today = today || T.today();
+  const score = ord => { let best = ""; for (const x of all) { const d = T.flexDate(x[0] + "/" + x[1] + "/" + x[2], ord); if (!d || d > T.addDays(today, 1)) return -1; if (d > best) best = d; } return best ? -Math.abs(T.daysBetween(best, today)) : -1e9; };
+  return score("dmy") > score("mdy") ? "dmy" : "mdy";
+};
+T.isoOk = d => typeof d === "string" && /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(d);
 T.flexXmlTags = tags;
 
 /* tipo di strumento, per la ripartizione */
@@ -22,8 +40,9 @@ T.PF_TYPES = { ETF: "ETF", STK: "Azioni", FUND: "Fondi", BOND: "Obbligazioni", O
 const typeOf = p => /ETF/i.test(p.subCategory || "") ? "ETF" : T.PF_TYPES[p.assetCategory] ? p.assetCategory : "OTHER";
 
 /* XML Flex -> sintesi del portafoglio (importi nella valuta base del conto) */
-T.parseFlex = xml => {
+T.parseFlex = (xml, today) => {
   xml = String(xml || "");
+  const ord = T.flexDateOrder(xml, today), fd = v => T.flexDate(v, ord);
   if (!/<FlexQueryResponse[\s>]/.test(xml)) {
     const code = (xml.match(/<ErrorCode>(\d+)<\/ErrorCode>/) || [])[1];
     throw new Error(code ? T.ibkrErrorText(code) : T.tr("Il report di Interactive Brokers non e' leggibile."));
@@ -33,7 +52,7 @@ T.parseFlex = xml => {
   if (!stmts.length) throw new Error(T.tr("Il report di Interactive Brokers e' vuoto: controlla le sezioni della Flex Query."));
   /* piu' conti o piu' giorni: per le posizioni conta l'ultimo estratto di ogni conto */
   const lastByAcc = {};
-  for (const s of stmts) { const acc = s.a.accountId || "?", to = T.flexDate(s.a.toDate) || ""; if (!lastByAcc[acc] || to >= lastByAcc[acc].to) lastByAcc[acc] = { s, to }; }
+  for (const s of stmts) { const acc = s.a.accountId || "?", to = fd(s.a.toDate) || ""; if (!lastByAcc[acc] || to >= lastByAcc[acc].to) lastByAcc[acc] = { s, to }; }
   const accounts = Object.keys(lastByAcc);
   let base = "", date = "", cash = 0;
   const positions = [], hist = {}, divs = [], flows = [], seenDiv = new Set();
@@ -55,14 +74,14 @@ T.parseFlex = xml => {
   }
   /* valore nel tempo (tutti gli estratti, sommando i conti nello stesso giorno) */
   for (const s of stmts) for (const e of tags(s.body, "EquitySummaryByReportDateInBase")) {
-    const d = T.flexDate(e.reportDate); if (!d) continue;
+    const d = fd(e.reportDate); if (!d) continue;
     const k = (s.a.accountId || "?") + "|" + d; hist[k] = { d, v: num(e.total) };
     if (!base && e.currency) base = e.currency;
   }
   const byDay = {}; for (const k in hist) byDay[hist[k].d] = (byDay[hist[k].d] || 0) + hist[k].v;
   /* dividendi netti: dividendi, sostitutivi e ritenute alla fonte */
   for (const s of stmts) for (const c of tags(s.body, "CashTransaction")) {
-    const d = T.flexDate(c.dateTime || c.settleDate || c.reportDate); if (!d) continue;
+    const d = fd(c.dateTime || c.settleDate || c.reportDate); if (!d) continue;
     /* versamenti e prelievi: servono per il rendimento ponderato nel tempo */
     if (/deposit|withdraw/i.test(c.type || "")) {
       const amt = num(c.amount) * (num(c.fxRateToBase) || 1), key = [s.a.accountId, d, c.type, c.amount, c.transactionID || "", c.description || ""].join("|");
@@ -110,7 +129,10 @@ T.pfNavApp = st => T.pfHas(st) ? T.pfToApp(st, st.portfolio.nav) : 0;
 /* unisce il report nuovo a quello salvato: storico e dividendi si accumulano oltre l'anno del report */
 T.pfMerge = (old, rep) => {
   const P = Object.assign(T.pfDefaults(), old || {});
-  const h = {}; for (const x of P.history || []) h[x.d] = x.v; for (const x of rep.history) h[x.d] = x.v;
+  /* lo storico salvato resta solo prima dell'inizio del report: nel periodo del report valgono i dati nuovi
+     (cosi' si ripuliscono anche date lette male dalle versioni precedenti) */
+  const r0 = rep.history.length ? rep.history[0].d : "9999", lim = T.addDays(T.today(), 1);
+  const h = {}; for (const x of P.history || []) if (T.isoOk(x.d) && x.d < r0 && x.d <= lim) h[x.d] = x.v; for (const x of rep.history) h[x.d] = x.v;
   const dv = {}; for (const x of P.divs || []) dv[x.key] = x; for (const x of rep.divs) dv[x.key] = x;
   const fl = {}; for (const x of P.flows || []) fl[x.key] = x; for (const x of rep.flows || []) fl[x.key] = x;
   Object.assign(P, { base: rep.base, accounts: rep.accounts, date: rep.date, nav: rep.nav, cash: rep.cash, invested: rep.invested, positions: rep.positions,
@@ -155,7 +177,7 @@ T.pfGroups = (st, by) => {
 /* orizzonti del grafico: data da cui si misura (la chiusura precedente all'inizio del periodo) */
 T.PF_HORIZONS = [["1G", "1G~orizzonte"], ["1S", "1S~orizzonte"], ["1M", "1M~orizzonte"], ["3M", "3M~orizzonte"], ["6M", "6M~orizzonte"], ["YTD", "Da inizio anno~orizzonte"], ["1A", "1A~orizzonte"], ["ALL", "Tutto~orizzonte"]];
 T.pfFrom = (P, hz) => {
-  const h = P.history || [], last = h.length ? h[h.length - 1].d : T.today();
+  const h = T.pfHistory(P), last = h.length ? h[h.length - 1].d : T.today();
   const back = (m, y) => { const d = T.parseIso(last); if (y) d.setFullYear(d.getFullYear() - y); if (m) d.setMonth(d.getMonth() - m); return T.iso(d); };
   switch (hz) {
     case "1G": return h.length > 1 ? h[h.length - 2].d : last;
@@ -167,8 +189,9 @@ T.pfFrom = (P, hz) => {
   }
 };
 /* serie del periodo: valore e rendimento ponderato nel tempo (versamenti e prelievi tolti giorno per giorno) */
+T.pfHistory = P => (P.history || []).filter(x => T.isoOk(x.d) && isFinite(x.v));
 T.pfSeries = (P, hz) => {
-  const h = P.history || []; if (!h.length) return { pts: [], twr: false };
+  const h = T.pfHistory(P); if (!h.length) return { pts: [], twr: false, n: 0 };
   const from = T.pfFrom(P, hz);
   let i0 = 0; for (let i = 0; i < h.length; i++) { if (h[i].d <= from) i0 = i; else break; }
   const flows = (P.flows || []), twr = !!P.hasFlows;
@@ -180,7 +203,7 @@ T.pfSeries = (P, hz) => {
     g *= 1 + ret; pts.push({ d: h[i].d, v: h[i].v, r: g - 1 });
   }
   const a = pts[0], b = pts[pts.length - 1];
-  return { pts, twr, from: a.d, to: b.d, abs: b.v - a.v, ret: b.r, flows: T.sum(flows.filter(x => x.d > a.d && x.d <= b.d).map(x => x.amt)) };
+  return { pts, twr, n: h.length, first: h[0].d, last: h[h.length - 1].d, from: a.d, to: b.d, abs: b.v - a.v, ret: b.r, flows: T.sum(flows.filter(x => x.d > a.d && x.d <= b.d).map(x => x.amt)) };
 };
 /* variazione del valore da una data (compresi versamenti e prelievi) */
 T.pfChange = (P, fromIso) => {

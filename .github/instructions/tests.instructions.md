@@ -16,7 +16,7 @@ applyTo: "tests/**"
 - **Due telefoni.** `famiglia.js` crea due contesti `vm` separati, ognuno con la propria app e il proprio archivio.
 - **Fixture.**
   - Sono sempre inventate (`tests/fixtures/`).
-  - I dati reali si passano solo da variabili d'ambiente: `MFOF_BACKUP`, `MFOF_REVOLUT`, `MFOF_UBS`.
+  - I dati reali non entrano mai nel repository: `npm run test:personale` usa il backup nella cartella accanto al repository; altrimenti le variabili d'ambiente `MFOF_BACKUP`, `MFOF_REVOLUT`, `MFOF_UBS`.
   - Ogni test deve passare anche senza dati reali.
 - **Regole per una funzione nuova.**
   - Aggiungi almeno un controllo nel test dello schermo interessato.

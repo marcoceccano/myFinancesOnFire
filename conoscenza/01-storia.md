@@ -37,6 +37,7 @@ Da qui l'idea: un'app sul telefono per il budget di ogni giorno che usi gli stes
 | 1.7 | 06.11 | **Interactive Brokers**: report Flex dal ponte (ponte 1.2.0). Riquadro in Home, schermata Portafoglio (valore, ripartizione a torta, posizioni, dividendi). Il patrimonio del FIRE si aggiorna da solo ("altri investimenti" più Interactive Brokers). |
 | 1.8 | 06.11 | Il **portafoglio** è dentro la voce FIRE (selettore Simulatore / Portafoglio). Grafico **Valore / Rendimento %** con gli orizzonti 1G, 1S, 1M, 3M, 6M, da inizio anno, 1A e tutto. Rendimento **TWR**: versamenti e prelievi esclusi. |
 | Passaggio a Copilot | 09.11 | Pacchetto con le istruzioni per GitHub Copilot, questa cartella di conoscenza, `tests/tutti.js`, `package.json` (solo comandi) e test che passano anche senza dati personali. Nessuna modifica all'app (sempre 1.8.0). |
+| 1.9 | 09.11 | Grafico del portafoglio come **linea semplice** (verde o rossa) e date del report Flex lette in tutti i formati (anche giorno/mese europeo); storico salvato ripulito; riga "Storico: N giorni" sotto il grafico. **Lingua e tema** in cima ad Altro: lingua al volo, tema Automatico / Chiaro / Scuro (solo per quel telefono). "Verifica il ponte" mostra la versione. Costi fissi "Affitto casa ..." rinominati "Affitto". Test anche su Windows; `npm run test:personale`. |
 
 ## Come lavoravamo
 

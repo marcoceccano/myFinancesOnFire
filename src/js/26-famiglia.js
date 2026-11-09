@@ -182,7 +182,7 @@ A.doReset = async keep => {
   if (F) { try { await T.famLeave(S); } catch (e) { } }
   if (!keep && !member && B.session) { try { await T.bankCall(S, "/disconnect", { session_id: B.session }); } catch (e) { } }
   const kept = keep && !member ? { url: B.url, token: B.token, country: B.country, aspsp: B.aspsp, session: B.session, validUntil: B.validUntil, accounts: B.accounts, auto: B.auto } : null;
-  await T.storage.wipe();
+  await T.storage.wipe(); A.clearTheme();
   const ns = T.newState();
   if (kept && kept.url) Object.assign(ns.bank, kept);
   A.S = ns; A.fire.key = ""; A.fire.base = null; A.wiz.step = 0;

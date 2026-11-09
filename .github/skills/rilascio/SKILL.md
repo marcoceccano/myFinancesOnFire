@@ -17,7 +17,7 @@ description: Prepara una nuova versione di myFinances on FIRE (numero di version
    - In quel caso aggiorna anche `PRIVACY_DATE` in `build.py` (data di "ultimo aggiornamento" mostrata nelle pagine privacy e condizioni). Se il testo non cambia, la data resta com'è.
 4. **Controlli.**
    - `node tests/traduzioni-mancanti.js` deve stampare `[]`.
-   - `node tests/tutti.js` deve essere tutto verde. Se Marco ha i suoi file, ripetilo anche con `MFOF_BACKUP`, `MFOF_REVOLUT` e `MFOF_UBS`.
+   - `node tests/tutti.js` deve essere tutto verde. Se c'è la cartella dei dati personali, ripetilo con `npm run test:personale`.
    - Controlla che `git status` non contenga file personali (`*.json` di backup, `.xlsx`, `.pdf`, `.csv`, `.xml` fuori da `tests/fixtures/`).
 5. **Commit e tag.** Messaggio di commit `vX.Y.Z: <riassunto>`, poi `git tag vX.Y.Z`.
 6. **Pubblicazione.** Con il push su `main`, GitHub Pages pubblica `docs/` in un paio di minuti.

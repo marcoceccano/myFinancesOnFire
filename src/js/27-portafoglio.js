@@ -90,6 +90,12 @@ A.pfPerfCard = main => {
   };
   card.appendChild(box); card.appendChild(read); draw(null);
   card.appendChild(h("div.chips.hz", { role: "group", "aria-label": T.tr("Orizzonte") }, T.PF_HORIZONS.map(([k, l]) => h("button.chip" + (k === hz ? ".on" : ""), { type: "button", onclick: () => { ui.pfHz = k; A.render(); } }, T.tr(l)))));
+  /* quanto storico c'e': aiuta a capire se la Flex Query manda tutti i giorni */
+  if (se.n) card.appendChild(h("p.small.muted#pfHist", { style: { margin: "8px 0 0" } }, se.n === 1
+    ? T.tr("Storico: 1 giorno ({d}).", { d: T.fmt.date(se.first) })
+    : T.tr("Storico: {n} giorni, dal {a} al {b}.", { n: se.n, a: T.fmt.date(se.first), b: T.fmt.date(se.last) })));
+  if (se.n && se.n < 5) card.appendChild(h("div.note#pfHistHint", { style: { marginBlockStart: "8px" } },
+    T.tr("Il report di Interactive Brokers contiene pochi giorni. Nella Flex Query imposta Period su Last 365 Calendar Days e includi la sezione Net Asset Value (NAV) in Base, poi premi Aggiorna. Lo storico cresce comunque da solo a ogni aggiornamento.")));
   card.appendChild(h("p.small.muted", { style: { margin: "8px 0 0" } }, se.twr
     ? T.tr("Il rendimento e' ponderato nel tempo (TWR): versamenti e prelievi non contano come guadagni o perdite.")
     : T.tr("Il rendimento e' calcolato sul valore del conto: se nel periodo hai versato o prelevato, aggiungi Deposits & Withdrawals alla Flex Query per toglierli.")));

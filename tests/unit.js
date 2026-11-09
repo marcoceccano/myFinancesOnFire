@@ -71,6 +71,18 @@ process.exitCode = fails ? 1 : 0;
   eq(r.base + " " + r.date + " " + Math.round(r.nav), "CHF 2026-11-05 378776", "Flex: valuta, data e valore");
   eq(T.round2(T.sum(r.divs.map(d => d.amt))), T.round2(41.5 * 0.7985 * 0.85 * 2 + 45.5 * 0.7985 * 0.85 * 2 + 312.8), "Flex: dividendi netti dopo le ritenute");
   eq(T.flexDate("20261105;061502") + " " + T.flexDate("2026-11-05") + " " + T.flexDate("11/05/2026"), "2026-11-05 2026-11-05 2026-11-05", "Flex: formati delle date");
+  eq([T.flexDate("05/11/2026", "dmy"), T.flexDate("05/11/26", "dmy"), T.flexDate("05-Nov-26"), T.flexDate("Nov 5, 2026"), T.flexDate("13/11/2026"), T.flexDate("2026-13-11")], ["2026-11-05", "2026-11-05", "2026-11-05", "2026-11-05", null, null], "Flex: date europee, con il mese in lettere e date impossibili");
+  /* lo stesso report con le date europee (giorno/mese/anno) deve dare lo stesso storico */
+  const eu = xml.replace(/(Date|date|dateTime)="(\d{4})(\d{2})(\d{2})/g, (x, k, y, mo, d) => k + '="' + d + "/" + mo + "/" + y);
+  eq(T.flexDateOrder(eu, "2026-11-06"), "dmy", "Flex: riconosce le date giorno/mese");
+  const re = T.parseFlex(eu, "2026-11-06");
+  eq([re.date, re.history.length, re.history[0].d, re.divs.length], [r.date, r.history.length, r.history[0].d, r.divs.length], "Flex: report con date europee letto come quello standard");
+  const S1 = T.pfSeries(re, "1M"), S2 = T.pfSeries(r, "1M");
+  eq([S1.pts.length > 15, S1.pts.length === S2.pts.length, S1.n === r.history.length], [true, true, true], "Flex: ogni orizzonte ha i suoi giorni anche con le date europee");
+  /* storico salvato con date lette male da una versione precedente: il report nuovo lo ripulisce */
+  const bad = T.pfMerge({ history: [{ d: "2026-05-11", v: 1 }, { d: "2026-13-11", v: 2 }, { d: "2025-01-02", v: 3 }] }, r);
+  eq([bad.history.some(x => x.d === "2026-05-11" && x.v === 1), bad.history.some(x => x.d === "2026-13-11"), bad.history[0].d], [false, false, "2025-01-02"], "Flex: date sbagliate tolte, storico vecchio tenuto");
+  eq(T.pfSeries({ history: [{ d: "2026-13-11", v: 5 }, { d: "2026-11-01", v: 10 }, { d: "2026-11-02", v: 11 }] }, "1S").pts.length, 2, "Flex: date impossibili ignorate nel grafico");
   let err = ""; try { T.parseFlex("<FlexStatementResponse><Status>Fail</Status><ErrorCode>1012</ErrorCode></FlexStatementResponse>"); } catch (e) { err = e.message; }
   eq(/scaduto/.test(err), true, "Flex: errore di token scaduto spiegato");
   const lots = xml.replace(/levelOfDetail="SUMMARY" \/>/, 'levelOfDetail="SUMMARY" />\n<OpenPosition symbol="VWRA" currency="USD" fxRateToBase="0.7985" position="10" markPrice="145.2" positionValue="1452" levelOfDetail="LOT" />');

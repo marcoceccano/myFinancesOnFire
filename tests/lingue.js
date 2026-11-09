@@ -75,6 +75,20 @@ const ITALIAN = /\b(spese|movimenti|importa|aggiorna|settimana|giorni|risparmio|
   ok(/Oct|Sep/.test(txt($("view"))) && /\d{2}\/\d{2}\/2026/.test(txt($("view"))), "en: mesi e date in inglese");
   T.A.setLanguage("it");
   ok(S.categories.find(c => c.id === "alimentari").name === "Alimentari", "ritorno all'italiano: nomi originali");
+  /* lingua e tema al volo, in cima ad Altro */
+  T.A.go("altro"); await wait(80);
+  const seg = id => $(id) ? $(id).querySelectorAll("button") : [];
+  ok(seg("langSeg").length === 3 && seg("themeSeg").length === 3, "altro: lingua (3) e tema (3) in cima");
+  seg("langSeg").find(b => txt(b) === "Deutsch").click(); await wait(80);
+  ok(S.profile.lang === "de" && /Sprache und Darstellung/.test(txt($("view"))) && seg("langSeg").find(b => txt(b) === "Deutsch").className === "on", "lingua cambiata al volo con un tocco");
+  seg("themeSeg").find(b => txt(b) === "Dunkel").click(); await wait(50);
+  ok(T.A.getTheme() === "dark" && document.documentElement.attributes["data-theme"] === "dark", "tema scuro scelto a mano");
+  seg("themeSeg").find(b => txt(b) === "Hell").click(); await wait(50);
+  ok(document.documentElement.attributes["data-theme"] === "light", "tema chiaro scelto a mano");
+  seg("themeSeg").find(b => txt(b) === "Automatisch").click(); await wait(50);
+  ok(T.A.getTheme() === "auto" && document.documentElement.attributes["data-theme"] === undefined, "tema automatico: segue il telefono");
+  seg("langSeg").find(b => txt(b) === "Italiano").click(); await wait(80);
+  ok(S.profile.lang === "it" && /Lingua e aspetto/.test(txt($("view"))), "di nuovo in italiano");
   console.log("errori JS:", stub.errors.length); stub.errors.slice(0, 3).forEach(e => console.log(e));
   console.log(fails ? fails + " test falliti" : "Prova delle lingue superata");
   process.exitCode = fails ? 1 : 0;

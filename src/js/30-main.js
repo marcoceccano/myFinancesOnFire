@@ -3,6 +3,9 @@
 (function () {
 const A = T.A;
 async function start() {
+  /* tema subito, prima di caricare i dati, cosi' lo schermo non lampeggia */
+  A.applyTheme();
+  try { if (window.matchMedia) { const mq = window.matchMedia("(prefers-color-scheme: dark)"), f = () => A.applyTheme(); if (mq.addEventListener) mq.addEventListener("change", f); else if (mq.addListener) mq.addListener(f); } } catch (e) { }
   const saved = await T.load();
   if (!saved) T.setLang(T.detectLang());
   A.S = saved || T.newState();

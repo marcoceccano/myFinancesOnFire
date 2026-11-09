@@ -1,18 +1,11 @@
 # Backlog e questioni aperte
 
-## Questioni aperte (da chiedere a Marco)
+## Questioni aperte (risposte di Marco del 9 novembre 2026)
 
-1. **Reddito netto mensile.**
-   - Nell'app era impostato con la media 2026 del foglio Stipendio dell'Excel. Quella media comprende bonus e azioni ed è più alta di un mese normale: per il 2025 e il 2024 il netto medio mensile era più basso.
-   - Così tasso di risparmio, risparmio del FIRE ed età FIRE risultano ottimisti.
-   - Proposte fatte: il netto di un mese normale (prudente) oppure il netto annuo / 12 dell'ultimo anno intero. Se la moglie ha un reddito, si somma.
-   - **Marco non ha ancora scelto.** Una possibile funzione: separare "netto fisso al mese" e "bonus e azioni all'anno".
-2. **Consenso Revolut.** Non è confermato che il collegamento automatico scarichi davvero i movimenti (passo 3 nell'app). Chiedere.
-3. **Interactive Brokers.**
-   - Non è confermato che Flex Query, token e ponte 1.2.0 siano configurati, né che il primo report reale venga letto bene.
-   - Al primo uso confronta valore, posizioni e TWR con il portale (il loro "Performance TWR" parte dall'apertura del conto, il nostro dal primo giorno salvato).
-   - Ricordarsi di "Deposits & Withdrawals" nella Flex Query.
-4. **Ponte.** È stato aggiornato alla 1.2.0? Si controlla in Altro > Collegamento automatico > Verifica il ponte: deve comparire la riga "Interactive Brokers configurato".
+1. **Reddito netto mensile.** Marco lo inserisce a mano nell'app (Altro > Profilo e reddito). Chiuso.
+2. **Revolut automatico.** Funziona. Chiuso.
+3. **Interactive Brokers.** La Flex Query funziona. Il grafico del valore nel tempo non mostrava nulla cambiando orizzonte: corretto nella 1.9 (date del report in tutti i formati, storico ripulito, riga "Storico: N giorni" sotto il grafico). Da confermare con il report vero di Marco.
+4. **Ponte.** Marco non sapeva se fosse alla 1.2.0. Dalla 1.9 "Verifica il ponte" mostra la versione e dice se va aggiornato.
 
 ## Idee e richieste non ancora fatte
 
@@ -46,7 +39,4 @@
 - `03-dict.js` è un unico file grande (circa 950 voci per lingua). Si potrebbe dividere per lingua, mantenendo lo stesso formato.
 - Alcune schermate (`24-altro.js`, `27-portafoglio.js`) sono lunghe: dividerle per sottoschermata quando servirà toccarle.
 - I test girano su un DOM finto. Un controllo nel browser vero (per esempio Playwright, solo come strumento di sviluppo e fuori da `src/`) darebbe più sicurezza su layout e grafici. Va proposto a Marco prima di aggiungere dipendenze.
-- Pulizia privacy alla prossima versione:
-  - `03-dict.js` contiene ancora la traduzione di un costo fisso con il nome del paese di Marco ("Affitto casa Pura"). Va tolta: la traduzione dei nomi scelti dall'utente non serve.
-  - I test delle versioni fino alla 1.8 avevano un IBAN di un destinatario quasi reale. Nel pacchetto per Copilot è stato sostituito con uno inventato (`CH00...`).
-  - Se quei test erano già su GitHub, resta nella cronologia del repository. Si può lasciare (è l'IBAN di un'agenzia, non di Marco) oppure ripulire la cronologia, ma solo con il consenso di Marco.
+- Privacy: nella 1.9 è stata tolta dal dizionario la traduzione di un costo fisso con un nome di luogo, e i costi fissi "Affitto casa ..." diventano "Affitto". Le versioni vecchie restano nella cronologia del repository: ripulirla solo se Marco lo chiede.

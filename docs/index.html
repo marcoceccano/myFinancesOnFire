@@ -25,8 +25,9 @@
   --font:"MF Rubik",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --safe-b:env(safe-area-inset-bottom,0px); --safe-t:env(safe-area-inset-top,0px);
 }
+/* scuro: automatico se il telefono e' scuro (a meno che si scelga Chiaro), oppure scelto a mano */
 @media (prefers-color-scheme: dark){
-  :root{ color-scheme: dark;
+  :root:not([data-theme=light]){ color-scheme: dark;
     --bg:#121815; --card:#1A221D; --ink:#ECE6DA; --muted:#A3AD9F; --line:#2B362F; --soft:#222C26;
     --brand:#8DC4A2; --brand2:#7DB592; --on-brand:#10201A; --ok:#8DC4A2; --warn:#E3B04F; --bad:#E58A68; --accent:#E3B04F; --accent2:#E58A68;
     --bar:#1B3328; --bar-ink:#ECE6DA;
@@ -34,6 +35,14 @@
     --fan1:rgba(125,181,146,.14); --fan2:rgba(125,181,146,.28);
     --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.25); }
 }
+:root[data-theme=dark]{ color-scheme: dark;
+    --bg:#121815; --card:#1A221D; --ink:#ECE6DA; --muted:#A3AD9F; --line:#2B362F; --soft:#222C26;
+    --brand:#8DC4A2; --brand2:#7DB592; --on-brand:#10201A; --ok:#8DC4A2; --warn:#E3B04F; --bad:#E58A68; --accent:#E3B04F; --accent2:#E58A68;
+    --bar:#1B3328; --bar-ink:#ECE6DA;
+    --z1:#D9714C; --z2:#E0A63A; --z3:#CFC98A; --z4:#93C29E; --z5:#4E8F6C;
+    --fan1:rgba(125,181,146,.14); --fan2:rgba(125,181,146,.28);
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.25); }
+
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink)}
 body{font-family:var(--font);font-variant-numeric:tabular-nums;font-size:15px;line-height:1.45;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
@@ -219,7 +228,7 @@ input[type=date]{inline-size:100%;min-block-size:44px;border:1px solid var(--lin
 /* myFinances on FIRE · utilita' comuni (nessuna dipendenza esterna) */
 "use strict";
 const T = (typeof globalThis !== "undefined" ? globalThis : window).T = {};
-T.APP = { name: "myFinances on FIRE", id: "myfinances-on-fire", version: "1.8.0", schema: 1 };
+T.APP = { name: "myFinances on FIRE", id: "myfinances-on-fire", version: "1.9.0", schema: 1 };
 
 /* ---------- numeri e date ---------- */
 T.round2 = v => Math.round(v * 100) / 100;
@@ -976,7 +985,6 @@ T.DICT = {
 "Il backup arriva da una versione piu' recente dell'app: aggiorna l'app e riprova": "The backup comes from a newer version of the app: update the app and try again",
 "Backup incompleto": "Incomplete backup",
 "Il file non e' un archivio valido": "The file is not a valid archive",
-"Affitto casa Pura": "Home in Pura (rent)",
 "Cassa malati di base": "Basic health insurance",
 "Cassa malati complementare": "Supplementary health insurance",
 "Varie conto UBS": "Other UBS account costs",
@@ -1331,7 +1339,21 @@ T.DICT = {
 "Da inizio anno~orizzonte": "YTD",
 "1A~orizzonte": "1Y",
 "Tutto~orizzonte": "All",
-"Sezioni: Account Information, Open Positions (opzione Summary), Cash Report, Net Asset Value (NAV) in Base, Cash Transactions (Dividends, Withholding Tax, Payment In Lieu Of Dividends, Deposits & Withdrawals). In ciascuna scegli Select All.": "Sections: Account Information, Open Positions (Summary option), Cash Report, Net Asset Value (NAV) in Base, Cash Transactions (Dividends, Withholding Tax, Payment In Lieu Of Dividends, Deposits & Withdrawals). In each one choose Select All."
+"Sezioni: Account Information, Open Positions (opzione Summary), Cash Report, Net Asset Value (NAV) in Base, Cash Transactions (Dividends, Withholding Tax, Payment In Lieu Of Dividends, Deposits & Withdrawals). In ciascuna scegli Select All.": "Sections: Account Information, Open Positions (Summary option), Cash Report, Net Asset Value (NAV) in Base, Cash Transactions (Dividends, Withholding Tax, Payment In Lieu Of Dividends, Deposits & Withdrawals). In each one choose Select All.",
+"In questo periodo c'e' un solo giorno di dati": "This period has only one day of data",
+"Scegli un periodo piu' lungo": "Choose a longer period",
+"Lingua e aspetto": "Language and appearance",
+"Tema": "Theme",
+"Automatico~tema": "Automatic",
+"Chiaro~tema": "Light",
+"Scuro~tema": "Dark",
+"Automatico segue il tema chiaro o scuro del telefono.": "Automatic follows your phone's light or dark theme.",
+"Il tema vale solo per questo telefono.": "The theme applies to this phone only.",
+"Versione del ponte: {v} (aggiornata)": "Bridge version: {v} (up to date)",
+"Versione del ponte: {v}. Aggiorna alla {n}: in Cloudflare incolla il nuovo ponte/worker.js e premi Deploy.": "Bridge version: {v}. Update to {n}: in Cloudflare paste the new ponte/worker.js and press Deploy.",
+"Storico: 1 giorno ({d}).": "History: 1 day ({d}).",
+"Storico: {n} giorni, dal {a} al {b}.": "History: {n} days, from {a} to {b}.",
+"Il report di Interactive Brokers contiene pochi giorni. Nella Flex Query imposta Period su Last 365 Calendar Days e includi la sezione Net Asset Value (NAV) in Base, poi premi Aggiorna. Lo storico cresce comunque da solo a ogni aggiornamento.": "The Interactive Brokers report contains only a few days. In the Flex Query set Period to Last 365 Calendar Days and include the Net Asset Value (NAV) in Base section, then press Refresh. The history also grows by itself with every update."
 },
 "de": {
 "Annulla": "Abbrechen",
@@ -1944,7 +1966,6 @@ T.DICT = {
 "Il backup arriva da una versione piu' recente dell'app: aggiorna l'app e riprova": "Das Backup stammt aus einer neueren Version der App: aktualisiere die App und versuche es erneut",
 "Backup incompleto": "Unvollständiges Backup",
 "Il file non e' un archivio valido": "Die Datei ist kein gültiges Archiv",
-"Affitto casa Pura": "Wohnung Pura (Miete)",
 "Cassa malati di base": "Krankenkasse Grundversicherung",
 "Cassa malati complementare": "Krankenkasse Zusatzversicherung",
 "Varie conto UBS": "Sonstiges UBS-Konto",
@@ -2299,7 +2320,21 @@ T.DICT = {
 "Da inizio anno~orizzonte": "YTD",
 "1A~orizzonte": "1J",
 "Tutto~orizzonte": "Max",
-"Sezioni: Account Information, Open Positions (opzione Summary), Cash Report, Net Asset Value (NAV) in Base, Cash Transactions (Dividends, Withholding Tax, Payment In Lieu Of Dividends, Deposits & Withdrawals). In ciascuna scegli Select All.": "Abschnitte: Account Information, Open Positions (Option Summary), Cash Report, Net Asset Value (NAV) in Base, Cash Transactions (Dividends, Withholding Tax, Payment In Lieu Of Dividends, Deposits & Withdrawals). Wähle jeweils Select All."
+"Sezioni: Account Information, Open Positions (opzione Summary), Cash Report, Net Asset Value (NAV) in Base, Cash Transactions (Dividends, Withholding Tax, Payment In Lieu Of Dividends, Deposits & Withdrawals). In ciascuna scegli Select All.": "Abschnitte: Account Information, Open Positions (Option Summary), Cash Report, Net Asset Value (NAV) in Base, Cash Transactions (Dividends, Withholding Tax, Payment In Lieu Of Dividends, Deposits & Withdrawals). Wähle jeweils Select All.",
+"In questo periodo c'e' un solo giorno di dati": "In diesem Zeitraum gibt es nur einen Tag mit Daten",
+"Scegli un periodo piu' lungo": "Wähle einen längeren Zeitraum",
+"Lingua e aspetto": "Sprache und Darstellung",
+"Tema": "Design",
+"Automatico~tema": "Automatisch",
+"Chiaro~tema": "Hell",
+"Scuro~tema": "Dunkel",
+"Automatico segue il tema chiaro o scuro del telefono.": "Automatisch folgt dem hellen oder dunklen Design des Telefons.",
+"Il tema vale solo per questo telefono.": "Das Design gilt nur für dieses Telefon.",
+"Versione del ponte: {v} (aggiornata)": "Brücken-Version: {v} (aktuell)",
+"Versione del ponte: {v}. Aggiorna alla {n}: in Cloudflare incolla il nuovo ponte/worker.js e premi Deploy.": "Brücken-Version: {v}. Auf {n} aktualisieren: in Cloudflare das neue ponte/worker.js einfügen und Deploy drücken.",
+"Storico: 1 giorno ({d}).": "Verlauf: 1 Tag ({d}).",
+"Storico: {n} giorni, dal {a} al {b}.": "Verlauf: {n} Tage, vom {a} bis {b}.",
+"Il report di Interactive Brokers contiene pochi giorni. Nella Flex Query imposta Period su Last 365 Calendar Days e includi la sezione Net Asset Value (NAV) in Base, poi premi Aggiorna. Lo storico cresce comunque da solo a ogni aggiornamento.": "Der Bericht von Interactive Brokers enthält nur wenige Tage. Stelle in der Flex Query Period auf Last 365 Calendar Days und nimm den Abschnitt Net Asset Value (NAV) in Base auf, dann drücke Aktualisieren. Der Verlauf wächst ausserdem mit jeder Aktualisierung von selbst."
 }
 };
 
@@ -2417,7 +2452,7 @@ T.newState = () => ({
   rules: [], txs: [], vacations: [], fixed: [],
   budget: { preset: "attuale", vacationYear: 0, investMonthly: 0 },
   fire: clone(T.FIRE_DEFAULTS),
-  csvProfiles: [], imports: [], meta: { lastBackup: null, lastSaved: null, v14: true }, bank: T.bankDefaults(), family: null, portfolio: null
+  csvProfiles: [], imports: [], meta: { lastBackup: null, lastSaved: null, v14: true, v19: true }, bank: T.bankDefaults(), family: null, portfolio: null
 });
 
 /* migrazioni future: ogni versione dello schema aggiunge un passo */
@@ -2434,6 +2469,11 @@ T.migrate = st => {
     if (st.fire.confidence === 0.85) st.fire.confidence = 0.9;
     for (const c of st.categories || []) { const i = T.PALETTE_OLD.indexOf(String(c.color || "").toUpperCase()); if (i >= 0) c.color = T.PALETTE[i]; }
     st.meta.v14 = true;
+  }
+  /* 1.9: nomi dei costi fissi senza il luogo (per esempio "Affitto casa ..." diventa "Affitto") */
+  if (!st.meta.v19) {
+    for (const f of st.fixed || []) if (/^affitto casa\b/i.test(String(f.name || ""))) f.name = "Affitto";
+    st.meta.v19 = true;
   }
   st.schema = T.APP.schema;
   return st;
@@ -3354,6 +3394,9 @@ T.simulateFire = (st, override) => {
    L'app parla solo con il ponte dell'utente (ponte/worker.js); il ponte parla con Enable Banking. */
 "use strict";
 (function () {
+/* versione del ponte che questa app si aspetta (ponte/worker.js) */
+T.BRIDGE_VERSION = "1.2.0";
+T.verCmp = (a, b) => { const x = String(a).split(".").map(Number), y = String(b).split(".").map(Number); for (let i = 0; i < 3; i++) { const d = (x[i] || 0) - (y[i] || 0); if (d) return d > 0 ? 1 : -1; } return 0; };
 T.BANK_DEFAULTS = { url: "", token: "", country: "LT", aspsp: "Revolut", session: null, validUntil: null, accounts: [],
   lastSync: null, lastResult: null, lastError: null, auto: true, pendingState: null, cursors: {} };
 T.bankDefaults = () => JSON.parse(JSON.stringify(T.BANK_DEFAULTS));
@@ -3843,13 +3886,31 @@ const unesc = s => String(s).replace(/&(#x[0-9a-f]+|#\d+|\w+);/gi, (m, e) => e[0
 const attrs = s => { const o = {}; s.replace(/([\w:.-]+)\s*=\s*"([^"]*)"/g, (m, k, v) => { o[k] = unesc(v); return m; }); return o; };
 const tags = (xml, name) => { const out = [], re = new RegExp("<" + name + "\\b([^>]*?)\\/?>", "g"); let m; while ((m = re.exec(xml))) out.push(attrs(m[1])); return out; };
 const num = v => { const x = parseFloat(String(v == null ? "" : v).replace(/,/g, "")); return isFinite(x) ? x : 0; };
-/* date Flex: 20261105, 2026-11-05, 20261105;061502, 11/05/2026 */
-T.flexDate = v => {
+/* date Flex in tutti i formati che Interactive Brokers permette di scegliere:
+   20261105, 2026-11-05, 20261105;061502, 11/05/2026, 05/11/2026, 11/05/26, 05-Nov-26.
+   ord dice come leggere le date con la barra: "mdy" (americano, predefinito) o "dmy" (europeo). */
+const MON = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12 };
+const okIso = (y, mo, d) => { y = +y; mo = +mo; d = +d; if (y < 100) y += 2000; if (!(mo >= 1 && mo <= 12 && d >= 1 && d <= 31 && y > 1990 && y < 2200)) return null; return y + "-" + T.pad(mo) + "-" + T.pad(d); };
+T.flexDate = (v, ord) => {
   const s = String(v || "").trim(); let m;
-  if ((m = s.match(/^(\d{4})-?(\d{2})-?(\d{2})/))) return m[1] + "-" + m[2] + "-" + m[3];
-  if ((m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})/))) return m[3] + "-" + m[1] + "-" + m[2];
+  if ((m = s.match(/^(\d{4})-?(\d{2})-?(\d{2})/))) return okIso(m[1], m[2], m[3]);
+  if ((m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})/))) return ord === "dmy" ? okIso(m[3], m[2], m[1]) : okIso(m[3], m[1], m[2]);
+  if ((m = s.match(/^(\d{1,2})[- ]([A-Za-z]{3})[a-z]*[- ,]+(\d{2,4})/))) return MON[m[2].toLowerCase()] ? okIso(m[3], MON[m[2].toLowerCase()], m[1]) : null;
+  if ((m = s.match(/^([A-Za-z]{3})[a-z]* (\d{1,2}),? (\d{4})/))) return MON[m[1].toLowerCase()] ? okIso(m[3], MON[m[1].toLowerCase()], m[2]) : null;
   return null;
 };
+/* il report usa date con la barra? capisce se sono giorno/mese o mese/giorno */
+T.flexDateOrder = (xml, today) => {
+  const all = []; String(xml || "").replace(/"(\d{1,2})\/(\d{1,2})\/(\d{2,4})/g, (x, a, b, y) => { all.push([+a, +b, y]); return x; });
+  if (!all.length) return "mdy";
+  if (all.some(x => x[0] > 12)) return "dmy";
+  if (all.some(x => x[1] > 12)) return "mdy";
+  /* tutte ambigue: vale l'ordine che non porta date nel futuro e arriva piu' vicino a oggi */
+  today = today || T.today();
+  const score = ord => { let best = ""; for (const x of all) { const d = T.flexDate(x[0] + "/" + x[1] + "/" + x[2], ord); if (!d || d > T.addDays(today, 1)) return -1; if (d > best) best = d; } return best ? -Math.abs(T.daysBetween(best, today)) : -1e9; };
+  return score("dmy") > score("mdy") ? "dmy" : "mdy";
+};
+T.isoOk = d => typeof d === "string" && /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(d);
 T.flexXmlTags = tags;
 
 /* tipo di strumento, per la ripartizione */
@@ -3857,8 +3918,9 @@ T.PF_TYPES = { ETF: "ETF", STK: "Azioni", FUND: "Fondi", BOND: "Obbligazioni", O
 const typeOf = p => /ETF/i.test(p.subCategory || "") ? "ETF" : T.PF_TYPES[p.assetCategory] ? p.assetCategory : "OTHER";
 
 /* XML Flex -> sintesi del portafoglio (importi nella valuta base del conto) */
-T.parseFlex = xml => {
+T.parseFlex = (xml, today) => {
   xml = String(xml || "");
+  const ord = T.flexDateOrder(xml, today), fd = v => T.flexDate(v, ord);
   if (!/<FlexQueryResponse[\s>]/.test(xml)) {
     const code = (xml.match(/<ErrorCode>(\d+)<\/ErrorCode>/) || [])[1];
     throw new Error(code ? T.ibkrErrorText(code) : T.tr("Il report di Interactive Brokers non e' leggibile."));
@@ -3868,7 +3930,7 @@ T.parseFlex = xml => {
   if (!stmts.length) throw new Error(T.tr("Il report di Interactive Brokers e' vuoto: controlla le sezioni della Flex Query."));
   /* piu' conti o piu' giorni: per le posizioni conta l'ultimo estratto di ogni conto */
   const lastByAcc = {};
-  for (const s of stmts) { const acc = s.a.accountId || "?", to = T.flexDate(s.a.toDate) || ""; if (!lastByAcc[acc] || to >= lastByAcc[acc].to) lastByAcc[acc] = { s, to }; }
+  for (const s of stmts) { const acc = s.a.accountId || "?", to = fd(s.a.toDate) || ""; if (!lastByAcc[acc] || to >= lastByAcc[acc].to) lastByAcc[acc] = { s, to }; }
   const accounts = Object.keys(lastByAcc);
   let base = "", date = "", cash = 0;
   const positions = [], hist = {}, divs = [], flows = [], seenDiv = new Set();
@@ -3890,14 +3952,14 @@ T.parseFlex = xml => {
   }
   /* valore nel tempo (tutti gli estratti, sommando i conti nello stesso giorno) */
   for (const s of stmts) for (const e of tags(s.body, "EquitySummaryByReportDateInBase")) {
-    const d = T.flexDate(e.reportDate); if (!d) continue;
+    const d = fd(e.reportDate); if (!d) continue;
     const k = (s.a.accountId || "?") + "|" + d; hist[k] = { d, v: num(e.total) };
     if (!base && e.currency) base = e.currency;
   }
   const byDay = {}; for (const k in hist) byDay[hist[k].d] = (byDay[hist[k].d] || 0) + hist[k].v;
   /* dividendi netti: dividendi, sostitutivi e ritenute alla fonte */
   for (const s of stmts) for (const c of tags(s.body, "CashTransaction")) {
-    const d = T.flexDate(c.dateTime || c.settleDate || c.reportDate); if (!d) continue;
+    const d = fd(c.dateTime || c.settleDate || c.reportDate); if (!d) continue;
     /* versamenti e prelievi: servono per il rendimento ponderato nel tempo */
     if (/deposit|withdraw/i.test(c.type || "")) {
       const amt = num(c.amount) * (num(c.fxRateToBase) || 1), key = [s.a.accountId, d, c.type, c.amount, c.transactionID || "", c.description || ""].join("|");
@@ -3945,7 +4007,10 @@ T.pfNavApp = st => T.pfHas(st) ? T.pfToApp(st, st.portfolio.nav) : 0;
 /* unisce il report nuovo a quello salvato: storico e dividendi si accumulano oltre l'anno del report */
 T.pfMerge = (old, rep) => {
   const P = Object.assign(T.pfDefaults(), old || {});
-  const h = {}; for (const x of P.history || []) h[x.d] = x.v; for (const x of rep.history) h[x.d] = x.v;
+  /* lo storico salvato resta solo prima dell'inizio del report: nel periodo del report valgono i dati nuovi
+     (cosi' si ripuliscono anche date lette male dalle versioni precedenti) */
+  const r0 = rep.history.length ? rep.history[0].d : "9999", lim = T.addDays(T.today(), 1);
+  const h = {}; for (const x of P.history || []) if (T.isoOk(x.d) && x.d < r0 && x.d <= lim) h[x.d] = x.v; for (const x of rep.history) h[x.d] = x.v;
   const dv = {}; for (const x of P.divs || []) dv[x.key] = x; for (const x of rep.divs) dv[x.key] = x;
   const fl = {}; for (const x of P.flows || []) fl[x.key] = x; for (const x of rep.flows || []) fl[x.key] = x;
   Object.assign(P, { base: rep.base, accounts: rep.accounts, date: rep.date, nav: rep.nav, cash: rep.cash, invested: rep.invested, positions: rep.positions,
@@ -3990,7 +4055,7 @@ T.pfGroups = (st, by) => {
 /* orizzonti del grafico: data da cui si misura (la chiusura precedente all'inizio del periodo) */
 T.PF_HORIZONS = [["1G", "1G~orizzonte"], ["1S", "1S~orizzonte"], ["1M", "1M~orizzonte"], ["3M", "3M~orizzonte"], ["6M", "6M~orizzonte"], ["YTD", "Da inizio anno~orizzonte"], ["1A", "1A~orizzonte"], ["ALL", "Tutto~orizzonte"]];
 T.pfFrom = (P, hz) => {
-  const h = P.history || [], last = h.length ? h[h.length - 1].d : T.today();
+  const h = T.pfHistory(P), last = h.length ? h[h.length - 1].d : T.today();
   const back = (m, y) => { const d = T.parseIso(last); if (y) d.setFullYear(d.getFullYear() - y); if (m) d.setMonth(d.getMonth() - m); return T.iso(d); };
   switch (hz) {
     case "1G": return h.length > 1 ? h[h.length - 2].d : last;
@@ -4002,8 +4067,9 @@ T.pfFrom = (P, hz) => {
   }
 };
 /* serie del periodo: valore e rendimento ponderato nel tempo (versamenti e prelievi tolti giorno per giorno) */
+T.pfHistory = P => (P.history || []).filter(x => T.isoOk(x.d) && isFinite(x.v));
 T.pfSeries = (P, hz) => {
-  const h = P.history || []; if (!h.length) return { pts: [], twr: false };
+  const h = T.pfHistory(P); if (!h.length) return { pts: [], twr: false, n: 0 };
   const from = T.pfFrom(P, hz);
   let i0 = 0; for (let i = 0; i < h.length; i++) { if (h[i].d <= from) i0 = i; else break; }
   const flows = (P.flows || []), twr = !!P.hasFlows;
@@ -4015,7 +4081,7 @@ T.pfSeries = (P, hz) => {
     g *= 1 + ret; pts.push({ d: h[i].d, v: h[i].v, r: g - 1 });
   }
   const a = pts[0], b = pts[pts.length - 1];
-  return { pts, twr, from: a.d, to: b.d, abs: b.v - a.v, ret: b.r, flows: T.sum(flows.filter(x => x.d > a.d && x.d <= b.d).map(x => x.amt)) };
+  return { pts, twr, n: h.length, first: h[0].d, last: h[h.length - 1].d, from: a.d, to: b.d, abs: b.v - a.v, ret: b.r, flows: T.sum(flows.filter(x => x.d > a.d && x.d <= b.d).map(x => x.amt)) };
 };
 /* variazione del valore da una data (compresi versamenti e prelievi) */
 T.pfChange = (P, fromIso) => {
@@ -4397,13 +4463,13 @@ T.dayChart = (host, days, opt) => {
   if (opt.cap) { const y = Y(opt.cap); T.s("line", { x1: L, x2: w - R, y1: y, y2: y, stroke: "var(--accent2)", "stroke-dasharray": "5 4", "stroke-width": 1.5 }, s); }
   return s;
 };
-/* portafoglio nel tempo: valore o rendimento %, verde sopra la partenza e rosso sotto; tocca per leggere un giorno */
+/* portafoglio nel tempo: valore o rendimento %, linea semplice verde o rossa; tocca per leggere un giorno */
 T.perfChart = (host, pts, opt) => {
   opt = opt || {};
   const pctMode = opt.mode === "rend";
   const w = W(host), h = opt.h || 210, L = pctMode ? 46 : 50, R = 10, Tp = 12, B = 24, iw = w - L - R, ih = h - Tp - B;
   const s = svgBox(w, h, opt.label || T.tr("valore nel tempo"));
-  if (pts.length < 2) { txt(s, w / 2, h / 2, T.tr("Servono almeno due giorni di dati"), { "text-anchor": "middle" }); return s; }
+  if (pts.length < 2) { txt(s, w / 2, h / 2 - 8, T.tr("In questo periodo c'e' un solo giorno di dati"), { "text-anchor": "middle" }); txt(s, w / 2, h / 2 + 12, T.tr("Scegli un periodo piu' lungo"), { "text-anchor": "middle", class: "muted" }); return s; }
   const val = p => pctMode ? p.r * 100 : p.v, base = pctMode ? 0 : pts[0].v;
   const t0 = T.parseIso(pts[0].d).getTime(), t1 = T.parseIso(pts[pts.length - 1].d).getTime();
   let lo = Math.min(base, ...pts.map(val)), hi = Math.max(base, ...pts.map(val));
@@ -4413,26 +4479,16 @@ T.perfChart = (host, pts, opt) => {
   const fine = pctMode ? step < 1 : step < 10000;
   const lab = v => pctMode ? (v > 0 ? "+" : v < 0 ? "\u2212" : "") + (fine ? T.fmt.n1(Math.abs(v)) : T.fmt.n0(Math.abs(v))) + "%" : fine ? T.fmt.n0(v) : T.fmt.k(v);
   for (let v = y0; v <= y1 + 1e-9; v += step) { T.s("line", { x1: L, x2: w - R, y1: Y(v), y2: Y(v), stroke: "var(--line)", "stroke-dasharray": "2 3" }, s); txt(s, L - 6, Y(v) + 4, lab(Math.abs(v) < step / 1e6 ? 0 : v), { "text-anchor": "end" }); }
-  /* linea di partenza (0% o valore iniziale) */
-  T.s("line", { x1: L, x2: w - R, y1: Y(base), y2: Y(base), stroke: "var(--muted)", "stroke-width": 1, opacity: 0.6 }, s);
+  /* linea di partenza (0% o valore iniziale), tratteggiata */
+  T.s("line", { x1: L, x2: w - R, y1: Y(base), y2: Y(base), stroke: "var(--muted)", "stroke-width": 1, "stroke-dasharray": "4 4", opacity: 0.7 }, s);
   /* al massimo un punto ogni 2 pixel */
   const every = Math.max(1, Math.ceil(pts.length / (iw / 2))), draw = pts.filter((p, i) => i % every === 0 || i === pts.length - 1);
-  /* tratti verdi sopra la partenza, rossi sotto (con il punto d'incrocio), ognuno con la sua area */
-  let seg = [], segUp = null; const segs = [];
-  const flush = () => { if (seg.length > 1) segs.push({ up: segUp, pts: seg }); };
-  for (let i = 0; i < draw.length; i++) {
-    const p = draw[i], x = X(p.d), y = Y(val(p)), u = val(p) >= base;
-    if (segUp === null) { segUp = u; seg = [[x, y]]; continue; }
-    if (u !== segUp) {
-      const q = draw[i - 1], v0 = val(q), v1 = val(p), k = (base - v0) / ((v1 - v0) || 1e-9), xc = X(q.d) + (x - X(q.d)) * k, yc = Y(base);
-      seg.push([xc, yc]); flush(); seg = [[xc, yc], [x, y]]; segUp = u;
-    } else seg.push([x, y]);
-  }
-  flush();
-  const yb = Y(base).toFixed(1), P2 = q => q[0].toFixed(1) + "," + q[1].toFixed(1);
-  for (const g of segs) T.s("path", { d: "M" + g.pts[0][0].toFixed(1) + "," + yb + " L" + g.pts.map(P2).join(" L") + " L" + g.pts[g.pts.length - 1][0].toFixed(1) + "," + yb + "Z", fill: g.up ? "var(--fan1)" : "rgba(185,83,47,.13)" }, s);
-  for (const g of segs) T.s("polyline", { points: g.pts.map(P2).join(" "), fill: "none", stroke: g.up ? "var(--ok)" : "var(--bad)", "stroke-width": 2.2, "stroke-linejoin": "round", "stroke-linecap": "round" }, s);
-  if (pts.length <= 12) for (const p of pts) T.s("circle", { cx: X(p.d).toFixed(1), cy: Y(val(p)).toFixed(1), r: 3, fill: val(p) >= base ? "var(--ok)" : "var(--bad)" }, s);
+  /* una linea sola: verde se nel periodo si e' guadagnato, rossa se si e' perso, con un'area leggera sotto */
+  const upAll = val(pts[pts.length - 1]) >= base, col = upAll ? "var(--ok)" : "var(--bad)";
+  const P2 = p => X(p.d).toFixed(1) + "," + Y(val(p)).toFixed(1), yb = (Tp + ih).toFixed(1), line = draw.map(P2);
+  T.s("path", { d: "M" + X(draw[0].d).toFixed(1) + "," + yb + " L" + line.join(" L") + " L" + X(draw[draw.length - 1].d).toFixed(1) + "," + yb + "Z", fill: upAll ? "var(--fan1)" : "rgba(185,83,47,.12)" }, s);
+  T.s("polyline", { points: line.join(" "), fill: "none", stroke: col, "stroke-width": 2.2, "stroke-linejoin": "round", "stroke-linecap": "round" }, s);
+  if (pts.length <= 12) for (const p of pts) T.s("circle", { cx: X(p.d).toFixed(1), cy: Y(val(p)).toFixed(1), r: 3, fill: col }, s);
   /* etichette dell'asse del tempo secondo la durata */
   const span = (t1 - t0) / 864e5, ticks = [];
   if (span <= 10) pts.forEach(p => ticks.push({ d: p.d, l: T.fmt.dateShort(p.d) }));
@@ -4446,7 +4502,7 @@ T.perfChart = (host, pts, opt) => {
   if (opt.pick) {
     const p = opt.pick, x = X(p.d), y = Y(val(p));
     T.s("line", { x1: x, x2: x, y1: Tp, y2: Tp + ih, stroke: "var(--ink)", "stroke-width": 1.2, "stroke-dasharray": "3 3" }, s);
-    T.s("circle", { cx: x, cy: y, r: 5, fill: val(p) >= base ? "var(--ok)" : "var(--bad)", stroke: "var(--card)", "stroke-width": 2 }, s);
+    T.s("circle", { cx: x, cy: y, r: 5, fill: col, stroke: "var(--card)", "stroke-width": 2 }, s);
   }
   if (opt.onPick) {
     const hit = T.s("rect", { x: L, y: Tp, width: iw, height: ih, fill: "transparent", style: "cursor:pointer", class: "hit" }, s);
@@ -5286,6 +5342,14 @@ A.renderAltro = main => {
   if (A.sub) return A.renderSub(main, A.sub);
   const S = A.S, item = (t, d, fn, pill) => h("div.li.tap", { onclick: fn, role: "button", tabindex: "0" }, h("div.grow", h("div.t", t), d ? h("div.d", d) : null), pill || h("span.muted", "\u203a"));
   const last = S.imports[0];
+  /* lingua e tema si cambiano al volo, qui in cima */
+  const lang = S.profile.lang || "it", th = A.getTheme();
+  main.appendChild(h("div.card#look", h("h2", T.tr("Lingua e aspetto")),
+    h("div.small.muted", { style: { marginBlockEnd: "6px" } }, T.tr("Lingua")),
+    h("div.seg#langSeg", { role: "group", "aria-label": T.tr("Lingua") }, T.LANGS.map(([c, n]) => h("button", { type: "button", lang: c, class: c === lang ? "on" : "", "aria-pressed": c === lang ? "true" : "false", onclick: () => A.setLanguage(c) }, n))),
+    h("div.small.muted", { style: { margin: "14px 0 6px" } }, T.tr("Tema")),
+    h("div.seg#themeSeg", { role: "group", "aria-label": T.tr("Tema") }, [["auto", T.tr("Automatico~tema")], ["light", T.tr("Chiaro~tema")], ["dark", T.tr("Scuro~tema")]].map(([k, l]) => h("button", { type: "button", class: k === th ? "on" : "", "aria-pressed": k === th ? "true" : "false", onclick: () => A.setTheme(k) }, l))),
+    h("p.small.muted", { style: { margin: "8px 0 0" } }, th === "auto" ? T.tr("Automatico segue il tema chiaro o scuro del telefono.") : T.tr("Il tema vale solo per questo telefono."))));
   main.appendChild(h("div.card", h("h2", T.tr("Dati")), h("div.list",
     item(T.tr("Collegamento automatico Revolut"), T.bankConnected(S) ? (T.bankExpired(S) ? T.tr("Consenso scaduto") : T.tr("Collegato \u00b7 aggiornato ") + A.relTime(S.bank.lastSync)) : T.tr("Movimenti aggiornati da soli, in sola lettura"), () => A.go("altro", "collega"), T.bankConnected(S) ? h("span.pill" + (T.bankExpired(S) ? ".warn" : ".ok"), T.bankExpired(S) ? T.tr("Scaduto") : T.tr("Attivo")) : null),
     (() => { const F = S.family; return item(T.tr("Famiglia"), !F ? T.tr("Condividi spese e budget con un altro telefono") : F.gone ? T.tr("Non piu' raggiungibile: serve un QR nuovo") : (F.role === "master" ? T.tr("Attiva") : T.tr("Famiglia di {n}", { n: A.masterName() })) + T.tr(" \u00b7 allineata ") + A.relTime(F.lastSync),
@@ -5321,7 +5385,7 @@ A.renderSub = (main, sub) => {
     A.renderIbkr(card);
   } else if (sub === "profilo") {
     card.appendChild(h("h2", T.tr("Profilo e reddito")));
-    card.appendChild(T.selectField(T.tr("Lingua"), S.profile.lang || "it", T.LANGS, v => A.setLanguage(v)));
+    /* la lingua si cambia in Altro, in "Lingua e aspetto" */
     /* nella famiglia nome, valuta, reddito e cambi li gestisce chi l'ha creata */
     const pf = h("fieldset.plain", { disabled: A.isMember() || null });
     if (A.isMember()) card.appendChild(h("div.note", { style: { marginBlockEnd: "10px" } }, T.tr("Reddito, valuta e cambi li gestisce {n}: qui li vedi ma non li cambi.", { n: A.masterName() })));
@@ -5413,6 +5477,23 @@ A.renderSub = (main, sub) => {
     card.appendChild(h("p.small.muted", T.tr("Spazio usato: ") + (JSON.stringify(S).length / 1024).toFixed(0) + T.tr(" KB \u00b7 ") + S.txs.length + T.tr(" movimenti")));
   }
 };
+
+/* ---------- tema: automatico (come il telefono), chiaro o scuro; vale solo per questo telefono ---------- */
+const THEME_KEY = "myfinances-on-fire:tema";
+A.getTheme = () => { try { const v = localStorage.getItem(THEME_KEY); return v === "light" || v === "dark" ? v : "auto"; } catch (e) { return "auto"; } };
+A.applyTheme = v => {
+  v = v || A.getTheme();
+  const r = document.documentElement;
+  try { if (v === "auto") r.removeAttribute("data-theme"); else r.setAttribute("data-theme", v); } catch (e) { }
+  let dark = v === "dark";
+  try { if (v === "auto" && typeof window !== "undefined" && window.matchMedia) dark = window.matchMedia("(prefers-color-scheme: dark)").matches; } catch (e) { }
+  try { const m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute("content", dark ? "#1B3328" : "#2F5D46"); } catch (e) { }
+};
+A.setTheme = v => {
+  try { if (v === "auto") localStorage.removeItem(THEME_KEY); else localStorage.setItem(THEME_KEY, v); } catch (e) { }
+  A.applyTheme(v); A.render();
+};
+A.clearTheme = () => { try { localStorage.removeItem(THEME_KEY); } catch (e) { } A.applyTheme("auto"); };
 
 /* ---------- lingua ---------- */
 A.setLanguage = v => {
@@ -5601,6 +5682,8 @@ A.renderCollega = card => {
         const line = (okv, txt) => h("div", (okv ? "\u2705 " : "\u274c ") + txt);
         res.appendChild(h("div.note", line(true, T.tr("Ponte raggiungibile e codice corretto")), line(true, T.tr("Applicazione Enable Banking: ") + (d.name || "") + " (" + (d.environment || "") + ")"),
           line(d.environment === "PRODUCTION", T.tr("Ambiente di produzione") + (d.environment === "PRODUCTION" ? "" : T.tr(": registra l'app in PRODUCTION, non in SANDBOX"))),
+          (() => { const v = d.version || "", okv = !!v && T.verCmp(v, T.BRIDGE_VERSION) >= 0;
+            return line(okv, okv ? T.tr("Versione del ponte: {v} (aggiornata)", { v }) : T.tr("Versione del ponte: {v}. Aggiorna alla {n}: in Cloudflare incolla il nuovo ponte/worker.js e premi Deploy.", { v: v || "?", n: T.BRIDGE_VERSION })); })(),
           line(!!d.ibkr, d.ibkr ? T.tr("Interactive Brokers configurato") : T.tr("Interactive Brokers non configurato (facoltativo)")),
           line(!!d.family, d.family ? T.tr("Spazio per la famiglia pronto") : T.tr("Spazio per la famiglia assente (serve solo se vuoi condividere con un altro telefono)")),
           line(!!d.active, d.active ? T.tr("Applicazione attiva") : T.tr("Applicazione non ancora attiva: nel Control Panel usa \u00abActivate by linking accounts\u00bb")),
@@ -5800,7 +5883,7 @@ A.doReset = async keep => {
   if (F) { try { await T.famLeave(S); } catch (e) { } }
   if (!keep && !member && B.session) { try { await T.bankCall(S, "/disconnect", { session_id: B.session }); } catch (e) { } }
   const kept = keep && !member ? { url: B.url, token: B.token, country: B.country, aspsp: B.aspsp, session: B.session, validUntil: B.validUntil, accounts: B.accounts, auto: B.auto } : null;
-  await T.storage.wipe();
+  await T.storage.wipe(); A.clearTheme();
   const ns = T.newState();
   if (kept && kept.url) Object.assign(ns.bank, kept);
   A.S = ns; A.fire.key = ""; A.fire.base = null; A.wiz.step = 0;
@@ -5903,6 +5986,12 @@ A.pfPerfCard = main => {
   };
   card.appendChild(box); card.appendChild(read); draw(null);
   card.appendChild(h("div.chips.hz", { role: "group", "aria-label": T.tr("Orizzonte") }, T.PF_HORIZONS.map(([k, l]) => h("button.chip" + (k === hz ? ".on" : ""), { type: "button", onclick: () => { ui.pfHz = k; A.render(); } }, T.tr(l)))));
+  /* quanto storico c'e': aiuta a capire se la Flex Query manda tutti i giorni */
+  if (se.n) card.appendChild(h("p.small.muted#pfHist", { style: { margin: "8px 0 0" } }, se.n === 1
+    ? T.tr("Storico: 1 giorno ({d}).", { d: T.fmt.date(se.first) })
+    : T.tr("Storico: {n} giorni, dal {a} al {b}.", { n: se.n, a: T.fmt.date(se.first), b: T.fmt.date(se.last) })));
+  if (se.n && se.n < 5) card.appendChild(h("div.note#pfHistHint", { style: { marginBlockStart: "8px" } },
+    T.tr("Il report di Interactive Brokers contiene pochi giorni. Nella Flex Query imposta Period su Last 365 Calendar Days e includi la sezione Net Asset Value (NAV) in Base, poi premi Aggiorna. Lo storico cresce comunque da solo a ogni aggiornamento.")));
   card.appendChild(h("p.small.muted", { style: { margin: "8px 0 0" } }, se.twr
     ? T.tr("Il rendimento e' ponderato nel tempo (TWR): versamenti e prelievi non contano come guadagni o perdite.")
     : T.tr("Il rendimento e' calcolato sul valore del conto: se nel periodo hai versato o prelevato, aggiungi Deposits & Withdrawals alla Flex Query per toglierli.")));
@@ -6065,6 +6154,9 @@ A.renderIbkr = card => {
 (function () {
 const A = T.A;
 async function start() {
+  /* tema subito, prima di caricare i dati, cosi' lo schermo non lampeggia */
+  A.applyTheme();
+  try { if (window.matchMedia) { const mq = window.matchMedia("(prefers-color-scheme: dark)"), f = () => A.applyTheme(); if (mq.addEventListener) mq.addEventListener("change", f); else if (mq.addListener) mq.addListener(f); } } catch (e) { }
   const saved = await T.load();
   if (!saved) T.setLang(T.detectLang());
   A.S = saved || T.newState();
