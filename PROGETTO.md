@@ -1,6 +1,6 @@
 # myFinances on FIRE: documento di progetto
 
-Questo documento descrive com'e' fatta l'app e perche'. Serve a chi continua lo sviluppo, persona o assistente di programmazione: basta fornirgli questo file e la cartella del progetto.
+Questo documento descrive com'e' fatta l'app e perche'. Serve a chi continua lo sviluppo, persona o assistente di programmazione. Per GitHub Copilot ci sono anche `.github/copilot-instructions.md`, `AGENTS.md` e la cartella `conoscenza/`.
 
 ## Obiettivi e vincoli
 
@@ -30,6 +30,7 @@ src/
     07-fire.js          simulatore Monte Carlo
     12-bank.js          collegamento automatico: chiamate al ponte, conversione dei movimenti, sincronizzazione
     13-family.js        famiglia: copia condivisa cifrata (AES-GCM), unione a tre vie, creazione, ingresso, allineamento
+    15-ibkr.js          Interactive Brokers: lettura del report Flex (XML), sintesi del portafoglio, legame con il FIRE
     14-qr.js            codice QR (ISO/IEC 18004, modo byte, correzione M) disegnato in SVG
     09-demo.js          dati di esempio inventati
     10-dom.js           helper per l'interfaccia (h, foglio, toast, campi)
@@ -40,6 +41,7 @@ src/
     23-fire.js          schermata FIRE
     24-altro.js         impostazioni, import, backup, configurazione guidata
     25-collega.js       schermata del collegamento automatico, consenso, aggiornamento
+    27-portafoglio.js   schermata Portafoglio, riquadro in Home, Altro > Interactive Brokers
     26-famiglia.js      schermata Famiglia, ingresso dal QR, allineamento automatico, Ricomincia da zero
     30-main.js          avvio, service worker, installazione
   static/               manifest, service worker, icone, privacy.html (copiati in docs/)
@@ -158,6 +160,7 @@ Quando l'utente corregge un movimento con *vale anche per gli altri*, nasce una 
 - `node tests/lingue.js docs/index.html [backup.json]`: tutte le schermate in tedesco e inglese, frasi rimaste in italiano, cambio lingua dei dati, mesi e date.
 - `node tests/qr.js docs/index.html`: tabelle della norma QR (capacita', blocchi, allineamento, formato, versione) e lettura completa delle matrici generate con un decodificatore indipendente.
 - `node tests/famiglia.js docs/index.html [backup.json]`: due telefoni con l'app vera (contesti separati), ponte vero con KV simulato. Copre creazione, cifratura, QR, ingresso, modifiche incrociate e conflitti, scritture concorrenti sul ponte (409), regole, ruoli FIRE e profilo, Revolut condiviso, cambio chiave, uscita, Ricomincia da zero.
+- `node tests/portafoglio.js docs/index.html [backup.json]`: app + ponte + Interactive Brokers simulato con un report inventato (`tests/fixtures/flex-esempio.xml`): lettura, Home, schermata, ripartizioni, schede, grafico, dividendi, collegamento al FIRE, aggiornamento automatico, token scaduto, promemoria, conto in altra valuta.
 - `node tests/ponte.mjs`: ponte con Enable Banking simulato (firma JWT verificata, chiavi PKCS#8 e PKCS#1, CORS, token, percorsi rifiutati, nessun accesso ai pagamenti).
 - `node tests/collegamento.js docs/index.html [backup.json]`: app + ponte reale + banca simulata. Copre verifica, consenso, ritorno, primo aggiornamento senza doppioni con l'estratto, movimenti in sospeso, limiti dell'aggiornamento automatico, avvisi di scadenza ed errori.
 - `node tests/smoke.js docs/index.html [estratto-revolut.xlsx] [pagamenti-ubs.pdf]`: configurazione guidata, dati di esempio, tutte le schermate, settimana giorno per giorno con pannello del giorno e della settimana, scheda FIRE della Home, cursore dell'eta' e grafici FIRE da toccare, modifica movimento con regola, budget, FIRE, impostazioni, backup e ripristino, import reali facoltativi, CSV generico. Segnala anche gli errori JavaScript.
@@ -179,6 +182,16 @@ Quando l'utente corregge un movimento con *vale anche per gli altri*, nasce una 
 
 Propone il backup, permette di tenere ponte e consenso Revolut (i movimenti degli ultimi 90 giorni si riscaricano), altrimenti revoca il consenso. Scioglie la famiglia (chi l'ha creata) o ne esce (chi c'e' entrato). Cancella l'archivio, la base della famiglia, il database con il vecchio nome `traguardo` e le copie in localStorage, poi riparte dalla configurazione iniziale.
 
+## Interactive Brokers (15-ibkr.js, 27-portafoglio.js, ponte /ibkr)
+
+- **Ponte:** `POST /ibkr` usa `IBKR_TOKEN` e `IBKR_QUERY_ID` (variabili di Cloudflare). SendRequest (v=3, intestazione User-Agent) poi GetStatement fino a 6 volte ogni 3,5 secondi se il report e' in preparazione (codici 1019 e simili), restando sotto il limite di 10 richieste al minuto. Scarica solo da interactivebrokers.com e restituisce l'XML; il token non torna mai all'app. `{op:"status"}` dice se e' configurato.
+- **Lettura** (`T.parseFlex`): AccountInformation (valuta base), OpenPosition (solo riepilogo se ci sono i lotti; valori convertiti con fxRateToBase), CashReportCurrency BASE_SUMMARY (liquidita'), EquitySummaryByReportDateInBase (valore giorno per giorno), CashTransaction di tipo dividendi, sostitutivi e ritenute (netti). Piu' conti: si sommano; date yyyyMMdd o yyyy-MM-dd.
+- **Stato** `portfolio`: base, data, valore, liquidita', posizioni, storico e dividendi (si accumulano oltre l'anno del report), ultimo aggiornamento, errore, scadenza del token. Aggiornamento automatico all'apertura al massimo ogni 12 ore.
+- **FIRE:** con `fire.ibkrLink` il patrimonio investito e' `fire.investableOther` + valore del portafoglio convertito nella valuta dell'app (`T.investableNow`, usato anche dalla simulazione). Il collegamento chiede se il valore inserito a mano comprendeva gia' Interactive Brokers.
+- **Rendimento** (`T.pfSeries`, 1.8): per l'orizzonte scelto (`T.pfFrom`: 1G, 1S, 1M, 3M, 6M, YTD, 1A, tutto) parte dalla chiusura precedente all'inizio del periodo; rendimento giornaliero (V_t - F_t) / V_t-1 - 1, con F_t i versamenti e prelievi (CashTransaction Deposits/Withdrawals) avvenuti dopo il punto precedente, concatenato. Se il report non contiene versamenti o prelievi il valore e' indicato come variazione del valore. Grafico `T.perfChart` (valore o %, tratti e aree verdi sopra la partenza e rosse sotto).
+- **Posizione:** il portafoglio e' nella voce FIRE (`A.ui.fireTab`); la vista "portafoglio" porta li'.
+- **Famiglia:** il portafoglio fa parte della copia condivisa; vince l'ultimo scaricato, storico e dividendi si uniscono.
+
 ## Schermata Spese (1.6)
 
 - **Periodo** (`A.period`): da inizio anno, da inizio mese, mese precedente, personalizzato (`ui.from`, `ui.to`). Si conta dal primo movimento importato; se i dati sono indietro di piu' di 3 giorni ci si ferma all'ultimo movimento e compare un avviso.
@@ -199,19 +212,8 @@ Una volta sola (`meta.v14`): la soglia di probabilita' passa da 85% a 90% se era
 - **Medie mensili** calcolate sui giorni coperti dai dati (giorni / 30,44).
 - **Un solo stato per dispositivo.** Per usare l'app in due si passa il backup; la sincronizzazione vera e' nella roadmap.
 
-## Roadmap possibile
+## Roadmap e app nativa
 
-1. Condivisione diretta dall'app della banca a myFinances on FIRE (Web Share Target).
-2. Sincronizzazione tra due telefoni tramite un file su un cloud personale scelto dall'utente.
-3. Collegamento automatico anche per altre banche europee (il ponte e' gia' generico; serve la scelta della banca nell'app).
-4. Altre lingue (francese per la Svizzera romanda): basta un nuovo blocco nel dizionario.
-5. Simulatore: rendite con indicizzazione parziale, imposte sulle sole plusvalenze, ritiro del 2 pilastro a eta' variabile.
-
-## Pubblicare sul Play Store
-
-1. Pubblica `docs/` su un dominio https (GitHub Pages va bene).
-2. Su pwabuilder.com inserisci l'indirizzo e genera il pacchetto Android (Trusted Web Activity).
-3. Copia il file `assetlinks.json` generato in `docs/.well-known/` e ripubblica: serve a Google per verificare che app e sito sono tuoi.
-4. Crea un account sviluppatore Google Play (25 dollari una tantum) e carica il pacchetto.
-5. Come informativa privacy indica l'indirizzo di `privacy.html`. Nel modulo *Sicurezza dei dati* dichiara che l'app non raccoglie ne' condivide dati.
-6. Prima di pubblicare verifica che il nome sia libero e scegli una licenza per il codice.
+- Idee, richieste aperte e debito tecnico: [conoscenza/07-backlog.md](conoscenza/07-backlog.md).
+- Passaggio ad app nativa (opzioni, raccomandazione Capacitor, piano a tappe, Play Store): [conoscenza/06-app-nativa.md](conoscenza/06-app-nativa.md).
+- Storia delle versioni, decisioni, integrazioni e trappole: [conoscenza/](conoscenza/README.md).

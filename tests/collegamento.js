@@ -40,7 +40,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? "OK   " : "FAIL ") + m); 
   eval(js); await wait(300);
   /* dati reali di partenza */
   if (backupPath) { const b = fs.readFileSync(backupPath); const st = T.readBackup(JSON.parse(b)); st.profile.onboarded = true; T.A.S = st; await T.save(st, true); }
-  else { T.A.S = T.makeDemoState(); }
+  else { T.setLang("it"); T.A.S = T.makeDemoState(); Object.assign(T.A.S.profile, { lang: "it", demo: false }); await T.save(T.A.S, true); }
   const S = T.A.S;
   const base = S.txs.filter(t => /^revolut/.test(t.src) && t.flow === "spesa" && t.d >= "2026-10-04");
   for (const t of base) { const uid = t.cur === "EUR" ? U2 : t.cur === "CHF" ? U1 : null; if (!uid) continue;
@@ -79,7 +79,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? "OK   " : "FAIL ") + m); 
   /* secondo giro: il sospeso diventa definitivo */
   round = 2; S.bank.lastSync = null;
   await T.A.syncNow(true); await wait(300);
-  ok(S.bank.lastResult.added === 0 && S.bank.lastResult.pending === 0 && S.txs.filter(t => t.desc === "Bar Centrale").length === 1, "secondo aggiornamento: in sospeso diventato definitivo, nessun doppione");
+  ok(S.bank.lastResult.added === 0 && S.bank.lastResult.pending === 0 && S.txs.filter(t => t.desc === "Bar Centrale" && t.src === "revolut-api").length === 1, "secondo aggiornamento: in sospeso diventato definitivo, nessun doppione");
   /* aggiornamento automatico non ripetuto entro 4 ore */
   const n0 = ebCalls; T.A.autoSync(); await wait(200);
   ok(ebCalls === n0, "aggiornamento automatico limitato (non piu' di uno ogni 4 ore)");

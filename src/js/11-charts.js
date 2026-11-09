@@ -186,4 +186,66 @@ T.dayChart = (host, days, opt) => {
   if (opt.cap) { const y = Y(opt.cap); T.s("line", { x1: L, x2: w - R, y1: y, y2: y, stroke: "var(--accent2)", "stroke-dasharray": "5 4", "stroke-width": 1.5 }, s); }
   return s;
 };
+/* portafoglio nel tempo: valore o rendimento %, verde sopra la partenza e rosso sotto; tocca per leggere un giorno */
+T.perfChart = (host, pts, opt) => {
+  opt = opt || {};
+  const pctMode = opt.mode === "rend";
+  const w = W(host), h = opt.h || 210, L = pctMode ? 46 : 50, R = 10, Tp = 12, B = 24, iw = w - L - R, ih = h - Tp - B;
+  const s = svgBox(w, h, opt.label || T.tr("valore nel tempo"));
+  if (pts.length < 2) { txt(s, w / 2, h / 2, T.tr("Servono almeno due giorni di dati"), { "text-anchor": "middle" }); return s; }
+  const val = p => pctMode ? p.r * 100 : p.v, base = pctMode ? 0 : pts[0].v;
+  const t0 = T.parseIso(pts[0].d).getTime(), t1 = T.parseIso(pts[pts.length - 1].d).getTime();
+  let lo = Math.min(base, ...pts.map(val)), hi = Math.max(base, ...pts.map(val));
+  const pad = hi - lo > 0 ? (hi - lo) * 0.06 : Math.max(Math.abs(hi) * 0.001, pctMode ? 0.1 : 1); lo -= pad; hi += pad;
+  const step = nice((hi - lo) / 4), y0 = Math.floor(lo / step) * step, y1 = Math.ceil(hi / step) * step;
+  const X = d => L + (T.parseIso(d).getTime() - t0) / Math.max(1, t1 - t0) * iw, Y = v => Tp + ih - (v - y0) / Math.max(1e-9, y1 - y0) * ih;
+  const fine = pctMode ? step < 1 : step < 10000;
+  const lab = v => pctMode ? (v > 0 ? "+" : v < 0 ? "\u2212" : "") + (fine ? T.fmt.n1(Math.abs(v)) : T.fmt.n0(Math.abs(v))) + "%" : fine ? T.fmt.n0(v) : T.fmt.k(v);
+  for (let v = y0; v <= y1 + 1e-9; v += step) { T.s("line", { x1: L, x2: w - R, y1: Y(v), y2: Y(v), stroke: "var(--line)", "stroke-dasharray": "2 3" }, s); txt(s, L - 6, Y(v) + 4, lab(Math.abs(v) < step / 1e6 ? 0 : v), { "text-anchor": "end" }); }
+  /* linea di partenza (0% o valore iniziale) */
+  T.s("line", { x1: L, x2: w - R, y1: Y(base), y2: Y(base), stroke: "var(--muted)", "stroke-width": 1, opacity: 0.6 }, s);
+  /* al massimo un punto ogni 2 pixel */
+  const every = Math.max(1, Math.ceil(pts.length / (iw / 2))), draw = pts.filter((p, i) => i % every === 0 || i === pts.length - 1);
+  /* tratti verdi sopra la partenza, rossi sotto (con il punto d'incrocio), ognuno con la sua area */
+  let seg = [], segUp = null; const segs = [];
+  const flush = () => { if (seg.length > 1) segs.push({ up: segUp, pts: seg }); };
+  for (let i = 0; i < draw.length; i++) {
+    const p = draw[i], x = X(p.d), y = Y(val(p)), u = val(p) >= base;
+    if (segUp === null) { segUp = u; seg = [[x, y]]; continue; }
+    if (u !== segUp) {
+      const q = draw[i - 1], v0 = val(q), v1 = val(p), k = (base - v0) / ((v1 - v0) || 1e-9), xc = X(q.d) + (x - X(q.d)) * k, yc = Y(base);
+      seg.push([xc, yc]); flush(); seg = [[xc, yc], [x, y]]; segUp = u;
+    } else seg.push([x, y]);
+  }
+  flush();
+  const yb = Y(base).toFixed(1), P2 = q => q[0].toFixed(1) + "," + q[1].toFixed(1);
+  for (const g of segs) T.s("path", { d: "M" + g.pts[0][0].toFixed(1) + "," + yb + " L" + g.pts.map(P2).join(" L") + " L" + g.pts[g.pts.length - 1][0].toFixed(1) + "," + yb + "Z", fill: g.up ? "var(--fan1)" : "rgba(185,83,47,.13)" }, s);
+  for (const g of segs) T.s("polyline", { points: g.pts.map(P2).join(" "), fill: "none", stroke: g.up ? "var(--ok)" : "var(--bad)", "stroke-width": 2.2, "stroke-linejoin": "round", "stroke-linecap": "round" }, s);
+  if (pts.length <= 12) for (const p of pts) T.s("circle", { cx: X(p.d).toFixed(1), cy: Y(val(p)).toFixed(1), r: 3, fill: val(p) >= base ? "var(--ok)" : "var(--bad)" }, s);
+  /* etichette dell'asse del tempo secondo la durata */
+  const span = (t1 - t0) / 864e5, ticks = [];
+  if (span <= 10) pts.forEach(p => ticks.push({ d: p.d, l: T.fmt.dateShort(p.d) }));
+  else if (span <= 100) { for (let d = pts[0].d; d <= pts[pts.length - 1].d; d = T.addDays(d, Math.max(7, Math.round(span / 5)))) ticks.push({ d, l: T.fmt.dateShort(d) }); }
+  else if (span <= 800) { let mk = null; for (const p of pts) if (p.d.slice(0, 7) !== mk) { mk = p.d.slice(0, 7); ticks.push({ d: p.d, l: T.fmt.monthShort(mk) }); } }
+  else { let yk = null; for (const p of pts) if (p.d.slice(0, 4) !== yk) { yk = p.d.slice(0, 4); ticks.push({ d: p.d, l: yk }); } }
+  const te = Math.max(1, Math.ceil(ticks.length / 6));
+  ticks.forEach((t, i) => { const x = X(t.d); if (i % te !== 0) return;
+    if (span <= 10) txt(s, x, h - 7, t.l, { "text-anchor": x < L + 24 ? "start" : x > w - R - 24 ? "end" : "middle" });
+    else if (x > L + 8 && x < w - R - 14) txt(s, x, h - 7, t.l, { "text-anchor": "middle" }); });
+  if (opt.pick) {
+    const p = opt.pick, x = X(p.d), y = Y(val(p));
+    T.s("line", { x1: x, x2: x, y1: Tp, y2: Tp + ih, stroke: "var(--ink)", "stroke-width": 1.2, "stroke-dasharray": "3 3" }, s);
+    T.s("circle", { cx: x, cy: y, r: 5, fill: val(p) >= base ? "var(--ok)" : "var(--bad)", stroke: "var(--card)", "stroke-width": 2 }, s);
+  }
+  if (opt.onPick) {
+    const hit = T.s("rect", { x: L, y: Tp, width: iw, height: ih, fill: "transparent", style: "cursor:pointer", class: "hit" }, s);
+    hit.addEventListener("click", e => {
+      const r = s.getBoundingClientRect(), vx = (e.clientX - r.left) / Math.max(1, r.width) * w, t = t0 + (vx - L) / iw * (t1 - t0);
+      let best = pts[0], bd = Infinity; for (const p of pts) { const dd = Math.abs(T.parseIso(p.d).getTime() - t); if (dd < bd) { bd = dd; best = p; } }
+      opt.onPick(best);
+    });
+  }
+  return s;
+};
+
 })();

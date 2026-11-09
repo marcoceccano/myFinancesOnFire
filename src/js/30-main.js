@@ -15,7 +15,7 @@ async function start() {
     if (document.visibilityState !== "visible") return;
     try { const s = await T.load(); if (s && s.meta.lastSaved && (!A.S.meta.lastSaved || s.meta.lastSaved > A.S.meta.lastSaved)) { A.S = s; A.fire.key = ""; A.render(); } } catch (e) { }
     /* famiglia: prima si allinea (cosi' si sa se l'altro telefono ha gia' scaricato da Revolut), poi Revolut */
-    if (A.inFamily()) A.famSync(true).then(() => A.autoSync()); else A.autoSync();
+    if (A.inFamily()) A.famSync(true).then(() => { A.autoSync(); A.pfAutoSync(); }); else { A.autoSync(); A.pfAutoSync(); }
   });
   T.$("sheet").addEventListener("click", e => { if (e.target === T.$("sheet")) T.closeSheet(); });
   document.addEventListener("keydown", e => { if (e.key === "Escape") T.closeSheet(); });
@@ -39,8 +39,8 @@ async function start() {
   let qs = null; try { qs = new URLSearchParams(location.search); } catch (e) { }
   if (qs && (qs.has("code") || qs.has("error"))) { try { history.replaceState(null, "", location.pathname); } catch (e) { } await A.finishConnect(qs); }
   else if (A.checkJoinLink()) { /* ingresso nella famiglia dal QR */ }
-  else if (A.inFamily()) A.famSync(true).then(() => A.autoSync());
-  else A.autoSync();
+  else if (A.inFamily()) A.famSync(true).then(() => { A.autoSync(); A.pfAutoSync(); });
+  else { A.autoSync(); A.pfAutoSync(); }
   /* con l'app aperta, ogni 3 minuti guarda se ci sono modifiche dagli altri telefoni */
   const iv = setInterval(() => { if (A.inFamily() && document.visibilityState === "visible") A.famSync(true); }, 180000);
   if (iv && iv.unref) iv.unref();

@@ -46,7 +46,7 @@ T.firePrepare = (st, override) => {
     let k = 0;
     while (k < years) { const st0 = Math.floor(rand() * series.length); for (let j = 0; j < L && k < years; j++, k++) { const re = (1 + series[(st0 + j) % series.length]) / (1 + infl) - 1; R[s * years + k] = eq * re + (1 - eq) * safeReal; } }
   }
-  const W0 = (+f.investable || 0) + (+f.cash || 0);
+  const W0 = T.investableNow(Object.assign({}, st, { fire: f })) + (+f.cash || 0);
   const pensions = (f.pensions || []).filter(p => +p.monthly > 0), lumps = (f.lumps || []).filter(l => +l.amount);
   const tax = T.clamp(+f.taxRate || 0, 0, 0.6), g = +f.savingGrowth || 0;
   /* tabelle per anno: pensioni, capitali in arrivo, risparmio */

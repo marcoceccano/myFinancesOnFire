@@ -21,7 +21,7 @@ const ITALIAN = /\b(spese|movimenti|importa|aggiorna|settimana|giorni|risparmio|
   ok(T.LANG === "en" && /Welcome/.test(txt($("view"))) && T.A.S.categories[0].name === "Groceries", "cambio lingua dalla schermata di benvenuto, categorie rinominate");
   /* dati di Marco */
   if (backupPath) { const st = T.readBackup(JSON.parse(fs.readFileSync(backupPath))); st.profile.onboarded = true; T.A.S = st; }
-  else { T.A.S = T.makeDemoState(); }
+  else { T.setLang("it"); T.A.S = T.makeDemoState(); T.A.S.profile.lang = "it"; }
   const S = T.A.S;
   ok((S.profile.lang || "it") === "it", "i dati esistenti restano in italiano finche' non cambi lingua");
   for (const L of ["de", "en", "it"]) {
@@ -29,12 +29,19 @@ const ITALIAN = /\b(spese|movimenti|importa|aggiorna|settimana|giorni|risparmio|
     T.A.setLanguage(L); await wait(50);
     const seen = [];
     for (const v of ["home", "spese", "budget", "fire", "altro"]) { T.A.go(v); await wait(1300); seen.push(txt($("view"))); }
-    for (const sub of ["collega", "famiglia", "profilo", "fissi", "categorie", "regole", "vacanze", "storico", "backup", "info"]) { T.A.go("altro", sub); await wait(80); seen.push(txt($("view"))); }
+    for (const sub of ["collega", "famiglia", "ibkr", "profilo", "fissi", "categorie", "regole", "vacanze", "storico", "backup", "info"]) { T.A.go("altro", sub); await wait(80); seen.push(txt($("view"))); }
     /* fogli */
     T.A.go("spese"); await wait(600);
     const li = $("view").querySelectorAll("div.li.tap").find(x => /\d{2}[./]\d{2}[./]\d{4}/.test(txt(x))); if (li) { li.dispatch("click"); await wait(80); seen.push(txt($("sheetBody"))); T.closeSheet(); }
     const csv = "Data;Descrizione;Addebito;Accredito\n01.10.2026;Migros;45,20;\n";
     await T.A.importFile({ name: "c.csv", buf: new TextEncoder().encode(csv).buffer }); await wait(100); seen.push(txt($("sheetBody"))); T.closeSheet();
+    /* 1.7: portafoglio (dati di esempio), schede e ripartizioni */
+    { const keep = S.portfolio; S.portfolio = T.demoPortfolio(); T.A.go("portafoglio"); await wait(100); seen.push(txt($("view")));
+      for (const by of ["tipo", "valuta"]) { T.A.ui.pfBy = by; T.A.render(); await wait(50); seen.push(txt($("pfAlloc"))); }
+      T.A.ui.pfBy = "titolo"; T.A.ui.pfMode = "rend"; T.A.ui.pfHz = "YTD"; T.A.render(); await wait(50); seen.push(txt($("pfPerf"))); T.A.ui.pfMode = "valore"; T.A.ui.pfHz = "1G"; T.A.render(); await wait(50); seen.push(txt($("pfPerf")));
+      $("pfPos").querySelectorAll("div.li.tap")[0].dispatch("click"); await wait(50); seen.push(txt($("sheetBody"))); T.closeSheet();
+      T.A.pfLinkFlow(); await wait(50); seen.push(txt($("sheetBody"))); T.closeSheet();
+      T.A.go("home"); await wait(1300); seen.push(txt($("view"))); S.portfolio = keep; }
     /* 1.5: foglio di Ricomincia da zero */
     T.A.go("altro"); await wait(80); T.A.resetFlow(); await wait(50); seen.push(txt($("sheetBody"))); T.closeSheet();
     /* 1.4: pannello del giorno, della settimana, simulatore con eta' scelta */
@@ -54,9 +61,9 @@ const ITALIAN = /\b(spese|movimenti|importa|aggiorna|settimana|giorni|risparmio|
     if (L !== "it") {
       const done = new Set(Object.values(T.DICT[L]));
       const isData = x => S.txs.some(t => t.desc === x || t.note === x) || S.rules.some(r => r.m === x) || S.categories.some(c => c.name === x) || S.fixed.some(f => f.name === x || f.payee === x);
-      const misses = [...T._miss].filter(x => !done.has(x) && !isData(x) && ITALIAN.test(x.replace(/GUIDA-COLLEGAMENTO-REVOLUT\.md/g, "")));
+      const misses = [...T._miss].filter(x => !done.has(x) && !isData(x) && ITALIAN.test(x.replace(/GUIDA-[A-Z-]+(\.md)?/g, "")));
       ok(misses.length === 0, L + ": nessun testo italiano senza traduzione" + (misses.length ? " -> " + JSON.stringify(misses.slice(0, 12)) : ""));
-      const hits = all.split(/[.!?\n]/).filter(s => ITALIAN.test(s)).map(s => s.trim()).filter(s => !/Revolut|UBS|GUIDA-COLLEGAMENTO/.test(s) || ITALIAN.test(s.replace(/GUIDA-COLLEGAMENTO-REVOLUT\.md/g, "")));
+      const hits = all.split(/[.!?\n]/).filter(s => ITALIAN.test(s)).map(s => s.trim()).filter(s => !/Revolut|UBS|GUIDA-COLLEGAMENTO/.test(s) || ITALIAN.test(s.replace(/GUIDA-[A-Z-]+(\.md)?/g, "")));
       const real = hits.filter(s => !S.categories.some(c => s.includes(c.name)) && !S.txs.some(t => s.includes(t.desc)));
       ok(real.length === 0, L + ": schermate senza frasi italiane" + (real.length ? " -> " + JSON.stringify(real.slice(0, 8)) : ""));
     }

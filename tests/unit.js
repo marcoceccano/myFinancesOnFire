@@ -1,7 +1,7 @@
 /* Test dei moduli di calcolo, senza interfaccia. Uso: node tests/unit.js */
 "use strict";
 const fs = require("fs"), path = require("path"), D = path.join(__dirname, "..", "src", "js");
-for (const f of ["00-util", "03-dict", "03-i18n", "08-market", "01-store", "02-files", "04-importers", "05-categorize", "06-stats", "07-fire", "12-bank", "09-demo"]) require(path.join(D, f + ".js"));
+for (const f of ["00-util", "03-dict", "03-i18n", "08-market", "01-store", "02-files", "04-importers", "05-categorize", "06-stats", "07-fire", "12-bank", "15-ibkr", "09-demo"]) require(path.join(D, f + ".js"));
 let fails = 0; const eq = (a, b, m) => { const ok = JSON.stringify(a) === JSON.stringify(b); console.log((ok ? "OK   " : "FAIL ") + m + (ok ? "" : " -> " + JSON.stringify(a) + " invece di " + JSON.stringify(b))); if (!ok) fails++; };
 const fx = p => fs.readFileSync(path.join(__dirname, "fixtures", p), "utf8");
 eq(["1 gen 2026", "31.12.2025", "2026-03-04 10:22:11", "Jan 5, 2026", "15 ott 2026"].map(s => T.parseDate(s)), ["2026-01-01", "2025-12-31", "2026-03-04", "2026-01-05", "2026-10-15"], "date in vari formati");
@@ -29,7 +29,7 @@ eq(g[0].desc, "Affitto \u00b7 Immobiliare Esempio SA", "CSV banca: descrizioni u
 T.addUserRule(st, "Coop", "spesa", "casa"); T.reclassifyAll(st);
 eq(by("Coop").cat, "casa", "regola utente");
 /* pagamenti UBS dal testo */
-const pays = T.parseUbsPayments(["Pagamenti registrati", "02.11.2026\tImmobiliare Esempio SA\tCH3200247247242634400\tCHF 2'150.00", "Completamente vistato CH10 3000", "pigione mensile"]);
+const pays = T.parseUbsPayments(["Pagamenti registrati", "02.11.2026\tImmobiliare Esempio SA\tCH0000000000000000000\tCHF 2'150.00", "Completamente vistato CH10 3000", "pigione mensile"]);
 eq([pays[0].amount, pays[0].payee, T.suggestFixed(pays[0]).name], [2150, "Immobiliare Esempio SA", "Affitto"], "PDF UBS: riga di pagamento");
 /* demo, statistiche, FIRE */
 const demo = T.makeDemoState(), pic = T.picture(demo);
@@ -65,5 +65,24 @@ process.exitCode = fails ? 1 : 0;
   process.exitCode = fails ? 1 : 0;
 })();
 /* la tastiera del telefono (solo altezza) non deve ridisegnare la schermata */
+/* report Flex di Interactive Brokers */
+{ const xml = fs.readFileSync(path.join(__dirname, "fixtures", "flex-esempio.xml"), "utf8"), r = T.parseFlex(xml);
+  eq(r.positions.length, 6, "Flex: posizioni lette");
+  eq(r.base + " " + r.date + " " + Math.round(r.nav), "CHF 2026-11-05 378776", "Flex: valuta, data e valore");
+  eq(T.round2(T.sum(r.divs.map(d => d.amt))), T.round2(41.5 * 0.7985 * 0.85 * 2 + 45.5 * 0.7985 * 0.85 * 2 + 312.8), "Flex: dividendi netti dopo le ritenute");
+  eq(T.flexDate("20261105;061502") + " " + T.flexDate("2026-11-05") + " " + T.flexDate("11/05/2026"), "2026-11-05 2026-11-05 2026-11-05", "Flex: formati delle date");
+  let err = ""; try { T.parseFlex("<FlexStatementResponse><Status>Fail</Status><ErrorCode>1012</ErrorCode></FlexStatementResponse>"); } catch (e) { err = e.message; }
+  eq(/scaduto/.test(err), true, "Flex: errore di token scaduto spiegato");
+  const lots = xml.replace(/levelOfDetail="SUMMARY" \/>/, 'levelOfDetail="SUMMARY" />\n<OpenPosition symbol="VWRA" currency="USD" fxRateToBase="0.7985" position="10" markPrice="145.2" positionValue="1452" levelOfDetail="LOT" />');
+  eq(T.parseFlex(lots).positions.length, 6, "Flex: con i lotti conta solo il riepilogo");
+  const m = T.pfMerge({ history: [{ d: "2025-01-02", v: 1 }], divs: [{ key: "old", d: "2025-01-05", amt: 3 }] }, r);
+  eq(m.history[0].d === "2025-01-02" && m.history.length === r.history.length + 1 && m.divs.length === r.divs.length + 1, true, "Flex: storico e dividendi si accumulano oltre l'anno");
+  const Q = { history: [{ d: "2026-01-02", v: 100 }, { d: "2026-01-05", v: 110 }, { d: "2026-01-07", v: 210 }], flows: [{ d: "2026-01-06", amt: 100, key: "a" }], hasFlows: true };
+  eq(T.round2(T.pfSeries(Q, "ALL").ret * 100), 10, "rendimento ponderato nel tempo: un versamento non e' un guadagno");
+  eq(T.round2(T.pfSeries(Object.assign({}, Q, { hasFlows: false }), "ALL").ret * 100), 110, "senza versamenti noti: variazione del valore");
+  eq(T.pfFrom(Q, "1G") + " " + T.pfFrom(Q, "YTD") + " " + T.pfFrom(Q, "ALL"), "2026-01-05 2025-12-31 2026-01-02", "orizzonti: 1 giorno, da inizio anno, tutto");
+  const st = T.makeDemoState(); st.fire.investable = 200000; st.fire.ibkrLink = true; st.fire.investableOther = 50000;
+  eq(Math.round(T.investableNow(st)), Math.round(50000 + st.portfolio.nav), "FIRE: patrimonio = altri investimenti + portafoglio");
+}
 { const src = fs.readFileSync(path.join(D, "30-main.js"), "utf8");
   eq(/if \(w === lastW\) return;/.test(src) && /INPUT\|TEXTAREA\|SELECT/.test(src), true, "la tastiera non chiude i campi di testo"); }

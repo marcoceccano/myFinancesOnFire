@@ -129,6 +129,9 @@ const wait = ms => new Promise(r => setTimeout(r, ms || 60));
   M.A.go("fire"); await wait(1500);
   ok(!M.$("view").querySelector("fieldset.plain"), "Marco: parametri del FIRE modificabili");
 
+  /* --- portafoglio: lo scarica un telefono, lo vede anche l'altro --- */
+  S.portfolio = M.T.demoPortfolio(); M.A.save(); await sync(M); await sync(D);
+  ok(DS().portfolio && DS().portfolio.nav === S.portfolio.nav && DS().portfolio.positions.length === S.portfolio.positions.length, "portafoglio di Marco visibile anche a Debora");
   /* --- Revolut: scarica un telefono, l'altro riceve --- */
   EB_TX.push({ transaction_id: "fam-1", transaction_amount: { currency: "CHF", amount: "58.40" }, credit_debit_indicator: "DBIT", transaction_date: "2026-11-04", creditor: { name: "Migros Lugano" }, merchant_category_code: "5411" });
   S.bank.lastSync = null; await M.A.syncNow(true); await wait(100); await sync(M); await sync(D);

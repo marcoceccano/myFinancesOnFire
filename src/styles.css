@@ -177,3 +177,11 @@ ol.steps li{margin-block:3px}
 .seg.g2{display:grid;grid-template-columns:1fr 1fr;border-radius:18px}
 .seg.g2 button{border-radius:14px}
 input[type=date]{inline-size:100%;min-block-size:44px;border:1px solid var(--line);border-radius:14px;background:var(--card);padding:8px 12px}
+/* 1.8: portafoglio nel tempo */
+.seg.mini{flex:none}
+.seg.mini button{min-block-size:34px;padding-inline:12px;font-size:13px;flex:none}
+.pf-ret{display:flex;align-items:center;gap:10px;margin-block:10px 4px}
+.pf-ret .arrow{font-size:30px;line-height:1;font-weight:700}
+.chips.hz{justify-content:center;margin-block-start:8px}
+.chips.hz .chip{min-inline-size:44px;text-align:center;padding-inline:10px}
+.readout .ok,.readout .bad{font-weight:700}

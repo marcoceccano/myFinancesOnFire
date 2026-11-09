@@ -119,6 +119,7 @@ A.renderCollega = card => {
         const line = (okv, txt) => h("div", (okv ? "\u2705 " : "\u274c ") + txt);
         res.appendChild(h("div.note", line(true, T.tr("Ponte raggiungibile e codice corretto")), line(true, T.tr("Applicazione Enable Banking: ") + (d.name || "") + " (" + (d.environment || "") + ")"),
           line(d.environment === "PRODUCTION", T.tr("Ambiente di produzione") + (d.environment === "PRODUCTION" ? "" : T.tr(": registra l'app in PRODUCTION, non in SANDBOX"))),
+          line(!!d.ibkr, d.ibkr ? T.tr("Interactive Brokers configurato") : T.tr("Interactive Brokers non configurato (facoltativo)")),
           line(!!d.family, d.family ? T.tr("Spazio per la famiglia pronto") : T.tr("Spazio per la famiglia assente (serve solo se vuoi condividere con un altro telefono)")),
           line(!!d.active, d.active ? T.tr("Applicazione attiva") : T.tr("Applicazione non ancora attiva: nel Control Panel usa \u00abActivate by linking accounts\u00bb")),
           line(!!d.redirect_ok && d.redirect_url === url, d.redirect_ok && d.redirect_url === url ? T.tr("Indirizzo di ritorno corretto") : T.tr("Indirizzo di ritorno: nel ponte c'e' \u00ab") + (d.redirect_url || "") + T.tr("\u00bb, l'app e' su \u00ab") + url + T.tr("\u00bb e su Enable Banking deve esserci lo stesso indirizzo"))));

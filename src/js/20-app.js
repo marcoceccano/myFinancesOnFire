@@ -42,18 +42,18 @@ A.render = () => {
   T.$("btnImport").setAttribute("aria-label", T.tr("Importa un estratto conto"));
   if (T.$("btnSync")) T.$("btnSync").setAttribute("aria-label", T.tr("Aggiorna da Revolut"));
   const cov = T.coverage(S);
-  T.$("title").textContent = onb ? T.APP.name : ({ home: T.APP.name, spese: T.tr("Spese"), budget: "Budget", fire: T.tr("Obiettivo FIRE"), altro: T.tr("Altro~menu") })[A.view];
+  T.$("title").textContent = onb ? T.APP.name : ({ home: T.APP.name, spese: T.tr("Spese"), budget: "Budget", fire: T.tr("Obiettivo FIRE"), altro: T.tr("Altro~menu"), portafoglio: T.tr("Portafoglio") })[A.view];
   T.$("subtitle").textContent = onb ? T.tr("Configurazione iniziale") : S.profile.demo ? T.tr("Dati di esempio · ") + (cov ? T.tr("fino al ") + T.fmt.date(cov.to) : "") : T.bankConnected(S) ? (A._syncing ? T.tr("Aggiornamento da Revolut...") : T.tr("Revolut aggiornato ") + A.relTime(S.bank.lastSync)) : cov ? T.tr("Dati fino al ") + T.fmt.date(cov.to) : T.tr("Nessun movimento importato");
   T.$("btnImport").hidden = onb;
   A.renderBar();
   if (onb) return A.renderOnboarding(main);
-  const fn = { home: A.renderHome, spese: A.renderSpese, budget: A.renderBudget, fire: A.renderFire, altro: A.renderAltro }[A.view] || A.renderHome;
+  const fn = { home: A.renderHome, spese: A.renderSpese, budget: A.renderBudget, fire: A.renderFire, altro: A.renderAltro, portafoglio: m => { A.view = "fire"; A.ui.fireTab = "portafoglio"; A.renderBar(); A.renderFire(m); } }[A.view] || A.renderHome;
   fn(main);
   if (y > 0 && window.scrollTo) window.scrollTo(0, y);
 };
 
 /* ---------- risultati FIRE, calcolati in differita e messi in cache ---------- */
-A.fireKey = (extra) => JSON.stringify([Object.assign({}, A.S.fire, { retireAge: null }), A.S.fixed, A.S.categories.map(c => c.budget), A.S.budget, A.S.profile.incomeMonthly, A.S.txs.length, extra || ""]);
+A.fireKey = (extra) => JSON.stringify([Object.assign({}, A.S.fire, { retireAge: null }), T.investableNow(A.S), A.S.fixed, A.S.categories.map(c => c.budget), A.S.budget, A.S.profile.incomeMonthly, A.S.txs.length, extra || ""]);
 /* la curva (tutte le eta') si calcola in differita una volta; il dettaglio per l'eta' scelta al volo */
 A.fireResult = cb => {
   const key = A.fireKey();
@@ -171,6 +171,8 @@ A.renderHome = main => {
           h("span", { style: { color: diff > 0 ? "var(--bad)" : "var(--ok)", fontWeight: 700 } }, diff > 0 ? T.tr("{v} di troppo", { v: A.money(diff) }) : T.tr("{v} ancora disponibili", { v: A.money(-diff) })), ")."); })(),
       h("div.kpis", { style: { marginBlockStart: "12px" } }, T.kpi(T.tr("Costi fissi"), A.money(pic.now.fixed), T.tr("al mese")), T.kpi(T.tr("Tasso di risparmio"), pic.rateNow == null ? "-" : T.fmt.pct(pic.rateNow), pic.income ? T.tr("su ") + A.money(pic.income) + T.tr(" netti") : T.tr("inserisci il reddito")))));
   }
+  /* portafoglio (Interactive Brokers) */
+  A.pfHomeCard(main);
   /* FIRE: tutta la scheda porta al simulatore */
   const goFire = () => A.go("fire");
   const fc = h("div.card.tapcard#fireCard", { role: "button", tabindex: "0", "aria-label": T.tr("Apri il simulatore"), onclick: goFire, onkeydown: e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); goFire(); } } },
@@ -195,6 +197,7 @@ A.renderHome = main => {
   else if (T.bankConnected(S) && left != null && left < 14) tips.push(h("div.li.tap", { onclick: () => A.startConnect() }, h("div.grow", h("div.t", T.tr("Rinnova il collegamento Revolut")), h("div.d", T.tr("Scade tra ") + left + T.tr(" giorni, il ") + T.fmt.date(B.validUntil.slice(0, 10)) + T.tr(". Bastano due tocchi nell'app Revolut."))), h("span.pill.warn", T.tr("Presto"))));
   else if (T.bankConnected(S) && B.lastError) tips.push(h("div.li.tap", { onclick: () => A.go("altro", "collega") }, h("div.grow", h("div.t", T.tr("Aggiornamento Revolut non riuscito")), h("div.d", B.lastError))));
   else if (!T.bankConnected(S) && B.url) tips.push(h("div.li.tap", { onclick: () => A.go("altro", "collega") }, h("div.grow", h("div.t", T.tr("Completa il collegamento Revolut")), h("div.d", T.tr("Manca il consenso nell'app Revolut")))));
+  { const P = S.portfolio; if (P && P.tokenUntil) { const dl = T.daysBetween(T.today(), P.tokenUntil); if (dl <= 14) tips.push(h("div.li.tap", { onclick: () => A.go("altro", "ibkr") }, h("div.grow", h("div.t", dl < 0 ? T.tr("Il token di Interactive Brokers e' scaduto") : T.tr("Il token di Interactive Brokers scade tra {n} giorni", { n: dl })), h("div.d", T.tr("Generane uno nuovo e aggiornalo nel ponte (IBKR_TOKEN)"))))); } }
   if (S.family && S.family.gone) tips.push(h("div.li.tap", { onclick: () => A.go("altro", "famiglia") }, h("div.grow", h("div.t", T.tr("La famiglia non e' piu' raggiungibile")), h("div.d", T.tr("Chiedi un QR nuovo oppure esci dalla famiglia")))));
   if (S.txs.length && (!S.meta.lastBackup || T.daysBetween(S.meta.lastBackup.slice(0, 10), T.today()) > 30)) tips.push(h("div.li.tap", { onclick: () => A.exportBackup() }, h("div.grow", h("div.t", T.tr("Fai un backup")), h("div.d", S.meta.lastBackup ? T.tr("Ultimo il ") + T.fmt.date(S.meta.lastBackup.slice(0, 10)) : T.tr("Non ne hai ancora fatto uno. I dati sono solo su questo telefono."))), h("span.pill.warn", T.tr("Consigliato"))));
   if (!pic.income) tips.push(h("div.li.tap", { onclick: () => A.go("altro", "profilo") }, h("div.grow", h("div.t", T.tr("Inserisci il reddito netto mensile")), h("div.d", T.tr("Serve per il tasso di risparmio e per il FIRE")))));

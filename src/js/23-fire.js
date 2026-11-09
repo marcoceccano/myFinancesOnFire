@@ -5,6 +5,12 @@ const h = T.h, A = T.A;
 
 A.renderFire = main => {
   const S = A.S, F = S.fire;
+  /* in cima: simulatore o portafoglio */
+  const tab = A.ui.fireTab || "sim";
+  const tabs = T.seg([["sim", T.tr("Simulatore")], ["portafoglio", T.tr("Portafoglio")]], tab, v => { A.ui.fireTab = v; A._toTop = true; A.render(); });
+  tabs.id = "fireTabs"; tabs.style.marginBlockEnd = "12px";
+  main.appendChild(tabs);
+  if (tab === "portafoglio") return A.renderPortafoglio(main, true);
   const out = h("div"); main.appendChild(out);
   const yearNow = new Date().getFullYear();
   let pick = null;   /* eta' letta sul grafico del patrimonio */
@@ -109,7 +115,11 @@ A.renderFire = main => {
   const y0 = new Date().getFullYear();
   box.appendChild(acc(T.tr("Situazione di oggi"), !F.birthYear,
     T.numField(T.tr("Anno di nascita"), F.birthYear, v => set("birthYear", v), { min: 1930, max: y0 - 16, step: 1 }),
-    T.numField(T.tr("Patrimonio investito"), F.investable, v => set("investable", v || 0), { hint: T.tr("Azioni, ETF, fondi. Puoi includere il 3a se e' investito.") }),
+    F.ibkrLink && T.pfHas(S)
+      ? h("div", T.numField(T.tr("Altri investimenti (fuori da Interactive Brokers)"), F.investableOther, v => { set("investableOther", v || 0); T.pfSyncFire(S); }, { hint: T.tr("Per esempio azioni del datore di lavoro, 3a investito, altri conti.") }),
+          h("div.note", { style: { marginBlockEnd: "12px" } }, T.tr("Piu' Interactive Brokers: {i} (dati al {d}). Patrimonio investito totale: {t}.", { i: A.money(T.pfNavApp(S)), d: T.fmt.date(S.portfolio.date), t: A.money(T.investableNow(S)) })))
+      : h("div", T.numField(T.tr("Patrimonio investito"), F.investable, v => set("investable", v || 0), { hint: T.tr("Azioni, ETF, fondi. Puoi includere il 3a se e' investito.") }),
+          T.pfHas(S) && !A.isMember() ? h("button.btn", { type: "button", style: { marginBlockEnd: "12px" }, onclick: () => A.pfLinkFlow() }, T.tr("Aggiorna da solo con Interactive Brokers")) : null),
     T.numField(T.tr("Liquidita' e risparmi"), F.cash, v => set("cash", v || 0), { hint: T.tr("Conti, depositi, fondo emergenze.") }),
     pct(T.tr("Quota in azioni"), "equityShare", T.tr("Il resto rende come la parte prudente."), 5),
     T.selectField(T.tr("Mercato di riferimento"), F.market, Object.entries(T.MARKET_PROFILES).map(([k, p]) => [k, p.label]), v => set("market", v)),

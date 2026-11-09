@@ -12,7 +12,7 @@ globalThis.fetch = async (url, opt) => {
   if (u.pathname === "/application") return J({ name: "myFinances", environment: "PRODUCTION", active: true, redirect_urls: ["https://utente.github.io/app/"], countries: ["LT"] });
   if (u.pathname === "/aspsps") return J({ aspsps: [{ name: "Revolut", country: "LT", maximum_consent_validity: 15552000, beta: false }, { name: "SEB", country: "LT", maximum_consent_validity: 7776000 }] });
   if (u.pathname === "/auth") return J({ url: "https://auth.enablebanking.com/ais/start?sessionid=x", authorization_id: "x" });
-  if (u.pathname === "/sessions" && opt.method === "POST") return J({ session_id: SID, access: { valid_until: "2027-05-01T00:00:00Z" }, aspsp: { name: "Revolut", country: "LT" }, accounts: [{ uid: UID, currency: "CHF", name: "Marco", account_id: { iban: "LT20 3250 0217 8213 9095" } }] });
+  if (u.pathname === "/sessions" && opt.method === "POST") return J({ session_id: SID, access: { valid_until: "2027-05-01T00:00:00Z" }, aspsp: { name: "Revolut", country: "LT" }, accounts: [{ uid: UID, currency: "CHF", name: "Marco", account_id: { iban: "LT00 0000 0000 0000 1234" } }] });
   if (u.pathname === "/sessions/" + SID && opt.method === "GET") return J({ status: "AUTHORIZED", access: { valid_until: "2027-05-01T00:00:00Z" }, accounts: [UID] });
   if (u.pathname === "/sessions/" + SID && opt.method === "DELETE") return J({ message: "OK" });
   if (u.pathname.startsWith("/accounts/")) { if (opt.headers["Psu-Ip-Address"] && u.searchParams.get("date_from") === "2026-01-01") return J({ code: 422, error: "PSU_HEADER_NOT_PROVIDED" }, 422); return J({ transactions: [{ transaction_id: "a1", transaction_amount: { currency: "CHF", amount: "12.50" }, credit_debit_indicator: "DBIT", status: "BOOK", booking_date: "2026-11-01", creditor: { name: "Coop" } }], continuation_key: null }); }
@@ -46,7 +46,7 @@ for (const fmt of ["pkcs8", "pkcs1"]) {
   r = await worker.fetch(req("/connect", { country: "LT", name: "Revolut", state: "x" }), env);
   ok(r.status === 400, fmt + ": state non valido rifiutato");
   r = await worker.fetch(req("/session", { code: "abc" }), env); d = await r.json();
-  ok(d.session_id === SID && d.accounts[0].uid === UID && d.accounts[0].iban === "\u2022\u2022\u2022\u2022 9095", fmt + ": sessione creata, IBAN mascherato");
+  ok(d.session_id === SID && d.accounts[0].uid === UID && d.accounts[0].iban === "\u2022\u2022\u2022\u2022 1234", fmt + ": sessione creata, IBAN mascherato");
   r = await worker.fetch(req("/transactions", { account_uid: UID, date_from: "2026-10-01" }), env); d = await r.json();
   ok(d.transactions.length === 1 && calls[calls.length - 1].opt.headers["Psu-Ip-Address"] === "1.2.3.4", fmt + ": movimenti con intestazioni PSU");
   r = await worker.fetch(req("/transactions", { account_uid: UID, date_from: "2026-01-01" }), env); d = await r.json();
@@ -95,6 +95,50 @@ for (const fmt of ["pkcs8", "pkcs1"]) {
   r = await worker.fetch(req({ op: "delete", fid: FID }), env);
   r = await worker.fetch(req({ op: "get", fid: FID }), env);
   ok(r.status === 404, "famiglia: sciolta");
+}
+/* Interactive Brokers (Flex Web Service simulato) */
+{
+  const { privateKey } = generateKeyPairSync("rsa", { modulusLength: 2048, publicKeyEncoding: { type: "spki", format: "pem" }, privateKeyEncoding: { type: "pkcs8", format: "pem" } });
+  const IBT = "123456789012345678901234", base = { EB_APP_ID: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee", EB_PRIVATE_KEY: privateKey, APP_TOKEN: TOKEN, ALLOWED_ORIGIN: ORIGIN, REDIRECT_URL: "https://utente.github.io/app/", IBKR_POLL_MS: "0" };
+  const req = body => new Request("https://ponte.example.workers.dev/ibkr", { method: "POST", headers: { Origin: ORIGIN, Authorization: "Bearer " + TOKEN, "Content-Type": "application/json" }, body: JSON.stringify(body || {}) });
+  const XML = (await import("node:fs")).readFileSync(new URL("./fixtures/flex-esempio.xml", import.meta.url), "utf8");
+  let ib = [], mode = "ok", pending = 1;
+  globalThis.fetch = async (url, opt) => {
+    const u = new URL(url); ib.push({ u, opt });
+    const X = t => new Response(t, { status: 200, headers: { "Content-Type": "text/xml" } });
+    if (u.pathname.endsWith("/SendRequest")) {
+      if (mode === "expired") return X("<FlexStatementResponse timestamp='x'><Status>Fail</Status><ErrorCode>1012</ErrorCode><ErrorMessage>Token has expired.</ErrorMessage></FlexStatementResponse>");
+      return X("<FlexStatementResponse timestamp='x'><Status>Success</Status><ReferenceCode>9876543210</ReferenceCode><Url>" + (mode === "evil" ? "https://evil.example.com/steal" : "https://gdcdyn.interactivebrokers.com/Universal/servlet/FlexStatementService.GetStatement") + "</Url></FlexStatementResponse>");
+    }
+    if (/GetStatement/.test(u.pathname)) {
+      if (mode === "slow" || pending-- > 0) return X("<FlexStatementResponse timestamp='x'><Status>Warn</Status><ErrorCode>1019</ErrorCode><ErrorMessage>Statement generation in progress. Please try again shortly.</ErrorMessage></FlexStatementResponse>");
+      return X(XML);
+    }
+    return new Response("{}", { status: 404 });
+  };
+  let r = await worker.fetch(req({}), base), d = await r.json();
+  ok(r.status === 501 && d.error === "ibkr_not_configured", "ibkr: senza token segnala la configurazione mancante");
+  const env = Object.assign({ IBKR_TOKEN: IBT, IBKR_QUERY_ID: "1099104" }, base);
+  r = await worker.fetch(req({ op: "status" }), env); d = await r.json();
+  ok(d.configured === true && ib.length === 0, "ibkr: stato senza chiamare Interactive Brokers");
+  r = await worker.fetch(new Request("https://p/", { method: "GET" }), env); d = await r.json();
+  ok(d.ibkr === true && d.version === "1.2.0" && !JSON.stringify(d).includes(IBT), "ibkr: stato del ponte senza esporre il token");
+  ib = []; pending = 1;
+  r = await worker.fetch(req({}), env); d = await r.json();
+  const send = ib[0], gets = ib.filter(x => /GetStatement/.test(x.u.pathname));
+  ok(r.status === 200 && /<FlexQueryResponse/.test(d.xml) && send.u.searchParams.get("t") === IBT && send.u.searchParams.get("q") === "1099104" && send.u.searchParams.get("v") === "3", "ibkr: report scaricato (SendRequest con token, Query ID e versione 3)");
+  ok(gets.length === 2 && gets[1].u.searchParams.get("q") === "9876543210" && gets[0].u.hostname === "gdcdyn.interactivebrokers.com", "ibkr: attende il report in preparazione (1019) e riprova");
+  ok(ib.every(x => /^myFinancesOnFire\//.test(x.opt.headers["User-Agent"])), "ibkr: intestazione User-Agent impostata");
+  ok(!JSON.stringify(d).includes(IBT), "ibkr: il token non torna all'app");
+  ib = []; mode = "evil"; pending = 0;
+  r = await worker.fetch(req({}), env);
+  ok(r.status === 200 && ib.every(x => /interactivebrokers\.com$/.test(x.u.hostname)), "ibkr: scarica solo da interactivebrokers.com");
+  mode = "expired"; r = await worker.fetch(req({}), env); d = await r.json();
+  ok(r.status === 502 && d.error === "ibkr_error" && d.code === "1012", "ibkr: token scaduto riportato con il codice");
+  ib = []; mode = "slow"; r = await worker.fetch(req({}), env); d = await r.json();
+  ok(r.status === 504 && d.error === "ibkr_pending" && ib.length <= 7, "ibkr: rinuncia dopo pochi tentativi (" + ib.length + " richieste, limite 10 al minuto)");
+  r = await worker.fetch(req({}), Object.assign({}, env, { IBKR_QUERY_ID: "abc" })); d = await r.json();
+  ok(r.status === 400 && d.error === "ibkr_bad_query", "ibkr: Query ID non valido rifiutato");
 }
 console.log(fails ? fails + " test falliti" : "Tutti i test del ponte passati");
 process.exitCode = fails ? 1 : 0;

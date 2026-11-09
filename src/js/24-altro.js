@@ -120,6 +120,7 @@ A.renderAltro = main => {
     item(T.tr("Collegamento automatico Revolut"), T.bankConnected(S) ? (T.bankExpired(S) ? T.tr("Consenso scaduto") : T.tr("Collegato \u00b7 aggiornato ") + A.relTime(S.bank.lastSync)) : T.tr("Movimenti aggiornati da soli, in sola lettura"), () => A.go("altro", "collega"), T.bankConnected(S) ? h("span.pill" + (T.bankExpired(S) ? ".warn" : ".ok"), T.bankExpired(S) ? T.tr("Scaduto") : T.tr("Attivo")) : null),
     (() => { const F = S.family; return item(T.tr("Famiglia"), !F ? T.tr("Condividi spese e budget con un altro telefono") : F.gone ? T.tr("Non piu' raggiungibile: serve un QR nuovo") : (F.role === "master" ? T.tr("Attiva") : T.tr("Famiglia di {n}", { n: A.masterName() })) + T.tr(" \u00b7 allineata ") + A.relTime(F.lastSync),
       () => A.go("altro", "famiglia"), F ? h("span.pill" + (F.gone ? ".warn" : ".ok"), F.gone ? T.tr("Da rifare") : T.tr("Attiva")) : null); })(),
+    item(T.tr("Interactive Brokers"), T.pfHas(S) ? T.tr("Portafoglio al {d}", { d: T.fmt.date(S.portfolio.date) }) : T.tr("Posizioni, ripartizione e dividendi, il FIRE si aggiorna da solo"), () => A.go("altro", "ibkr"), T.pfHas(S) ? h("span.pill" + (S.portfolio.lastError ? ".warn" : ".ok"), S.portfolio.lastError ? T.tr("Errore") : T.tr("Attivo")) : null),
     item(T.tr("Importa movimenti"), T.tr("Revolut (Excel o CSV), PDF pagamenti registrati UBS, CSV di qualsiasi banca"), () => A.importFlow()),
     item(T.tr("Storico import"), last ? T.tr("Ultimo: ") + last.source + T.tr(" il ") + T.fmt.date(last.at.slice(0, 10)) : T.tr("Nessun import"), () => A.go("altro", "storico")),
     item("Backup", S.meta.lastBackup ? T.tr("Ultimo il ") + T.fmt.date(S.meta.lastBackup.slice(0, 10)) : T.tr("Mai fatto"), () => A.go("altro", "backup"), S.meta.lastBackup ? null : h("span.pill.warn", T.tr("Da fare"))))));
@@ -146,6 +147,8 @@ A.renderSub = (main, sub) => {
     A.renderCollega(card);
   } else if (sub === "famiglia") {
     A.renderFamiglia(card);
+  } else if (sub === "ibkr") {
+    A.renderIbkr(card);
   } else if (sub === "profilo") {
     card.appendChild(h("h2", T.tr("Profilo e reddito")));
     card.appendChild(T.selectField(T.tr("Lingua"), S.profile.lang || "it", T.LANGS, v => A.setLanguage(v)));
@@ -232,6 +235,7 @@ A.renderSub = (main, sub) => {
       T.tr("I file degli estratti conto vengono letti sul telefono e non vengono inviati da nessuna parte."),
       T.tr("L'app non usa pubblicita', statistiche d'uso o servizi di terze parti."),
       T.tr("Il backup e' un file che crei tu e che decidi tu dove salvare."),
+      T.tr("Se colleghi Interactive Brokers, il report passa dal tuo ponte senza essere salvato li': in Interactive Brokers resta solo in lettura."),
       T.tr("Se crei una famiglia, una copia dei dati passa dal tuo ponte (sul tuo account Cloudflare), cifrata sul telefono: la chiave e' solo nei telefoni della famiglia."),
       T.tr("Puoi cancellare tutto in qualsiasi momento da Altro > Ricomincia da zero.") ].forEach(t => card.appendChild(h("p.small", "\u2022 " + t)));
     card.appendChild(h("h2", { style: { marginBlockStart: "12px" } }, T.tr("Avvertenza")));

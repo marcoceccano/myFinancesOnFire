@@ -13,6 +13,8 @@
 <ul><li>Movimenti, budget, categorie e parametri restano nella memoria locale del dispositivo.</li><li>I file degli estratti conto vengono letti sul dispositivo e non vengono caricati da nessuna parte.</li><li>Il backup e' un file che crei tu e che salvi dove preferisci.</li></ul>
 <h2>Collegamento automatico con la banca (facoltativo)</h2>
 <p>Se lo attivi, i movimenti arrivano tramite open banking in sola lettura: la banca li consegna a Enable Banking (servizio autorizzato), che li passa al tuo ponte personale (un Cloudflare Worker creato da te), che li passa all'app. Il ponte non salva i movimenti. Puoi revocare il consenso in qualsiasi momento. L'autore dell'app non riceve nessun dato.</p>
+<h2>Interactive Brokers (facoltativo)</h2>
+<p>Se colleghi Interactive Brokers, il report Flex (posizioni, liquidita', valore e dividendi) arriva al tuo ponte e da li' all'app, senza essere salvato nel ponte. Il token resta nel ponte e l'accesso e' solo in lettura: non e' possibile fare ordini o prelievi.</p>
 <h2>Famiglia (facoltativo)</h2>
 <p>Se crei una famiglia per condividere i dati con un altro telefono, una copia dei dati passa dal tuo ponte e resta nello spazio di archiviazione del tuo account Cloudflare. La copia e' cifrata sul telefono (AES-GCM a 256 bit) prima di partire: la chiave e' solo nei telefoni della famiglia e nel QR che mostri, quindi ne' Cloudflare ne' l'autore dell'app possono leggerla. Sciogliendo la famiglia la copia viene cancellata.</p>
 <h2>Connessione a internet</h2>
@@ -31,6 +33,8 @@
 <ul><li>Transactions, budget, categories and settings stay in the device's local storage.</li><li>Statement files are read on the device and are not uploaded anywhere.</li><li>The backup is a file you create and store wherever you like.</li></ul>
 <h2>Automatic bank connection (optional)</h2>
 <p>If you enable it, transactions arrive through open banking, read-only: the bank hands them to Enable Banking (a licensed service), which passes them to your personal bridge (a Cloudflare Worker you create), which passes them to the app. The bridge does not store transactions. You can revoke consent at any time. The author of the app receives no data.</p>
+<h2>Interactive Brokers (optional)</h2>
+<p>If you connect Interactive Brokers, the Flex report (positions, cash, value and dividends) reaches your bridge and from there the app, without being stored in the bridge. The token stays in the bridge and access is read-only: no orders or withdrawals are possible.</p>
 <h2>Family (optional)</h2>
 <p>If you create a family to share the data with another phone, a copy of the data goes through your bridge and is kept in the storage of your Cloudflare account. The copy is encrypted on the phone (256-bit AES-GCM) before it leaves: the key is only on the family's phones and in the QR code you show, so neither Cloudflare nor the author of the app can read it. Dissolving the family deletes the copy.</p>
 <h2>Internet connection</h2>
@@ -49,6 +53,8 @@
 <ul><li>Umsätze, Budget, Kategorien und Einstellungen bleiben im lokalen Speicher des Geräts.</li><li>Kontoauszüge werden auf dem Gerät gelesen und nirgendwohin hochgeladen.</li><li>Das Backup ist eine Datei, die du erstellst und speicherst, wo du möchtest.</li></ul>
 <h2>Automatische Bankverbindung (optional)</h2>
 <p>Wenn du sie aktivierst, kommen die Umsätze per Open Banking und nur lesend: Die Bank übergibt sie an Enable Banking (ein zugelassener Dienst), das sie an deine persönliche Brücke (einen von dir erstellten Cloudflare Worker) weitergibt, die sie an die App weitergibt. Die Brücke speichert keine Umsätze. Du kannst die Einwilligung jederzeit widerrufen. Der Autor der App erhält keine Daten.</p>
+<h2>Interactive Brokers (optional)</h2>
+<p>Wenn du Interactive Brokers verbindest, gelangt der Flex-Bericht (Positionen, Liquidität, Wert und Dividenden) zu deiner Brücke und von dort in die App, ohne in der Brücke gespeichert zu werden. Der Token bleibt in der Brücke, der Zugriff ist nur lesend: Aufträge oder Abhebungen sind nicht möglich.</p>
 <h2>Familie (optional)</h2>
 <p>Wenn du eine Familie erstellst, um die Daten mit einem anderen Telefon zu teilen, läuft eine Kopie der Daten über deine Brücke und wird im Speicher deines Cloudflare-Kontos abgelegt. Die Kopie wird auf dem Telefon verschlüsselt (AES-GCM, 256 Bit), bevor sie es verlässt: Der Schlüssel ist nur auf den Telefonen der Familie und im QR-Code, den du zeigst. Weder Cloudflare noch der Autor der App können sie lesen. Wird die Familie aufgelöst, wird die Kopie gelöscht.</p>
 <h2>Internetverbindung</h2>

@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlexQueryResponse queryName="myfinances" type="AF">
+<FlexStatements count="1">
+<FlexStatement accountId="U1234567" fromDate="20251106" toDate="20261105" period="Last365CalendarDays" whenGenerated="20261105;061502">
+<AccountInformation accountId="U1234567" acctAlias="" currency="CHF" name="Esempio Utente" accountType="Individual" />
+<CashReport>
+<CashReportCurrency accountId="U1234567" currency="BASE_SUMMARY" startingCash="8200.15" endingCash="12450.60" endingSettledCash="12450.60" deposits="36000" withdrawals="0" dividends="612.40" />
+<CashReportCurrency accountId="U1234567" currency="CHF" startingCash="6000" endingCash="9850.10" endingSettledCash="9850.10" />
+<CashReportCurrency accountId="U1234567" currency="USD" startingCash="2750" endingCash="3256.50" endingSettledCash="3256.50" />
+</CashReport>
+<EquitySummaryInBase>
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251106" cash="8715.42" stock="256885.36" funds="0" bonds="0" total="258600.78" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251107" cash="8725.65" stock="256449.39" funds="0" bonds="0" total="258175.05" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251110" cash="8756.35" stock="256900.48" funds="0" bonds="0" total="258656.83" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251111" cash="8766.59" stock="254852.62" funds="0" bonds="0" total="256619.20" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251112" cash="8776.82" stock="254520.84" funds="0" bonds="0" total="256297.66" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251113" cash="8787.05" stock="257329.80" funds="0" bonds="0" total="259116.86" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251114" cash="8797.29" stock="258521.71" funds="0" bonds="0" total="260318.99" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251117" cash="8827.99" stock="263118.23" funds="0" bonds="0" total="264946.22" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251118" cash="8838.22" stock="263751.95" funds="0" bonds="0" total="265590.17" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251119" cash="8848.45" stock="259845.16" funds="0" bonds="0" total="261693.61" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251120" cash="8858.69" stock="262091.22" funds="0" bonds="0" total="263949.90" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251121" cash="8868.92" stock="263505.49" funds="0" bonds="0" total="265374.41" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251124" cash="8899.62" stock="256866.39" funds="0" bonds="0" total="258766.01" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251125" cash="8909.85" stock="254914.33" funds="0" bonds="0" total="256824.18" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251126" cash="8920.09" stock="253977.09" funds="0" bonds="0" total="255897.18" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251127" cash="8930.32" stock="254873.60" funds="0" bonds="0" total="256803.92" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251128" cash="8940.55" stock="254939.02" funds="0" bonds="0" total="256879.57" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251201" cash="8971.25" stock="255900.66" funds="0" bonds="0" total="257871.92" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251202" cash="8981.49" stock="257015.45" funds="0" bonds="0" total="258996.93" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251203" cash="8991.72" stock="255608.67" funds="0" bonds="0" total="257600.39" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251204" cash="9001.95" stock="259873.78" funds="0" bonds="0" total="261875.74" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251205" cash="9012.19" stock="261398.69" funds="0" bonds="0" total="263410.88" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251208" cash="9042.89" stock="261513.87" funds="0" bonds="0" total="263556.76" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251209" cash="9053.12" stock="260855.27" funds="0" bonds="0" total="262908.39" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251210" cash="9063.35" stock="260775.46" funds="0" bonds="0" total="262838.81" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251211" cash="9073.59" stock="262489.15" funds="0" bonds="0" total="264562.73" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251212" cash="9083.82" stock="263276.18" funds="0" bonds="0" total="265360.00" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251215" cash="9114.52" stock="259118.48" funds="0" bonds="0" total="261233.01" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251216" cash="9124.75" stock="262243.44" funds="0" bonds="0" total="264368.19" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251217" cash="9134.99" stock="260449.90" funds="0" bonds="0" total="262584.89" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251218" cash="9145.22" stock="261222.23" funds="0" bonds="0" total="263367.45" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251219" cash="9155.45" stock="262439.10" funds="0" bonds="0" total="264594.56" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251222" cash="9186.16" stock="262605.59" funds="0" bonds="0" total="264791.74" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251223" cash="9196.39" stock="257858.22" funds="0" bonds="0" total="260054.61" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251224" cash="9206.62" stock="257261.98" funds="0" bonds="0" total="259468.60" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251225" cash="9216.86" stock="257183.73" funds="0" bonds="0" total="259400.58" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251226" cash="9227.09" stock="255400.51" funds="0" bonds="0" total="257627.59" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251229" cash="9257.79" stock="253456.14" funds="0" bonds="0" total="255713.92" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251230" cash="9268.02" stock="255587.18" funds="0" bonds="0" total="257855.20" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20251231" cash="9278.26" stock="257357.84" funds="0" bonds="0" total="259636.10" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260101" cash="9288.49" stock="259804.01" funds="0" bonds="0" total="262092.50" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260102" cash="9298.72" stock="263471.03" funds="0" bonds="0" total="265769.75" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260105" cash="9329.42" stock="261990.58" funds="0" bonds="0" total="264320.00" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260106" cash="9339.66" stock="263673.10" funds="0" bonds="0" total="266012.76" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260107" cash="9349.89" stock="262350.82" funds="0" bonds="0" total="264700.71" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260108" cash="9360.12" stock="261423.78" funds="0" bonds="0" total="263783.90" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260109" cash="9370.36" stock="258520.74" funds="0" bonds="0" total="260891.09" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260112" cash="9401.06" stock="258515.57" funds="0" bonds="0" total="260916.63" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260113" cash="9411.29" stock="253793.72" funds="0" bonds="0" total="256205.01" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260114" cash="9421.52" stock="250514.65" funds="0" bonds="0" total="252936.18" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260115" cash="9431.76" stock="251246.32" funds="0" bonds="0" total="253678.08" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260116" cash="9441.99" stock="254804.81" funds="0" bonds="0" total="257246.80" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260119" cash="9472.69" stock="246233.28" funds="0" bonds="0" total="248705.97" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260120" cash="9482.92" stock="247224.54" funds="0" bonds="0" total="249707.46" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260121" cash="9493.16" stock="245692.97" funds="0" bonds="0" total="248186.12" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260122" cash="9503.39" stock="243289.58" funds="0" bonds="0" total="245792.97" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260123" cash="9513.62" stock="245679.95" funds="0" bonds="0" total="248193.58" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260126" cash="9544.32" stock="249656.54" funds="0" bonds="0" total="252200.86" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260127" cash="9554.56" stock="250841.03" funds="0" bonds="0" total="253395.59" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260128" cash="9564.79" stock="254748.72" funds="0" bonds="0" total="257313.51" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260129" cash="9575.02" stock="256396.06" funds="0" bonds="0" total="258971.09" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260130" cash="9585.26" stock="257813.52" funds="0" bonds="0" total="260398.78" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260202" cash="9615.96" stock="258926.95" funds="0" bonds="0" total="261542.91" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260203" cash="9626.19" stock="261413.07" funds="0" bonds="0" total="264039.26" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260204" cash="9636.42" stock="262884.51" funds="0" bonds="0" total="265520.93" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260205" cash="9646.66" stock="258223.74" funds="0" bonds="0" total="260870.39" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260206" cash="9656.89" stock="256873.31" funds="0" bonds="0" total="259530.20" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260209" cash="9687.59" stock="254604.17" funds="0" bonds="0" total="257291.76" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260210" cash="9697.82" stock="257204.02" funds="0" bonds="0" total="259901.84" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260211" cash="9708.06" stock="254230.99" funds="0" bonds="0" total="256939.04" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260212" cash="9718.29" stock="258230.24" funds="0" bonds="0" total="260948.53" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260213" cash="9728.52" stock="259738.65" funds="0" bonds="0" total="262467.18" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260216" cash="9759.22" stock="262278.16" funds="0" bonds="0" total="265037.39" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260217" cash="9769.46" stock="262753.12" funds="0" bonds="0" total="265522.58" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260218" cash="9779.69" stock="265743.62" funds="0" bonds="0" total="268523.31" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260219" cash="9789.92" stock="264285.81" funds="0" bonds="0" total="267075.74" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260220" cash="9800.16" stock="263444.41" funds="0" bonds="0" total="266244.57" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260223" cash="9830.86" stock="264430.73" funds="0" bonds="0" total="267261.58" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260224" cash="9841.09" stock="266948.66" funds="0" bonds="0" total="269789.75" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260225" cash="9851.32" stock="270782.89" funds="0" bonds="0" total="273634.22" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260226" cash="9861.56" stock="269845.60" funds="0" bonds="0" total="272707.16" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260227" cash="9871.79" stock="266557.22" funds="0" bonds="0" total="269429.01" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260302" cash="9902.49" stock="265660.39" funds="0" bonds="0" total="280562.88" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260303" cash="9912.72" stock="269326.97" funds="0" bonds="0" total="284239.70" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260304" cash="9922.96" stock="266931.35" funds="0" bonds="0" total="281854.31" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260305" cash="9933.19" stock="270255.91" funds="0" bonds="0" total="285189.10" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260306" cash="9943.42" stock="267243.48" funds="0" bonds="0" total="282186.90" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260309" cash="9974.12" stock="270211.21" funds="0" bonds="0" total="285185.33" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260310" cash="9984.36" stock="272563.22" funds="0" bonds="0" total="287547.58" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260311" cash="9994.59" stock="273628.66" funds="0" bonds="0" total="288623.25" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260312" cash="10004.82" stock="274180.34" funds="0" bonds="0" total="289185.16" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260313" cash="10015.06" stock="274759.03" funds="0" bonds="0" total="289774.09" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260316" cash="10045.76" stock="277063.31" funds="0" bonds="0" total="292109.07" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260317" cash="10055.99" stock="278733.97" funds="0" bonds="0" total="293789.96" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260318" cash="10066.22" stock="278928.07" funds="0" bonds="0" total="293994.29" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260319" cash="10076.46" stock="281107.21" funds="0" bonds="0" total="296183.67" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260320" cash="10086.69" stock="282783.78" funds="0" bonds="0" total="297870.47" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260323" cash="10117.39" stock="288396.44" funds="0" bonds="0" total="303513.84" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260324" cash="10127.63" stock="287594.27" funds="0" bonds="0" total="302721.89" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260325" cash="10137.86" stock="287757.32" funds="0" bonds="0" total="302895.18" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260326" cash="10148.09" stock="290432.33" funds="0" bonds="0" total="305580.43" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260327" cash="10158.33" stock="289722.03" funds="0" bonds="0" total="304880.35" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260330" cash="10189.03" stock="289276.64" funds="0" bonds="0" total="304465.67" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260331" cash="10199.26" stock="286446.89" funds="0" bonds="0" total="301646.15" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260401" cash="10209.49" stock="287295.47" funds="0" bonds="0" total="302504.96" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260402" cash="10219.73" stock="288560.05" funds="0" bonds="0" total="303779.77" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260403" cash="10229.96" stock="289400.49" funds="0" bonds="0" total="304630.45" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260406" cash="10260.66" stock="291360.88" funds="0" bonds="0" total="306621.53" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260407" cash="10270.89" stock="290144.62" funds="0" bonds="0" total="305415.51" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260408" cash="10281.13" stock="296914.91" funds="0" bonds="0" total="312196.04" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260409" cash="10291.36" stock="298101.57" funds="0" bonds="0" total="313392.93" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260410" cash="10301.59" stock="296768.93" funds="0" bonds="0" total="312070.52" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260413" cash="10332.29" stock="296311.40" funds="0" bonds="0" total="311643.69" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260414" cash="10342.53" stock="288986.86" funds="0" bonds="0" total="304329.39" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260415" cash="10352.76" stock="287874.47" funds="0" bonds="0" total="303227.23" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260416" cash="10362.99" stock="290780.04" funds="0" bonds="0" total="306143.04" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260417" cash="10373.23" stock="287813.47" funds="0" bonds="0" total="303186.70" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260420" cash="10403.93" stock="293110.36" funds="0" bonds="0" total="308514.29" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260421" cash="10414.16" stock="297385.59" funds="0" bonds="0" total="312799.75" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260422" cash="10424.39" stock="292877.56" funds="0" bonds="0" total="308301.96" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260423" cash="10434.63" stock="292115.03" funds="0" bonds="0" total="307549.65" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260424" cash="10444.86" stock="291388.19" funds="0" bonds="0" total="306833.05" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260427" cash="10475.56" stock="289262.88" funds="0" bonds="0" total="304738.44" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260428" cash="10485.79" stock="292399.33" funds="0" bonds="0" total="307885.13" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260429" cash="10496.03" stock="288655.16" funds="0" bonds="0" total="304151.19" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260430" cash="10506.26" stock="290693.62" funds="0" bonds="0" total="306199.88" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260501" cash="10516.49" stock="286849.34" funds="0" bonds="0" total="302365.83" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260504" cash="10547.19" stock="290716.50" funds="0" bonds="0" total="306263.70" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260505" cash="10557.43" stock="291435.31" funds="0" bonds="0" total="306992.73" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260506" cash="10567.66" stock="293803.00" funds="0" bonds="0" total="309370.66" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260507" cash="10577.89" stock="294393.10" funds="0" bonds="0" total="309971.00" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260508" cash="10588.13" stock="294353.49" funds="0" bonds="0" total="309941.62" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260511" cash="10618.83" stock="301272.41" funds="0" bonds="0" total="316891.24" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260512" cash="10629.06" stock="309186.68" funds="0" bonds="0" total="324815.74" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260513" cash="10639.29" stock="306099.33" funds="0" bonds="0" total="321738.62" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260514" cash="10649.53" stock="308918.04" funds="0" bonds="0" total="324567.57" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260515" cash="10659.76" stock="308367.28" funds="0" bonds="0" total="324027.04" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260518" cash="10690.46" stock="312060.85" funds="0" bonds="0" total="327751.31" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260519" cash="10700.69" stock="314131.65" funds="0" bonds="0" total="329832.35" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260520" cash="10710.93" stock="309883.68" funds="0" bonds="0" total="325594.61" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260521" cash="10721.16" stock="305742.39" funds="0" bonds="0" total="321463.55" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260522" cash="10731.39" stock="307705.15" funds="0" bonds="0" total="323436.54" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260525" cash="10762.09" stock="298514.47" funds="0" bonds="0" total="314276.57" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260526" cash="10772.33" stock="302245.69" funds="0" bonds="0" total="318018.02" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260527" cash="10782.56" stock="304557.74" funds="0" bonds="0" total="320340.31" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260528" cash="10792.79" stock="308948.93" funds="0" bonds="0" total="324741.72" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260529" cash="10803.03" stock="306464.01" funds="0" bonds="0" total="322267.04" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260601" cash="10833.73" stock="306010.25" funds="0" bonds="0" total="321843.98" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260602" cash="10843.96" stock="310754.20" funds="0" bonds="0" total="326598.16" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260603" cash="10854.19" stock="308392.45" funds="0" bonds="0" total="324246.64" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260604" cash="10864.43" stock="313088.86" funds="0" bonds="0" total="328953.29" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260605" cash="10874.66" stock="316186.07" funds="0" bonds="0" total="332060.73" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260608" cash="10905.36" stock="314581.30" funds="0" bonds="0" total="330486.66" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260609" cash="10915.59" stock="314516.92" funds="0" bonds="0" total="330432.52" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260610" cash="10925.83" stock="312968.87" funds="0" bonds="0" total="328894.70" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260611" cash="10936.06" stock="314350.21" funds="0" bonds="0" total="330286.27" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260612" cash="10946.29" stock="315767.88" funds="0" bonds="0" total="331714.17" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260615" cash="10976.99" stock="321150.31" funds="0" bonds="0" total="337127.31" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260616" cash="10987.23" stock="325818.51" funds="0" bonds="0" total="341805.73" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260617" cash="10997.46" stock="330446.13" funds="0" bonds="0" total="346443.59" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260618" cash="11007.69" stock="330119.85" funds="0" bonds="0" total="346127.54" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260619" cash="11017.93" stock="328064.13" funds="0" bonds="0" total="344082.06" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260622" cash="11048.63" stock="332597.40" funds="0" bonds="0" total="348646.03" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260623" cash="11058.86" stock="337232.55" funds="0" bonds="0" total="353291.41" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260624" cash="11069.10" stock="336640.35" funds="0" bonds="0" total="352709.44" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260625" cash="11079.33" stock="329686.17" funds="0" bonds="0" total="345765.50" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260626" cash="11089.56" stock="328727.00" funds="0" bonds="0" total="344816.56" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260629" cash="11120.26" stock="327160.15" funds="0" bonds="0" total="343280.42" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260630" cash="11130.50" stock="325525.88" funds="0" bonds="0" total="341656.38" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260701" cash="11140.73" stock="325722.22" funds="0" bonds="0" total="341862.95" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260702" cash="11150.96" stock="328472.12" funds="0" bonds="0" total="344623.08" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260703" cash="11161.20" stock="328940.92" funds="0" bonds="0" total="345102.12" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260706" cash="11191.90" stock="336726.01" funds="0" bonds="0" total="352917.91" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260707" cash="11202.13" stock="341629.54" funds="0" bonds="0" total="357831.67" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260708" cash="11212.36" stock="346978.48" funds="0" bonds="0" total="363190.84" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260709" cash="11222.60" stock="345053.22" funds="0" bonds="0" total="361275.82" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260710" cash="11232.83" stock="348113.78" funds="0" bonds="0" total="364346.61" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260713" cash="11263.53" stock="333124.50" funds="0" bonds="0" total="349388.03" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260714" cash="11273.76" stock="336668.65" funds="0" bonds="0" total="352942.42" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260715" cash="11284.00" stock="333044.20" funds="0" bonds="0" total="349328.20" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260716" cash="11294.23" stock="333235.44" funds="0" bonds="0" total="349529.67" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260717" cash="11304.46" stock="332870.37" funds="0" bonds="0" total="349174.83" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260720" cash="11335.16" stock="332360.62" funds="0" bonds="0" total="348695.78" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260721" cash="11345.40" stock="338131.83" funds="0" bonds="0" total="354477.23" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260722" cash="11355.63" stock="338505.47" funds="0" bonds="0" total="354861.10" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260723" cash="11365.86" stock="340412.07" funds="0" bonds="0" total="356777.93" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260724" cash="11376.10" stock="343815.73" funds="0" bonds="0" total="360191.82" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260727" cash="11406.80" stock="338117.77" funds="0" bonds="0" total="354524.57" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260728" cash="11417.03" stock="341729.43" funds="0" bonds="0" total="358146.46" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260729" cash="11427.26" stock="336734.17" funds="0" bonds="0" total="353161.44" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260730" cash="11437.50" stock="335094.33" funds="0" bonds="0" total="351531.83" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260731" cash="11447.73" stock="338468.57" funds="0" bonds="0" total="354916.30" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260803" cash="11478.43" stock="344255.14" funds="0" bonds="0" total="355733.57" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260804" cash="11488.66" stock="345025.32" funds="0" bonds="0" total="356513.99" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260805" cash="11498.90" stock="341481.95" funds="0" bonds="0" total="352980.85" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260806" cash="11509.13" stock="336750.43" funds="0" bonds="0" total="348259.56" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260807" cash="11519.36" stock="334981.29" funds="0" bonds="0" total="346500.65" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260810" cash="11550.06" stock="333952.65" funds="0" bonds="0" total="345502.71" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260811" cash="11560.30" stock="331786.95" funds="0" bonds="0" total="343347.24" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260812" cash="11570.53" stock="327283.70" funds="0" bonds="0" total="338854.23" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260813" cash="11580.76" stock="327153.02" funds="0" bonds="0" total="338733.78" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260814" cash="11591.00" stock="323783.74" funds="0" bonds="0" total="335374.74" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260817" cash="11621.70" stock="319374.40" funds="0" bonds="0" total="330996.09" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260818" cash="11631.93" stock="317684.53" funds="0" bonds="0" total="329316.46" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260819" cash="11642.16" stock="312148.58" funds="0" bonds="0" total="323790.75" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260820" cash="11652.40" stock="314476.89" funds="0" bonds="0" total="326129.29" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260821" cash="11662.63" stock="313886.29" funds="0" bonds="0" total="325548.92" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260824" cash="11693.33" stock="306310.88" funds="0" bonds="0" total="318004.21" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260825" cash="11703.56" stock="305210.77" funds="0" bonds="0" total="316914.33" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260826" cash="11713.80" stock="307647.07" funds="0" bonds="0" total="319360.87" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260827" cash="11724.03" stock="310009.05" funds="0" bonds="0" total="321733.08" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260828" cash="11734.26" stock="312153.18" funds="0" bonds="0" total="323887.45" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260831" cash="11764.96" stock="319616.09" funds="0" bonds="0" total="331381.05" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260901" cash="11775.20" stock="321183.55" funds="0" bonds="0" total="332958.74" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260902" cash="11785.43" stock="315161.47" funds="0" bonds="0" total="326946.90" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260903" cash="11795.66" stock="318018.24" funds="0" bonds="0" total="329813.90" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260904" cash="11805.90" stock="322125.67" funds="0" bonds="0" total="333931.57" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260907" cash="11836.60" stock="326293.25" funds="0" bonds="0" total="338129.85" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260908" cash="11846.83" stock="321169.41" funds="0" bonds="0" total="333016.24" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260909" cash="11857.06" stock="322797.52" funds="0" bonds="0" total="334654.59" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260910" cash="11867.30" stock="330321.52" funds="0" bonds="0" total="342188.82" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260911" cash="11877.53" stock="327694.08" funds="0" bonds="0" total="339571.62" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260914" cash="11908.23" stock="335919.89" funds="0" bonds="0" total="347828.12" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260915" cash="11918.46" stock="337909.94" funds="0" bonds="0" total="349828.40" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260916" cash="11928.70" stock="340986.30" funds="0" bonds="0" total="352915.00" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260917" cash="11938.93" stock="338346.18" funds="0" bonds="0" total="350285.11" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260918" cash="11949.16" stock="338300.26" funds="0" bonds="0" total="350249.43" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260921" cash="11979.86" stock="342432.09" funds="0" bonds="0" total="354411.95" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260922" cash="11990.10" stock="342046.86" funds="0" bonds="0" total="354036.96" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260923" cash="12000.33" stock="339046.90" funds="0" bonds="0" total="351047.23" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260924" cash="12010.57" stock="338148.25" funds="0" bonds="0" total="350158.81" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260925" cash="12020.80" stock="341193.17" funds="0" bonds="0" total="353213.96" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260928" cash="12051.50" stock="336849.60" funds="0" bonds="0" total="348901.10" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260929" cash="12061.73" stock="345457.27" funds="0" bonds="0" total="357519.00" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20260930" cash="12071.97" stock="349365.10" funds="0" bonds="0" total="361437.07" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20261001" cash="12082.20" stock="351681.28" funds="0" bonds="0" total="363763.48" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20261002" cash="12092.43" stock="343436.80" funds="0" bonds="0" total="355529.23" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20261005" cash="12123.13" stock="353143.36" funds="0" bonds="0" total="365266.49" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20261006" cash="12133.37" stock="354795.03" funds="0" bonds="0" total="366928.40" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20261007" cash="12143.60" stock="354818.78" funds="0" bonds="0" total="366962.38" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20261008" cash="12153.83" stock="356790.88" funds="0" bonds="0" total="368944.71" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20261009" cash="12164.07" stock="350583.15" funds="0" bonds="0" total="362747.22" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20261012" cash="12194.77" stock="353441.41" funds="0" bonds="0" total="365636.17" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20261013" cash="12205.00" stock="358049.21" funds="0" bonds="0" total="370254.21" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20261014" cash="12215.23" stock="364327.40" funds="0" bonds="0" total="376542.63" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20261015" cash="12225.47" stock="359828.17" funds="0" bonds="0" total="372053.64" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20261016" cash="12235.70" stock="357847.17" funds="0" bonds="0" total="370082.86" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20261019" cash="12266.40" stock="358844.43" funds="0" bonds="0" total="371110.83" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20261020" cash="12276.63" stock="355840.11" funds="0" bonds="0" total="368116.75" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20261021" cash="12286.87" stock="363112.78" funds="0" bonds="0" total="375399.64" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20261022" cash="12297.10" stock="366870.24" funds="0" bonds="0" total="379167.34" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20261023" cash="12307.33" stock="363050.11" funds="0" bonds="0" total="375357.44" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20261026" cash="12338.03" stock="368306.42" funds="0" bonds="0" total="380644.45" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20261027" cash="12348.27" stock="374800.91" funds="0" bonds="0" total="387149.18" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20261028" cash="12358.50" stock="377884.50" funds="0" bonds="0" total="390243.00" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20261029" cash="12368.73" stock="375084.55" funds="0" bonds="0" total="387453.28" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20261030" cash="12378.97" stock="376254.49" funds="0" bonds="0" total="388633.46" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20261102" cash="12409.67" stock="366704.24" funds="0" bonds="0" total="379113.91" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20261103" cash="12419.90" stock="368743.04" funds="0" bonds="0" total="381162.94" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20261104" cash="12430.13" stock="366503.78" funds="0" bonds="0" total="378933.91" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="CHF" reportDate="20261105" cash="12440.37" stock="366335.14" funds="0" bonds="0" total="378775.51" />
+</EquitySummaryInBase>
+<OpenPositions>
+<OpenPosition accountId="U1234567" currency="USD" fxRateToBase="0.7985" assetCategory="STK" subCategory="ETF" symbol="VWRA" description="VANGUARD FTSE ALL-WORLD UCITS ETF USD ACC" isin="IE00BK5BQT80" listingExchange="LSEETF" reportDate="20261105" position="1500" markPrice="145.2" positionValue="217800.00" costBasisPrice="143.6026" costBasisMoney="215403.88" fifoPnlUnrealized="2396.12" percentOfNAV="0" side="Long" levelOfDetail="SUMMARY" />
+<OpenPosition accountId="U1234567" currency="USD" fxRateToBase="0.7985" assetCategory="STK" subCategory="ETF" symbol="CSPX" description="ISHARES CORE S&P 500 UCITS ETF USD ACC" isin="IE00B5BMR087" listingExchange="LSEETF" reportDate="20261105" position="120" markPrice="640.55" positionValue="76866.00" costBasisPrice="626.1741" costBasisMoney="75140.89" fifoPnlUnrealized="1725.11" percentOfNAV="0" side="Long" levelOfDetail="SUMMARY" />
+<OpenPosition accountId="U1234567" currency="CHF" fxRateToBase="1" assetCategory="STK" subCategory="ETF" symbol="CHSPI" description="ISHARES CORE SPI (CH) ETF" isin="CH0237935652" listingExchange="EBS" reportDate="20261105" position="400" markPrice="170.3" positionValue="68120.00" costBasisPrice="152.5000" costBasisMoney="61000.00" fifoPnlUnrealized="7120.00" percentOfNAV="0" side="Long" levelOfDetail="SUMMARY" />
+<OpenPosition accountId="U1234567" currency="USD" fxRateToBase="0.7985" assetCategory="STK" subCategory="COMMON" symbol="MSFT" description="MICROSOFT CORP" isin="US5949181045" listingExchange="NASDAQ" reportDate="20261105" position="50" markPrice="512.3" positionValue="25615.00" costBasisPrice="388.2279" costBasisMoney="19411.40" fifoPnlUnrealized="6203.60" percentOfNAV="0" side="Long" levelOfDetail="SUMMARY" />
+<OpenPosition accountId="U1234567" currency="USD" fxRateToBase="0.7985" assetCategory="STK" subCategory="ETF" symbol="EIMI" description="ISHARES CORE MSCI EM IMI UCITS ETF USD ACC" isin="IE00BKM4GZ66" listingExchange="LSEETF" reportDate="20261105" position="900" markPrice="38.42" positionValue="34578.00" costBasisPrice="37.5704" costBasisMoney="33813.40" fifoPnlUnrealized="764.60" percentOfNAV="0" side="Long" levelOfDetail="SUMMARY" />
+<OpenPosition accountId="U1234567" currency="CHF" fxRateToBase="1" assetCategory="STK" subCategory="ETF" symbol="AGGH" description="ISHARES CORE GLOBAL AGGREGATE BOND UCITS ETF CHF HEDGED" isin="IE00BDBRDM35" listingExchange="EBS" reportDate="20261105" position="3000" markPrice="4.95" positionValue="14850.00" costBasisPrice="5.0667" costBasisMoney="15200.00" fifoPnlUnrealized="-350.00" percentOfNAV="0" side="Long" levelOfDetail="SUMMARY" />
+</OpenPositions>
+<CashTransactions>
+<CashTransaction accountId="U1234567" currency="USD" fxRateToBase="0.7985" assetCategory="STK" symbol="MSFT" description="MSFT CASH DIVIDEND" dateTime="20251211;202000" settleDate="20251211" amount="41.5" type="Dividends" reportDate="20251211" />
+<CashTransaction accountId="U1234567" currency="USD" fxRateToBase="0.7985" assetCategory="STK" symbol="MSFT" description="MSFT US TAX" dateTime="20251211;202000" settleDate="20251211" amount="-6.22" type="Withholding Tax" reportDate="20251211" />
+<CashTransaction accountId="U1234567" currency="USD" fxRateToBase="0.7985" assetCategory="STK" symbol="MSFT" description="MSFT CASH DIVIDEND" dateTime="20260312;202000" settleDate="20260312" amount="41.5" type="Dividends" reportDate="20260312" />
+<CashTransaction accountId="U1234567" currency="USD" fxRateToBase="0.7985" assetCategory="STK" symbol="MSFT" description="MSFT US TAX" dateTime="20260312;202000" settleDate="20260312" amount="-6.22" type="Withholding Tax" reportDate="20260312" />
+<CashTransaction accountId="U1234567" currency="USD" fxRateToBase="0.7985" assetCategory="STK" symbol="MSFT" description="MSFT CASH DIVIDEND" dateTime="20260611;202000" settleDate="20260611" amount="45.5" type="Dividends" reportDate="20260611" />
+<CashTransaction accountId="U1234567" currency="USD" fxRateToBase="0.7985" assetCategory="STK" symbol="MSFT" description="MSFT US TAX" dateTime="20260611;202000" settleDate="20260611" amount="-6.83" type="Withholding Tax" reportDate="20260611" />
+<CashTransaction accountId="U1234567" currency="USD" fxRateToBase="0.7985" assetCategory="STK" symbol="MSFT" description="MSFT CASH DIVIDEND" dateTime="20260910;202000" settleDate="20260910" amount="45.5" type="Dividends" reportDate="20260910" />
+<CashTransaction accountId="U1234567" currency="USD" fxRateToBase="0.7985" assetCategory="STK" symbol="MSFT" description="MSFT US TAX" dateTime="20260910;202000" settleDate="20260910" amount="-6.83" type="Withholding Tax" reportDate="20260910" />
+<CashTransaction accountId="U1234567" currency="CHF" fxRateToBase="1" assetCategory="STK" symbol="CHSPI" description="CHSPI CASH DIVIDEND" dateTime="20260415;202000" settleDate="20260415" amount="312.8" type="Dividends" reportDate="20260415" />
+<CashTransaction accountId="U1234567" currency="CHF" fxRateToBase="1" assetCategory="CASH" symbol="" description="DEPOSIT" dateTime="20260302;100000" amount="12000" type="Deposits/Withdrawals" reportDate="20260302" />
+<CashTransaction accountId="U1234567" currency="CHF" fxRateToBase="1" assetCategory="CASH" symbol="" description="DISBURSEMENT" dateTime="20260803;100000" amount="-5000" type="Deposits/Withdrawals" reportDate="20260803" />
+</CashTransactions>
+</FlexStatement>
+</FlexStatements>
+</FlexQueryResponse>

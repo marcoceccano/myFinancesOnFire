@@ -8,6 +8,24 @@ App per il telefono che mette insieme tre cose:
 
 Disponibile in italiano, inglese e tedesco. I dati restano sul telefono. L'app non ha server, account o statistiche: e' solo un insieme di file che il browser scarica e poi usa anche offline.
 
+## Sviluppo con GitHub Copilot
+
+- Istruzioni per Copilot: `.github/copilot-instructions.md`, `AGENTS.md`, `.github/instructions/` (per cartella), la skill `.github/skills/rilascio` e i prompt `/orientati` e `/app-nativa` in `.github/prompts/`.
+- Conoscenza del progetto (storia, decisioni, integrazioni, trappole, app nativa, backlog): `conoscenza/`.
+- Tutti i test con un comando: `node tests/tutti.js` (oppure `npm test`; non ci sono pacchetti da installare).
+
+## Novita' della 1.8
+
+- **Portafoglio dentro la voce FIRE:** in cima alla schermata FIRE un selettore Simulatore / Portafoglio; il riquadro della Home porta li'.
+- **Grafico del portafoglio:** valore o rendimento % nel tempo, orizzonti 1G, 1S, 1M, 3M, 6M, da inizio anno, 1A, tutto. Il rendimento e' ponderato nel tempo (TWR): versamenti e prelievi non contano. Verde sopra la partenza, rosso sotto; tocca per leggere un giorno.
+- **Flex Query:** aggiungi l'opzione Deposits & Withdrawals in Cash Transactions (vedi la guida).
+
+## Novita' della 1.7
+
+- **Interactive Brokers (portafoglio):** valore, posizioni, ripartizione a torta (per titolo, tipo, valuta), andamento dell'ultimo anno e dividendi, dal report Flex in sola lettura. Riquadro in Home e schermata Portafoglio.
+- **FIRE aggiornato da solo:** il patrimonio investito diventa "altri investimenti + Interactive Brokers".
+- **Ponte 1.2.0:** scarica il report Flex con il token che resta su Cloudflare (`IBKR_TOKEN`, `IBKR_QUERY_ID`). Guida: `GUIDA-INTERACTIVE-BROKERS.md`.
+
 ## Novita' della 1.6
 
 - **Home:** sotto la barra del mese la cifra a cui dovresti essere oggi e la differenza con la spesa reale (rosso se sei sopra, verde se hai ancora margine).
@@ -33,11 +51,12 @@ Disponibile in italiano, inglese e tedesco. I dati restano sul telefono. L'app n
 |---|---|
 | `ponte/worker.js` | Il ponte per il collegamento automatico con Revolut (Cloudflare Worker). Vedi `GUIDA-COLLEGAMENTO-REVOLUT.md`. |
 | `GUIDA-COLLEGAMENTO-REVOLUT.md` | Guida passo passo per far arrivare i movimenti Revolut da soli. |
+| `GUIDA-INTERACTIVE-BROKERS.md` | Guida per collegare Interactive Brokers (Flex Query, token, ponte). |
 | `GUIDA-FAMIGLIA.md` | Guida per condividere l'app con un altro telefono (spazio KV nel ponte, QR, sicurezza). |
 | `docs/` | **L'app pronta da pubblicare.** E' quella che va online (il nome `docs` lo richiede GitHub Pages). |
 | `src/` | Il codice sorgente, diviso in moduli leggibili. |
 | `build.py` | Ricostruisce `docs/` da `src/`: `python3 build.py`. Nessuna libreria da installare. |
-| `tests/` | Test automatici: `node tests/unit.js`, `node tests/smoke.js docs/index.html`, `node tests/ponte.mjs`, `node tests/collegamento.js docs/index.html`, `node tests/lingue.js docs/index.html`, `node tests/qr.js docs/index.html`, `node tests/famiglia.js docs/index.html`. |
+| `tests/` | Test automatici: `node tests/unit.js`, `node tests/smoke.js docs/index.html`, `node tests/ponte.mjs`, `node tests/collegamento.js docs/index.html`, `node tests/lingue.js docs/index.html`, `node tests/qr.js docs/index.html`, `node tests/famiglia.js docs/index.html`, `node tests/portafoglio.js docs/index.html`. |
 | `PROGETTO.md` | Come e' fatta l'app: architettura, dati, regole, scelte. Da dare a chi continua lo sviluppo. |
 | `PRIVACY.md` | Informativa sulla privacy (pubblicata anche in `docs/privacy.html`). |
 | `.gitignore` | Impedisce di caricare per sbaglio backup ed estratti conto nel repository. |

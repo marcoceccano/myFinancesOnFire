@@ -55,6 +55,7 @@ const check = (cond, msg) => { console.log((cond ? "OK   " : "FAIL ") + msg); if
   await tab("home"); await wait(900);
   { const v = txt($("view"));
     check(/dove dovresti essere oggi, giorno \d+ su \d+: [\d'’.,]+ CHF \([\d'’.,]+ CHF (di troppo|ancora disponibili)\)/.test(v), "home: tacca del mese con cifra di oggi e differenza");
+    check(/Portafoglio/.test(txt($("pfCard"))), "home: riquadro del portafoglio (dati di esempio)");
     check(/Budget settimanale/.test(v) && /giorno per giorno/i.test(v) && /del numero FIRE/.test(v) && !/Ultime 8 settimane/.test(v), "home: settimana, giorno per giorno e FIRE"); }
   { const hits = $("dayCard").querySelectorAll("rect.hit");
     check(hits.length >= 1, "home: giorni toccabili (" + hits.length + ")");

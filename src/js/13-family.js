@@ -32,6 +32,7 @@ T.famShared = st => {
   for (const k in LISTS) out[k] = st[k] || [];
   out.budget = st.budget; out.fire = st.fire; out.profile = pick(st.profile, PROFILE); out.bank = pick(st.bank, BANK);
   out.devices = (st.family && st.family.devices) || {};
+  out.portfolio = st.portfolio ? Object.assign({}, st.portfolio, { lastError: null }) : null;
   return copy(out);
 };
 const core = sh => { if (!sh) return null; const c = Object.assign({}, sh); delete c.by; delete c.at; return c; };
@@ -64,6 +65,20 @@ function mergeBank(l, r, role) {
   res.cursors = cur;
   return res;
 }
+/* portafoglio: vince l'ultimo scaricato; storico e dividendi si uniscono */
+function mergePf(l, r) {
+  if (!l || !r) return l || r || null;
+  const newer = (l.lastSync || "") >= (r.lastSync || "") ? l : r, older = newer === l ? r : l;
+  const res = Object.assign({}, newer), h = {}, dv = {};
+  for (const x of (older.history || []).concat(newer.history || [])) h[x.d] = x.v;
+  for (const x of (older.divs || []).concat(newer.divs || [])) dv[x.key] = x;
+  const fl = {}; for (const x of (older.flows || []).concat(newer.flows || [])) fl[x.key] = x;
+  res.flows = Object.values(fl).sort((a, b) => a.d < b.d ? -1 : 1); res.hasFlows = !!(older.hasFlows || newer.hasFlows);
+  res.history = Object.keys(h).sort().map(d => ({ d, v: h[d] }));
+  res.divs = Object.values(dv).sort((a, b) => a.d < b.d ? -1 : 1);
+  if (res.tokenUntil == null && older.tokenUntil) res.tokenUntil = older.tokenUntil;
+  return res;
+}
 T.famMerge = (base, loc, rem, role) => {
   const out = { v: 1 };
   for (const k in LISTS) out[k] = mergeList(base && base[k], loc[k], rem[k], LISTS[k]);
@@ -73,6 +88,7 @@ T.famMerge = (base, loc, rem, role) => {
   const own = role === "master" ? loc : rem;
   out.fire = own.fire; out.profile = own.profile;
   out.bank = mergeBank(loc.bank, rem.bank, role);
+  out.portfolio = mergePf(loc.portfolio, rem.portfolio);
   return copy(out);
 };
 /* applica la copia condivisa allo stato del telefono (lingua, interfaccia e chiavi restano locali).
@@ -87,6 +103,7 @@ T.famApply = (st, sh, role, keepLocalRetire) => {
   Object.assign(st.profile, copy(sh.profile || {}));
   st.bank = Object.assign(st.bank || T.bankDefaults(), copy(sh.bank || {}));
   if (st.family) st.family.devices = copy(sh.devices || {});
+  if (!same(st.portfolio || null, sh.portfolio || null)) { const err = st.portfolio && st.portfolio.lastError; st.portfolio = sh.portfolio ? copy(sh.portfolio) : null; if (st.portfolio && err) st.portfolio.lastError = err; }
 };
 
 /* cifratura: JSON compresso (gzip) e cifrato AES-GCM, con l'identificativo della famiglia come dato associato */

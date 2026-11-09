@@ -47,6 +47,24 @@ T.makeDemoState = () => {
   st.budget = { preset: "realistico", vacationYear: 4000, investMonthly: 300 };
   Object.assign(st.fire, { birthYear: new Date().getFullYear() - 38, investable: 140000, cash: 25000, equityShare: 0.85,
     pensions: [{ name: T.tr("Pensione statale"), age: 65, monthly: 1900 }, { name: T.tr("Rendita cassa pensione"), age: 65, monthly: 1100 }], lumps: [] });
+  st.portfolio = T.demoPortfolio();
   return st;
+};
+/* portafoglio inventato per i dati di esempio (valuta del conto: CHF) */
+T.demoPortfolio = () => {
+  let seed = 99; const rnd = () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
+  const td = T.today(), P = T.pfDefaults();
+  const pos = [["VWRA", "VANGUARD FTSE ALL-WORLD UCITS ETF", "ETF", "USD", 520, 145.2, 0.8, 52000], ["CHSPI", "ISHARES CORE SPI ETF", "ETF", "CHF", 120, 170.3, 1, 19000],
+    ["CSPX", "ISHARES CORE S&P 500 UCITS ETF", "ETF", "USD", 30, 640.5, 0.8, 14500], ["EIMI", "ISHARES CORE MSCI EM IMI ETF", "ETF", "USD", 300, 38.4, 0.8, 8900], ["AGGH", "ISHARES GLOBAL AGGREGATE BOND ETF", "ETF", "CHF", 1500, 4.95, 1, 7600]];
+  P.positions = pos.map(([sym, desc, type, cur, qty, price, fx, cost]) => ({ acc: "U0000000", sym, desc, type, cur, qty, price, valueLoc: qty * price, value: T.round2(qty * price * fx), cost, pnl: T.round2(qty * price * fx - cost), isin: "", exch: "", fx }));
+  P.cash = 4200; P.invested = T.round2(T.sum(P.positions.map(p => p.value))); P.nav = T.round2(P.invested + P.cash);
+  P.base = "CHF"; P.accounts = ["U0000000"]; P.date = T.addDays(td, -1); P.lastSync = new Date().toISOString();
+  const n = 365, vals = []; let v = 1;
+  for (let i = 0; i < n; i++) { vals.push(v); v *= 1 + (rnd() - 0.47) * 0.018; }
+  const k = P.nav / vals[n - 1];
+  for (let i = 0; i < n; i++) { const d = T.addDays(P.date, i - n + 1), wd = T.parseIso(d).getDay(); if (wd === 0 || wd === 6) continue; P.history.push({ d, v: T.round2(vals[i] * k * (0.82 + 0.18 * i / n)) }); }
+  P.history[P.history.length - 1] = { d: P.date, v: P.nav };
+  for (let m = 1; m <= 12; m += 3) { const d = T.addDays(td, -m * 30); P.divs.push({ d, sym: "CHSPI", amt: 95, tax: false, key: "demo" + m }); }
+  return P;
 };
 })();

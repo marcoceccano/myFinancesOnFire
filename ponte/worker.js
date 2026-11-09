@@ -6,6 +6,7 @@
    - firma le richieste (JWT RS256) e risponde solo all'app (token segreto + origine consentita);
    - non salva movimenti: li passa all'app e li dimentica;
    - non puo' fare pagamenti: espone solo consenso, stato e lettura dei movimenti;
+   - (facoltativo) scarica il report Flex di Interactive Brokers (sola lettura) con il token che resta qui;
    - (facoltativo) custodisce la copia condivisa della famiglia, gia' cifrata sul telefono:
      il ponte e Cloudflare vedono solo dati illeggibili, la chiave e' solo nei telefoni.
 
@@ -18,9 +19,13 @@
 
    Per la famiglia (facoltativo), in Settings > Bindings aggiungi un "KV namespace":
      FAMIGLIA        KV       uno spazio Workers KV creato per l'app (es. myfinances-famiglia)
+
+   Per Interactive Brokers (facoltativo), in Settings > Variables and Secrets:
+     IBKR_TOKEN      segreto  token del Flex Web Service (Performance & Reports > Flex Queries)
+     IBKR_QUERY_ID   testo    numero (Query ID) della Activity Flex Query
 */
 const API = "https://api.enablebanking.com";
-const VERSION = "1.1.0";
+const VERSION = "1.2.0";
 let KEY_CACHE = null, JWT_CACHE = null;
 
 export default {
@@ -34,7 +39,7 @@ export default {
     const url = new URL(request.url);
     if (request.method === "GET" && url.pathname === "/") {
       const missing = ["EB_APP_ID", "EB_PRIVATE_KEY", "APP_TOKEN", "ALLOWED_ORIGIN", "REDIRECT_URL"].filter(k => !env[k]);
-      return json({ ok: missing.length === 0, service: "myfinances-ponte", version: VERSION, missing, family: hasKv(env) }, 200, cors);
+      return json({ ok: missing.length === 0, service: "myfinances-ponte", version: VERSION, missing, family: hasKv(env), ibkr: hasIbkr(env) }, 200, cors);
     }
     if (request.method !== "POST") return json({ error: "method_not_allowed" }, 405, cors);
     if (!okOrigin) return json({ error: "origin_not_allowed", origin }, 403, cors);
@@ -48,7 +53,7 @@ export default {
           if (!r.ok) return upstreamError(r, cors);
           const d = await r.json();
           return json({ name: d.name, environment: d.environment, active: d.active, redirect_urls: d.redirect_urls, countries: d.countries,
-            redirect_ok: (d.redirect_urls || []).includes(env.REDIRECT_URL), redirect_url: env.REDIRECT_URL, family: hasKv(env), version: VERSION }, 200, cors);
+            redirect_ok: (d.redirect_urls || []).includes(env.REDIRECT_URL), redirect_url: env.REDIRECT_URL, family: hasKv(env), ibkr: hasIbkr(env), version: VERSION }, 200, cors);
         }
         case "/banks": {
           const country = String(body.country || "LT").toUpperCase();
@@ -115,6 +120,7 @@ export default {
           return json({ ok: r.ok }, 200, cors);
         }
         case "/family": return await family(body, env, cors);
+        case "/ibkr": return await ibkr(body, env, cors);
         default: return json({ error: "not_found" }, 404, cors);
       }
     } catch (e) {
@@ -151,6 +157,42 @@ async function family(body, env, cors) {
   }
   if (op === "delete") { await kv.delete(key); return json({ ok: true }, 200, cors); }
   return json({ error: "bad_request" }, 400, cors);
+}
+
+/* Interactive Brokers: Flex Web Service versione 3, solo report (nessun ordine possibile).
+   1) SendRequest con token e Query ID -> codice di riferimento; 2) GetStatement finche' il report e' pronto. */
+const IB_BASE = "https://ndcdyn.interactivebrokers.com/AccountManagement/FlexWebService";
+const IB_WAIT = ["1001", "1004", "1005", "1006", "1007", "1008", "1009", "1019", "1021"];
+const hasIbkr = env => !!(env.IBKR_TOKEN && env.IBKR_QUERY_ID);
+const xmlTag = (x, t) => { const m = String(x || "").match(new RegExp("<" + t + ">([^<]*)</" + t + ">", "i")); return m ? m[1].trim() : ""; };
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+async function ibkr(body, env, cors) {
+  if (body.op === "status") return json({ configured: hasIbkr(env) }, 200, cors);
+  if (!hasIbkr(env)) return json({ error: "ibkr_not_configured" }, 501, cors);
+  const token = String(env.IBKR_TOKEN).trim(), query = String(env.IBKR_QUERY_ID).trim();
+  if (!/^\d{3,12}$/.test(query)) return json({ error: "ibkr_bad_query" }, 400, cors);
+  const H = { "User-Agent": "myFinancesOnFire/" + VERSION, "Accept": "application/xml,text/xml" };
+  const pause = env.IBKR_POLL_MS !== undefined ? Math.max(0, +env.IBKR_POLL_MS || 0) : 3500;   /* attesa tra i tentativi (nei test: 0) */
+  const fail = (code, message) => json({ error: "ibkr_error", code: String(code || ""), message: String(message || "").slice(0, 200) }, 502, cors);
+  const r1 = await fetch(IB_BASE + "/SendRequest?t=" + encodeURIComponent(token) + "&q=" + encodeURIComponent(query) + "&v=3", { headers: H });
+  const x1 = await r1.text();
+  if (xmlTag(x1, "Status") !== "Success") return fail(xmlTag(x1, "ErrorCode") || r1.status, xmlTag(x1, "ErrorMessage") || "SendRequest");
+  const ref = xmlTag(x1, "ReferenceCode");
+  let url = xmlTag(x1, "Url") || IB_BASE + "/GetStatement";
+  /* il report si scarica solo da interactivebrokers.com */
+  try { if (!/(^|\.)interactivebrokers\.com$/i.test(new URL(url).hostname)) url = IB_BASE + "/GetStatement"; } catch (e) { url = IB_BASE + "/GetStatement"; }
+  if (!/^\d+$/.test(ref)) return fail("", "reference");
+  /* al massimo 6 tentativi: con la richiesta iniziale restano sotto il limite di 10 al minuto */
+  let last = "";
+  for (let i = 0; i < 6; i++) {
+    await sleep(i === 0 ? Math.min(pause, 1500) : pause);
+    const r2 = await fetch(url + "?t=" + encodeURIComponent(token) + "&q=" + ref + "&v=3", { headers: H });
+    const x2 = await r2.text();
+    if (/<FlexQueryResponse[\s>]/.test(x2)) return new Response(JSON.stringify({ xml: x2 }), { status: 200, headers: Object.assign({ "Content-Type": "application/json", "Cache-Control": "no-store" }, cors) });
+    last = xmlTag(x2, "ErrorCode");
+    if (!IB_WAIT.includes(last)) return fail(last || r2.status, xmlTag(x2, "ErrorMessage") || "GetStatement");
+  }
+  return json({ error: "ibkr_pending", code: last }, 504, cors);
 }
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;

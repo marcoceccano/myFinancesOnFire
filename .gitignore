@@ -1,0 +1,26 @@
+# Protezione dei dati personali: questi file non devono mai finire nel repository
+*backup*.json
+dati-personali/
+Dati personali*/
+*.xlsx
+*.pdf
+*.csv
+*.xml
+!tests/fixtures/*.csv
+!tests/fixtures/*.xml
+.DS_Store
+
+# Chiave privata Enable Banking e segreti del ponte: mai nel repository
+*.pem
+*.key
+.dev.vars
+
+# App nativa (Capacitor, Android Studio) e strumenti: mai nel repository
+node_modules/
+app/android/app/build/
+app/android/.gradle/
+*.jks
+*.keystore
+keystore.properties
+.env
+.env.*
